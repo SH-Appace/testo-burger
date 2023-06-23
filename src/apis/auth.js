@@ -68,6 +68,12 @@ export async function signinReq(
   try {
     const {data} = await axios.post('auth/continue-with-phone', body);
     if (data) {
+      await AsyncStorage.setItem('credentials', JSON.stringify(body));
+      await AsyncStorage.setItem('auth', JSON.stringify(data));
+      dispatch({
+        type: 'LOGGED_IN_USER',
+        payload: data,
+      });
       try {
         const response = await axios.get('customer/wish-list', {
           headers: {
@@ -81,12 +87,6 @@ export async function signinReq(
           });
           if (data.user.is_phone_verified === 1) {
             if (data.user.is_first_login === 0) {
-              await AsyncStorage.setItem('credentials', JSON.stringify(body));
-              await AsyncStorage.setItem('auth', JSON.stringify(data));
-              dispatch({
-                type: 'LOGGED_IN_USER',
-                payload: data,
-              });
               navigation.replace('DrawerNavigator');
             } else {
               navigation.replace('EditProfile', {

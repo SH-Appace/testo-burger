@@ -13,7 +13,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Color, Font, GlobalStyle} from '../globalStyle/Theme';
 
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import BottomTabScreen from './BottomTab';
 import {
   AddressSvg,
@@ -64,6 +64,7 @@ const CustomDrawerContent = props => {
   const [activeButton, setActiveButton] = useState(0);
   const {auth} = useSelector(state => ({...state}));
   const IsOpen = useDrawerStatus() === 'open';
+  const dispatch = useDispatch();
 
   return (
     <ImageBackground
@@ -135,6 +136,10 @@ const CustomDrawerContent = props => {
                   await AsyncStorage.removeItem('credentials');
                   await AsyncStorage.removeItem('auth');
                   props.navigation.replace('SignIn');
+                  dispatch({
+                    type: 'LOGOUT',
+                    payload: null,
+                  });
                 } else if (item.id === 6) {
                   props.navigation.closeDrawer();
                   props.navigation.reset({

@@ -36,6 +36,10 @@ export async function updateProfile(
     }
   } catch (err) {
     setLoading(false);
+    showMessage({
+      message: err.response.data.errors[0].message,
+      type: 'danger',
+    });
     console.log('error', err);
   }
 }

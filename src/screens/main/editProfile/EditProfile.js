@@ -38,6 +38,7 @@ const EditProfile = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
   let formData = new FormData();
   const {auth} = useSelector(state => ({...state}));
+
   const {fromOTPcode} = route.params;
   const dispatch = useDispatch();
   useEffect(() => {
@@ -45,7 +46,7 @@ const EditProfile = ({navigation, route}) => {
       setName(auth.user.name);
       setImage(auth.user.image);
       setEmail(auth.user.email);
-      setPhone({code: '', phone: auth.user.phone});
+      // setPhone({code: '', phone: auth.user.phone});
     }
     setLoading(false);
   }, []);
@@ -64,13 +65,13 @@ const EditProfile = ({navigation, route}) => {
       });
       return;
     }
-    if (phone === '') {
-      showMessage({
-        message: 'Please enter a phone number',
-        type: 'danger',
-      });
-      return;
-    }
+    // if (phone === '') {
+    //   showMessage({
+    //     message: 'Please enter a phone number',
+    //     type: 'danger',
+    //   });
+    //   return;
+    // }
     if (imageUpload !== null) {
       formData.append('image', imageUpload);
       formData.append('name', name);
@@ -126,6 +127,20 @@ const EditProfile = ({navigation, route}) => {
     <SafeAreaView style={{justifyContent: 'flex-end', flex: 1}}>
       <View style={{...GlobalStyle.Container}}>
         <AppBar
+          left={
+            fromOTPcode ? (
+              <></>
+            ) : (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Icon
+                  iconFamily={'Octicons'}
+                  name="arrow-left"
+                  size={25}
+                  color={Color.light}
+                />
+              </TouchableOpacity>
+            )
+          }
           center={
             <Text style={GlobalStyle.AppCenterTextStyle}>
               Fill Your Profile
@@ -136,22 +151,6 @@ const EditProfile = ({navigation, route}) => {
         <ScrollView
           contentContainerStyle={{flexGrow: 1, paddingTop: 25}}
           keyboardShouldPersistTaps="handled">
-          {/* <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Image
-              source={require('../../../assets/images/pics/Profile.png')}
-              style={{}}
-            />
-            <TouchableOpacity
-              style={{position: 'absolute', bottom: 0, right: 120}}>
-              <Image
-                source={require('../../../assets/images/pics/Exclude.png')}
-              />
-            </TouchableOpacity>
-          </View> */}
           <View
             style={{
               flexDirection: 'row',

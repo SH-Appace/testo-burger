@@ -14,6 +14,7 @@ import {Font} from '../globalStyle/Theme';
 import Geolocation from 'react-native-geolocation-service';
 import {getGeoInfo} from '../apis/geoInfo';
 import {showMessage} from 'react-native-flash-message';
+import {useSelector} from 'react-redux';
 
 const PhoneInputComponent = ({
   placeholder,
@@ -28,6 +29,7 @@ const PhoneInputComponent = ({
   const [newNumber, setNewNumber] = useState('');
 
   const phoneInputRef = useRef(null);
+  const {auth} = useSelector(state => ({...state}));
 
   const requestLocationPermission = async () => {
     try {
@@ -104,15 +106,28 @@ const PhoneInputComponent = ({
   //   requestLocationPermission();
   // }, []);
   useEffect(() => {
-    if (countryCode !== '') {
+    if (auth !== null) {
       const timer = setTimeout(async () => {
         setNewNumber(
-          value.phone.replace(`+${phoneInputRef.current.getCallingCode()}`, ''),
+          auth.user.phone.replace(
+            `+${phoneInputRef.current.getCallingCode()}`,
+            '',
+          ),
         );
-      }, 0);
+      }, 50);
       return () => clearTimeout(timer);
     }
-  }, [countryCode]);
+    setLoading(false);
+  }, [auth, phoneInputRef]);
+  // useEffect(() => {
+  //   console.log('PHONEEEE', newNumber);
+  //   if (countryCode !== '') {
+  //     const timer = setTimeout(async () => {
+  //       setNewNumber(value.phone);
+  //     }, 0);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [countryCode]);
   return (
     <View
       style={[
@@ -169,11 +184,12 @@ const PhoneInputComponent = ({
         placeholder={placeholder}
         placeholderTextColor={'#807F7E'}
         onChangeText={text => {
-          setNewNumber(text);
+          const newtext = text.replace(/^0+/, '');
+          setNewNumber(newtext.replace(/\s/g, ''));
           onChanged(prevState => ({
             ...prevState,
             code: '+' + phoneInputRef.current.getCallingCode(),
-            phone: text,
+            phone: newtext.replace(/\s/g, ''),
           }));
         }}
         value={newNumber}

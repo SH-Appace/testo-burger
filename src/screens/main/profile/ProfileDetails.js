@@ -6,6 +6,8 @@ import {
   NotificationIcon,
   HelpCenterIcon,
   LogoutIcon,
+  ReferIcon,
+  LoyaltyIcon,
 } from '../../../assets/svgs/ProfileSvgs';
 
 const Data = [
@@ -40,14 +42,14 @@ const Data = [
   },
   {
     id: 5,
-    icon: <HelpCenterIcon />,
+    icon: <ReferIcon />,
     name: 'Refer a Friend',
     chevron: 'chevron-right',
     link: 'Referral',
   },
   {
     id: 6,
-    icon: <HelpCenterIcon />,
+    icon: <LoyaltyIcon />,
     name: 'Loyalty Points',
     chevron: 'chevron-right',
     link: 'Loyalty',

@@ -38,9 +38,16 @@ const SignIn = ({navigation}) => {
   const dispatch = useDispatch();
   const handleSubmit = async () => {
     Keyboard.dismiss();
-    if (phone.phone === '') {
+    if (phone.phone.length < 1) {
       showMessage({
         message: 'Please enter phone number',
+        type: 'danger',
+      });
+      return;
+    }
+    if (phone.phone.length > 10) {
+      showMessage({
+        message: 'Phone number limit exceeded!',
         type: 'danger',
       });
       return;
@@ -63,6 +70,10 @@ const SignIn = ({navigation}) => {
       setLoading,
       dispatch,
     );
+    setPhone({
+      code: '',
+      phone: '',
+    });
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
