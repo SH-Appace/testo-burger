@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "402546861363",
+    "project_id": "testo-burger-19b0d",
+    "storage_bucket": "testo-burger-19b0d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402546861363:android:fd0f193a76f10cad200a46",
+        "android_client_info": {
+          "package_name": "com.testoburger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "402546861363-374ranlnuss517rhajkheo765s11jg6j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.testoburger",
+            "certificate_hash": "70d916599592782295e1c42a3e8baa9772d5d34f"
+          }
+        },
+        {
+          "client_id": "402546861363-g7p9988k8nk149l8pa48l4k646eiobq4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.testoburger",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "402546861363-sutlh7ljqivg59ckbee4e168h8nmr6c3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.testoburger",
+            "certificate_hash": "f9a0ed5d984e9de1f6cddf35465c1b0d46586e31"
+          }
+        },
+        {
+          "client_id": "402546861363-03e0dl51ld2mtb4fe7l4vekjhi6jti3b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMpsf4Sciln5dDHQYbiyxQkPMYmfLqWBQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "402546861363-03e0dl51ld2mtb4fe7l4vekjhi6jti3b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
