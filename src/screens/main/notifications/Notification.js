@@ -121,11 +121,6 @@ const Notification = ({navigation}) => {
   useBackButton(navigation, onBackPress);
   return (
     <SafeAreaView style={GlobalStyle.Container}>
-      <StatusBar
-        translucent
-        backgroundColor={Color.light}
-        barStyle={'dark-content'}
-      />
       <Appbar
         center={
           <Text style={GlobalStyle.AppCenterTextStyle}>Notifications</Text>

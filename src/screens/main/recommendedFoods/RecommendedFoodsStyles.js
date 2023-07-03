@@ -12,15 +12,21 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   ImgStyle: {
-    width: Window.height / 9,
-    borderRadius: 20,
-    height: Window.height / 9,
+    width: '100%',
+    height: '100%',
   },
 
   TopTextStyle: {
     color: Color.headingSm,
     fontSize: 16,
     fontFamily: Font.Urbanist_Black,
+  },
+  DescTextStyle: {
+    color: Color.headingSm,
+    fontSize: 14,
+    fontFamily: Font.Urbanist_Light,
+    width: Window.width / 2,
+    marginVertical: 10,
   },
   MiddleTextStyle: {
     color: Color.greyscale,
@@ -77,15 +83,6 @@ const styles = StyleSheet.create({
     padding: 15,
     marginTop: 20,
     borderRadius: 24,
-    shadowColor: 'rgba(0,0,0,0.2)',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 22,
   },
 });
 

@@ -38,11 +38,6 @@ const ForgotPassword = ({navigation}) => {
   };
   return (
     <SafeAreaView style={{...GlobalStyle.Container}}>
-      <StatusBar
-        translucent
-        backgroundColor={Color.light}
-        barStyle={'dark-content'}
-      />
       <AppBar l />
       <ScrollView
         contentContainerStyle={{flexGrow: 1, paddingTop: 25}}

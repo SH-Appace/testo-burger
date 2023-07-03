@@ -79,15 +79,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingHorizontal: 10,
     paddingVertical: 14,
-    shadowColor: 'rgba(0,0,0,0.4)',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
 
-    elevation: 22,
     margin: 1,
   },
   statusBox: {

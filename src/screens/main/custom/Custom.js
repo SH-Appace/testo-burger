@@ -40,7 +40,12 @@ const Cart = ({item, quantity, setQuantity}) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <Image style={styles.ImgStyle} source={{uri: item.image}} />
+        <Image
+          style={styles.ImgStyle}
+          // source={{uri: item.image}}
+          source={require('../../../assets/images/pics/foodBg.png')}
+          resizeMode="cover"
+        />
       </View>
       <View style={{flex: 1, paddingLeft: 15}}>
         <Text style={styles.TopTextStyle}>{item.name}</Text>
@@ -432,11 +437,6 @@ const Custom = ({route, navigation}) => {
   useBackButton(navigation, onBackPress);
   return (
     <SafeAreaView style={GlobalStyle.Container}>
-      <StatusBar
-        translucent
-        backgroundColor={Color.light}
-        barStyle={'dark-content'}
-      />
       <AppBar
         left={
           <TouchableOpacity

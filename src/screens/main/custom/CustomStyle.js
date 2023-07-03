@@ -4,7 +4,7 @@ import {GlobalStyle, Window, Font, Color} from '../../../globalStyle/Theme';
 const styles = StyleSheet.create({
   ImgStyle: {
     width: Window.height / 8,
-    height: Window.height / 9,
+    height: Window.height / 8,
     backgroundColor: 'black',
     borderRadius: 20,
   },
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(246, 244, 244, 1)',
+    backgroundColor: Color.light,
   },
 });
 

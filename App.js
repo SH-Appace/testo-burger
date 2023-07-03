@@ -63,7 +63,8 @@ const App = () => {
       >
         <SafeAreaProvider>
           <PaperProvider theme={theme}>
-            <GestureHandlerRootView style={{flex: 1, backgroundColor: '#fff'}}>
+            <GestureHandlerRootView
+              style={{flex: 1, backgroundColor: '#F9F9F9'}}>
               <FlashMessage
                 position="top"
                 statusBarHeight={getStatusBarHeight}
@@ -73,7 +74,7 @@ const App = () => {
               />
               <StatusBar
                 animated={true}
-                backgroundColor={Color.light}
+                backgroundColor={'#F9F9F9'}
                 barStyle={'dark-content'}
                 showHideTransition={'fade'}
               />

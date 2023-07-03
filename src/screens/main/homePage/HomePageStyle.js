@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Color.light,
   },
 
   heartIcon: {

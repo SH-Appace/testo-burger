@@ -1,23 +1,12 @@
 import React, {useState} from 'react';
-import {
-  Text,
-  StatusBar,
-  useWindowDimensions,
-  ScrollView,
-  FlatList,
-  TextInput,
-  View,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, ScrollView, View, Image, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import AppBar from '../../../components/AppBar';
-import {GlobalStyle, Font, Window, Color} from '../../../globalStyle/Theme';
+import {GlobalStyle, Font,  Color} from '../../../globalStyle/Theme';
 import Icon from '../../../core/Icon';
 import Data from './ProfileDetails';
 import {useSelector} from 'react-redux';
-import BottomPopup from '../../../components/BottomPopup';
 import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {useBackButton} from '../../../hooks';
 

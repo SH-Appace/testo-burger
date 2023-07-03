@@ -80,7 +80,7 @@ const ContactDetails = ({item}) => {
 };
 
 const Accordian = ({item}) => {
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = React.useState(false);
 
   const handlePress = () => setExpanded(!expanded);
 
@@ -206,11 +206,6 @@ const Faq = ({route, navigation}) => {
   useBackButton(navigation, onBackPress);
   return (
     <SafeAreaView style={GlobalStyle.Container}>
-      <StatusBar
-        translucent
-        backgroundColor={Color.light}
-        barStyle={'dark-content'}
-      />
       <AppBar
         left={
           <TouchableOpacity
@@ -253,7 +248,7 @@ const Faq = ({route, navigation}) => {
         onIndexChange={setIndex}
         initialLayout={{width: layout.width}}
       />
-      <View style={GlobalStyle.borderStyle}></View>
+      <View style={GlobalStyle.borderStyle} />
     </SafeAreaView>
   );
 };

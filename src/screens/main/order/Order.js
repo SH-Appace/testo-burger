@@ -40,7 +40,7 @@ const ActiveRoute = ({setVisible, orders, setPopupData}) => {
     <View
       style={{
         marginVertical: 10,
-        backgroundColor: Color.light,
+        // backgroundColor: Color.light,
         marginHorizontal: Window.fixPadding * 2,
       }}>
       {orders.length > 0 ? (
@@ -172,7 +172,7 @@ const CompletedRoute = ({setVisible, orders, setPopupData, onShowPopup}) => {
     <View
       style={{
         marginVertical: 10,
-        backgroundColor: Color.light,
+        // backgroundColor: Color.light,
         marginHorizontal: Window.fixPadding * 2,
       }}>
       {orders.length > 0 ? (
@@ -316,7 +316,7 @@ const CancelledRoute = ({setVisible, orders, setPopupData}) => {
     <View
       style={{
         marginVertical: 10,
-        backgroundColor: Color.light,
+        // backgroundColor: Color.light,
         marginHorizontal: Window.fixPadding * 2,
       }}>
       {orders.length > 0 ? (
@@ -475,7 +475,7 @@ const renderTabBar = props => (
       textTransform: 'capitalize',
     }}
     style={{
-      backgroundColor: Color.light,
+      backgroundColor: '#F9F9F9',
       marginHorizontal: Window.fixPadding * 2,
       elevation: 0,
     }}
@@ -545,10 +545,10 @@ const Order = ({navigation, route}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{backgroundColor: Color.light, flex: 1}}>
+    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}}>
       <StatusBar
         animated={true}
-        backgroundColor={loading ? '#555555' : Color.light}
+        backgroundColor={loading ? '#555555' : '#F9F9F9'}
         barStyle={loading ? 'light-content' : 'dark-content'}
         showHideTransition={'fade'}
       />
@@ -639,8 +639,10 @@ const Popup = ({visible, setVisible, popupData}) => {
             <>
               <View style={{flexDirection: 'row', marginTop: 0}}>
                 <Image
-                  style={{width: 80, height: 80}}
-                  source={{uri: item.food_details.image}}
+                  style={{width: 80, height: 80, borderRadius: 15}}
+                  // source={{uri: item.food_details.image}}
+                  source={require('../../../assets/images/pics/foodBg.png')}
+                  resizeMode="cover"
                 />
                 <View style={{flexDirection: 'column', flex: 1}}>
                   <View

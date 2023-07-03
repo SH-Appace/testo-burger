@@ -2,7 +2,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {
   Text,
-  StatusBar,
   ScrollView,
   FlatList,
   View,
@@ -37,8 +36,7 @@ import {addWishlist, removeWishlist} from '../../../apis/wishlist';
 import Swiper from 'react-native-swiper';
 import {updateFCMToken} from '../../../apis/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDrawerStatus} from '@react-navigation/drawer';
-const OrderType = ({item, cart}) => {
+const OrderType = ({item, cart, navigation}) => {
   const dispatch = useDispatch();
 
   const updateOrderType = type => {
@@ -46,6 +44,7 @@ const OrderType = ({item, cart}) => {
       type: 'UPDATE_ORDER_TYPE',
       payload: type,
     });
+    navigation.navigate('Menu');
   };
   return (
     <TouchableOpacity
@@ -55,7 +54,7 @@ const OrderType = ({item, cart}) => {
         height: 75,
         borderRadius: 20,
         backgroundColor:
-          cart.orderType === item.value ? Color.primary : Color.grey,
+          cart.orderType === item.value ? Color.primary : Color.light,
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: item.id === 1 ? 10 : 0,
@@ -118,81 +117,34 @@ const FeaturedItem = ({item, index, auth, wishlist}) => {
         borderRadius: 28,
         width: Window.width / 2,
         height: Window.height / 3,
-        justifyContent: 'center',
-        alignItems: 'center',
+        overflow: 'hidden',
+
         marginLeft: index === 0 ? 0 : 20,
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-
-        elevation: 5,
       }}>
-      <ImageBackground
-        style={{
-          width: Window.width / 2.2,
-          height: Window.height / 6,
-          borderRadius: 20,
-          overflow: 'hidden',
-        }}
-        source={{uri: item.image}}
-        resizeMode="contain">
-        {item.promo && (
-          <View
-            style={{
-              marginLeft: 10,
-              marginTop: 10,
-              alignItems: 'center',
-              width: 56,
-              height: 24,
-              justifyContent: 'center',
-              backgroundColor: Color.primary,
-              borderRadius: 6,
-            }}>
-            <Text
-              style={{
-                color: Color.light,
-                fontFamily: Font.Urbanist_SemiBold,
-                fontSize: 10,
-              }}>
-              {item.promo}PROMO
-            </Text>
-          </View>
-        )}
-      </ImageBackground>
+      <View style={{backgroundColor: 'red', height: '57%', width: '100%'}}>
+        <Image
+          style={{width: '100%', height: '100%'}}
+          // source={{uri: item.image}}
+          source={require('../../../assets/images/pics/foodBg.png')}
+          resizeMode="cover"
+        />
+      </View>
 
-      <View style={{width: '100%', marginTop: 10}}>
+      <View style={{height: '43%', width: '100%', padding: 10}}>
         <Text
           style={[styles.Heading, {fontSize: 18, width: '90%'}]}
           numberOfLines={1}>
           {item.name}
         </Text>
-        <View
-          style={{flexDirection: 'row', alignItems: 'center', marginTop: 7}}>
-          <Icon
-            iconFamily={'FontAwesome'}
-            color={Color.orange}
-            size={12}
-            name={'star'}
-          />
-          <Text
-            style={{...styles.MiddleTextStyle, paddingLeft: 4}}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {item.order_count}
-          </Text>
-          <Text
-            style={{...styles.MiddleTextStyle, paddingLeft: 4}}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            ({item.rating_count})
-          </Text>
-        </View>
+        <Text
+          style={[
+            styles.Heading,
+            {fontSize: 14, fontFamily: Font.Urbanist_Light, width: '90%'},
+          ]}
+          numberOfLines={2}>
+          {item.description}
+        </Text>
+
         <View
           style={{
             flexDirection: 'row',
@@ -203,42 +155,38 @@ const FeaturedItem = ({item, index, auth, wishlist}) => {
           <Text style={{...styles.Heading, color: Color.primary, fontSize: 18}}>
             ${item.price}
           </Text>
-          <TouchableOpacity
-            onPress={() => {
-              if (wishlist.addedItems.some(e => e.id === item.id)) {
-                dispatch({
-                  type: 'REMOVE_SINGLE_FROM_WISHLIST',
-                  payload: item.id,
-                });
-                removeWishlist(item.id, auth.token);
-              } else {
-                dispatch({
-                  type: 'ADD_SINGLE_TO_WISHLIST',
-                  payload: item,
-                });
-                addWishlist(
-                  {
-                    food_id: item.id,
-                  },
-                  auth.token,
-                );
-              }
-            }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon
-              iconFamily={'AntDesign'}
-              style={styles.heartIcon}
-              color={
-                wishlist.addedItems.some(e => e.id === item.id)
-                  ? Color.black
-                  : Color.light
-              }
-              name={
-                wishlist.addedItems.some(e => e.id === item.id)
-                  ? 'heart'
-                  : 'hearto'
-              }
+              iconFamily={'FontAwesome'}
+              color={Color.orange}
+              size={12}
+              name={parseInt(item.avg_rating) >= 1 ? 'star' : 'star-o'}
             />
-          </TouchableOpacity>
+            <Icon
+              iconFamily={'FontAwesome'}
+              color={Color.orange}
+              size={12}
+              name={parseInt(item.avg_rating) >= 2 ? 'star' : 'star-o'}
+            />
+            <Icon
+              iconFamily={'FontAwesome'}
+              color={Color.orange}
+              size={12}
+              name={parseInt(item.avg_rating) >= 3 ? 'star' : 'star-o'}
+            />
+            <Icon
+              iconFamily={'FontAwesome'}
+              color={Color.orange}
+              size={12}
+              name={parseInt(item.avg_rating) >= 4 ? 'star' : 'star-o'}
+            />
+            <Icon
+              iconFamily={'FontAwesome'}
+              color={Color.orange}
+              size={12}
+              name={parseInt(item.avg_rating) >= 5 ? 'star' : 'star-o'}
+            />
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -292,7 +240,6 @@ const Home = ({navigation}) => {
         style={{
           flexDirection: 'column',
           alignItems: 'center',
-          // width: Window.width / 6,
           justifyContent: 'space-between',
         }}>
         <View
@@ -300,7 +247,7 @@ const Home = ({navigation}) => {
             width: 70,
             height: 75,
             borderRadius: 20,
-            backgroundColor: '#F6F4F4',
+            backgroundColor: Color.light,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
@@ -390,7 +337,7 @@ const Home = ({navigation}) => {
     return () => backHandler.remove();
   }, []);
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: Color.light}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#F9F9F9'}}>
       <ScrollView contentContainerStyle={{flexGrow: 1, paddingTop: 20}}>
         <View
           style={{
@@ -402,7 +349,7 @@ const Home = ({navigation}) => {
               style={{
                 alignItems: 'center',
                 flexDirection: 'row',
-                backgroundColor: 'rgba(250, 250, 270, 1)',
+                backgroundColor: Color.light,
                 height: 56,
                 borderRadius: 16,
                 paddingHorizontal: 10,
@@ -516,6 +463,7 @@ const Home = ({navigation}) => {
               activeBg={activeBg}
               cart={cart}
               item={item}
+              navigation={navigation}
             />
           )}
           columnWrapperStyle={{justifyContent: 'space-between'}}

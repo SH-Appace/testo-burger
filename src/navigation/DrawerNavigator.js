@@ -74,7 +74,7 @@ const CustomDrawerContent = props => {
       <SafeAreaView style={styles.container}>
         <StatusBar
           animated={true}
-          backgroundColor={IsOpen ? '#F55B02' : Color.light}
+          backgroundColor={IsOpen ? '#F55B02' : '#F9F9F9'}
           barStyle={IsOpen ? 'light-content' : 'dark-content'}
           showHideTransition={'fade'}
         />

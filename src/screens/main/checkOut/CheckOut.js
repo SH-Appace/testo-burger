@@ -62,9 +62,10 @@ const SummaryDetails = ({
       style={{flexDirection: 'row', justifyContent: 'space-between'}}>
       <View style={{flexDirection: 'row'}}>
         <Image
-          source={{uri: item.foodDetails.image}}
+          // source={{uri: item.foodDetails.image}}
+          source={require('../../../assets/images/pics/foodBg.png')}
           style={{width: 80, height: 80, borderRadius: 16}}
-          resizeMode="contain"
+          resizeMode="cover"
         />
         <FAB
           style={styles.fab}
@@ -440,14 +441,6 @@ const CartDetails = ({
   );
 };
 const DeliveryDetails = ({item, setBranchId, branchId}) => {
-  let navigation = useNavigation();
-  const dispatch = useDispatch();
-  const updateOrderType = type => {
-    // dispatch({
-    //   type: 'UPDATE_ORDER_TYPE',
-    //   payload: type,
-    // });
-  };
   return (
     <TouchableOpacity
       onPress={() => setBranchId(item.id)}
@@ -935,11 +928,11 @@ const CheckOut = ({route, item}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#FDFDFD'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#F9F9F9'}}>
       <StatusBar
         animated={true}
         backgroundColor={
-          loading ? '#555555' : stripeOpen ? '#555555' : Color.light
+          loading ? '#555555' : stripeOpen ? '#555555' : '#F9F9F9'
         }
         barStyle={loading ? 'light-content' : 'dark-content'}
         showHideTransition={'fade'}
@@ -991,15 +984,6 @@ const CheckOut = ({route, item}) => {
                 marginTop: 20,
                 borderRadius: 24,
                 marginHorizontal: Window.fixPadding * 2,
-                shadowColor: 'rgba(0,0,0,0.2)',
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-
-                elevation: 22,
               }}>
               <Text style={styles.DeliveryStyle}>Deliver to</Text>
               <View style={GlobalStyle.TopBorderStyle}></View>
@@ -1377,8 +1361,10 @@ const Popup = ({item, visible, setVisible}) => {
 
         <View style={{flexDirection: 'row', marginBottom: 20}}>
           <Image
-            style={{width: 80, height: 80}}
-            source={{uri: item.foodDetails.image}}
+            style={{width: 80, height: 80, borderRadius: 15}}
+            // source={{uri: item.foodDetails.image}}
+            source={require('../../../assets/images/pics/foodBg.png')}
+            resizeMode="cover"
           />
           <View style={{flexDirection: 'column', flex: 1}}>
             <View
@@ -1491,7 +1477,7 @@ const OrderType = ({item, cart, setBranchId}) => {
         height: 75,
         borderRadius: 20,
         backgroundColor:
-          cart.orderType === item.value ? Color.primary : Color.grey,
+          cart.orderType === item.value ? Color.primary : Color.light,
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: item.id === 1 ? 10 : 0,

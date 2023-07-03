@@ -136,7 +136,7 @@ const EditProfile = ({navigation, route}) => {
                   iconFamily={'Octicons'}
                   name="arrow-left"
                   size={25}
-                  color={Color.light}
+                  color={Color.secondary}
                 />
               </TouchableOpacity>
             )

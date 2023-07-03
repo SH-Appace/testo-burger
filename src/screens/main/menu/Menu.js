@@ -28,7 +28,13 @@ const Menu = ({navigation, route}) => {
       setActiveCategory(route.params.activeCat);
     }
   }, []);
-  const RenderItemCategories = ({item, setState, state, setActiveCategory}) => (
+  const RenderItemCategories = ({
+    item,
+    setState,
+    state,
+    setActiveCategory,
+    activeCategory,
+  }) => (
     <View
       style={{
         width: Window.width / 4,
@@ -38,8 +44,13 @@ const Menu = ({navigation, route}) => {
       }}>
       <TouchableOpacity
         onPress={() => {
-          setActiveCategory(item.name);
-          setState(item.id);
+          if (state === item.id) {
+            setActiveCategory('');
+            setState(0);
+          } else {
+            setActiveCategory(item.name);
+            setState(item.id);
+          }
         }}
         style={{
           flexDirection: 'column',
@@ -52,7 +63,7 @@ const Menu = ({navigation, route}) => {
             width: 70,
             height: 75,
             borderRadius: 20,
-            backgroundColor: '#F6F4F4',
+            backgroundColor: Color.light,
             alignItems: 'center',
             justifyContent: 'center',
             borderWidth: state === item.id ? 2 : 0,
@@ -84,7 +95,7 @@ const Menu = ({navigation, route}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{backgroundColor: Color.light, flex: 1}}>
+    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}}>
       <View style={{marginHorizontal: Window.fixPadding * 2}}>
         <AppBar
           left={
@@ -98,7 +109,7 @@ const Menu = ({navigation, route}) => {
           center={<Text style={GlobalStyle.AppCenterTextStyle}>Menu</Text>}
         />
       </View>
-      <View style={{height: 150}}>
+      <View style={{height: 110}}>
         {categories && (
           <HorizontalFlatList
             initialNumToRender={2}
@@ -114,53 +125,18 @@ const Menu = ({navigation, route}) => {
                 state={active}
                 setState={setActive}
                 setActiveCategory={setActiveCategory}
+                activeCategory={activeCategory}
                 item={item}
               />
             )}
           />
         )}
       </View>
-      <View
-        style={{
-          marginHorizontal: Window.fixPadding * 2,
-          marginBottom: 10,
-        }}>
-        {active !== 0 && (
-          <TouchableOpacity
-            onPress={() => {
-              setActive(0);
-              setActiveCategory('');
-            }}
-            style={{
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: '#EEEEEE',
-              paddingVertical: 10,
-              paddingHorizontal: 5,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: Font.Urbanist_Bold,
-                fontSize: 14,
-                color: Color.headingSm,
-              }}>
-              Category Selected: {activeCategory}
-            </Text>
-            <Icon
-              iconFamily={'Entypo'}
-              color={Color.headingSm}
-              size={22}
-              name={'cross'}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
 
-      <ScrollView style={{flex: 1}} contentContainerStyle={{flexGrow: 1}}>
-        <View style={GlobalStyle.Container}>
+      <ScrollView
+        style={{flex: 1}}
+        contentContainerStyle={{flexGrow: 1, paddingVertical: 15}}>
+        <View style={[GlobalStyle.Container, {backgroundColor: '#F9F9F9'}]}>
           {active !== 0
             ? products[0] &&
               products[0]
@@ -215,76 +191,81 @@ const Cart = ({item}) => {
       }
       style={{
         backgroundColor: Color.light,
-        shadowColor: 'rgba(0,0,0,0.4)',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 22,
         borderRadius: 20,
         marginVertical: 10,
-        height: Window.height / 7,
-        alignItems: 'center',
-        justifyContent: 'center',
+        height: Window.height / 6,
         flexDirection: 'row',
+        overflow: 'hidden',
       }}>
-      <View>
+      <View style={{flex: 0.4}}>
         <Image
           style={styles.ImgStyle}
-          source={{uri: item.image}}
-          resizeMode="contain"
+          // source={{uri: item.image}}
+          source={require('../../../assets/images/pics/foodBg.png')}
+          resizeMode="cover"
         />
       </View>
-      <View style={{paddingLeft: 15}}>
-        <Text style={styles.TopTextStyle}>{item.name}</Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
+      <View style={{flex: 0.6, justifyContent: 'center'}}>
+        <View style={{marginHorizontal: 15}}>
+          <Text style={styles.TopTextStyle}>{item.name}</Text>
+          <Text style={styles.DescTextStyle} numberOfLines={2}>
+            {item.description}
+          </Text>
           <View
             style={{
               flexDirection: 'row',
+              justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: 10,
-              marginTop: 15,
             }}>
+            <Text
+              style={{
+                ...styles.Heading,
+                color: Color.primary,
+                marginRight: 10,
+              }}>
+              ${item.price}
+            </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Icon
                 iconFamily={'FontAwesome'}
                 color={Color.orange}
                 size={12}
-                name={'star'}
+                name={parseInt(item.avg_rating) >= 1 ? 'star' : 'star-o'}
               />
-              <Text
-                style={{...styles.MiddleTextStyle}}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {item.order_count}
-              </Text>
-              <Text
-                style={{...styles.MiddleTextStyle}}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                ({item.rating_count})
-              </Text>
+              <Icon
+                iconFamily={'FontAwesome'}
+                color={Color.orange}
+                size={12}
+                name={parseInt(item.avg_rating) >= 2 ? 'star' : 'star-o'}
+              />
+              <Icon
+                iconFamily={'FontAwesome'}
+                color={Color.orange}
+                size={12}
+                name={parseInt(item.avg_rating) >= 3 ? 'star' : 'star-o'}
+              />
+              <Icon
+                iconFamily={'FontAwesome'}
+                color={Color.orange}
+                size={12}
+                name={parseInt(item.avg_rating) >= 4 ? 'star' : 'star-o'}
+              />
+              <Icon
+                iconFamily={'FontAwesome'}
+                color={Color.orange}
+                size={12}
+                name={parseInt(item.avg_rating) >= 5 ? 'star' : 'star-o'}
+              />
             </View>
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: Window.width / 1.7,
-            overflow: 'hidden',
-          }}>
-          <Text style={{...styles.Heading, color: Color.primary}}>
-            ${item.price}
-          </Text>
-          <TouchableOpacity
+      </View>
+    </TouchableOpacity>
+  );
+};
+//FAV ICON
+{
+  /* <TouchableOpacity
             onPress={() => {
               item.isFav = !item.isFav;
               setReRenderHeart(!reRenderHeart);
@@ -295,9 +276,5 @@ const Cart = ({item}) => {
               color={item.isFav ? Color.black : Color.light}
               name={item.isFav ? 'heart' : 'hearto'}
             />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+          </TouchableOpacity> */
+}

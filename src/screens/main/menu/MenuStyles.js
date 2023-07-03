@@ -12,15 +12,23 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   ImgStyle: {
-    width: Window.height / 9,
-    borderRadius: 20,
-    height: Window.height / 9,
+    // width: Window.height / 9,
+    width: '100%',
+    height: '100%',
+    // height: Window.height / 9,
   },
 
   TopTextStyle: {
     color: Color.headingSm,
     fontSize: 16,
     fontFamily: Font.Urbanist_Black,
+  },
+  DescTextStyle: {
+    color: Color.headingSm,
+    fontSize: 14,
+    fontFamily: Font.Urbanist_Light,
+    width: Window.width / 2,
+    marginVertical: 10,
   },
   MiddleTextStyle: {
     color: Color.greyscale,

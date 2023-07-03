@@ -18,13 +18,7 @@ const Data = [
     chevron: 'chevron-right',
     link: 'SpecialOffer',
   },
-  {
-    id: 2,
-    icon: <PaymentIcon />,
-    name: 'Payment Methods',
-    chevron: 'chevron-right',
-    link: 'Payment',
-  },
+
   {
     id: 3,
     icon: <ProfileIcon />,

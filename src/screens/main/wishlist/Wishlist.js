@@ -27,7 +27,7 @@ const Wishlist = ({navigation, route}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{backgroundColor: Color.light, flex: 1}}>
+    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}}>
       <View style={{marginHorizontal: Window.fixPadding * 2}}>
         <AppBar
           center={<Text style={GlobalStyle.AppCenterTextStyle}>Wishlist</Text>}

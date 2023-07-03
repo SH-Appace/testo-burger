@@ -42,9 +42,7 @@ const TextField = ({
         style={[
           Style.TextInputContainer,
           {
-            backgroundColor: focused
-              ? 'rgba(239, 127, 1, 0.08)'
-              : 'rgba(250, 250, 250, 1)',
+            backgroundColor: focused ? 'rgba(239, 127, 1, 0.08)' : Color.light,
             borderWidth: focused ? 1 : 0,
             borderColor: Color.primary,
           },
@@ -81,9 +79,7 @@ const TextField = ({
       style={[
         Style.TextInputContainer,
         {
-          backgroundColor: focused
-            ? 'rgba(239, 127, 1, 0.08)'
-            : 'rgba(250, 250, 270, 1)',
+          backgroundColor: focused ? 'rgba(239, 127, 1, 0.08)' : Color.light,
           borderWidth: focused ? 1 : 0,
           borderColor: Color.primary,
           height: multiline ? 100 : height,

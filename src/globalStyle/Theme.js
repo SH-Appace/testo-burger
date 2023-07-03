@@ -42,7 +42,7 @@ const Window = {
 const GlobalStyle = {
   Container: {
     paddingHorizontal: Window.fixPadding * 2,
-    backgroundColor: Color.light,
+    backgroundColor: '#F9F9F9',
     flex: 1,
   },
   ImgContainer: {

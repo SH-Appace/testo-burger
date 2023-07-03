@@ -114,7 +114,7 @@ const SignIn = ({navigation}) => {
     <SafeAreaView style={{...GlobalStyle.Container}}>
       <StatusBar
         animated={true}
-        backgroundColor={loading ? '#555555' : Color.light}
+        backgroundColor={loading ? '#555555' : '#F9F9F9'}
         barStyle={loading ? 'light-content' : 'dark-content'}
         showHideTransition={'fade'}
       />
@@ -200,7 +200,6 @@ const SignIn = ({navigation}) => {
         <View
           style={{
             bottom: 5,
-            backgroundColor: Color.light,
             alignItems: 'center',
           }}>
           <Text
