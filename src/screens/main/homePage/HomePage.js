@@ -121,9 +121,15 @@ const FeaturedItem = ({item, index, auth, wishlist}) => {
 
         marginLeft: index === 0 ? 0 : 20,
       }}>
-      <View style={{backgroundColor: 'red', height: '57%', width: '100%'}}>
+      <View
+        style={{
+          height: '57%',
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
         <Image
-          style={{width: '100%', height: '100%'}}
+          style={{width: '80%', height: '80%', borderRadius: 20}}
           // source={{uri: item.image}}
           source={require('../../../assets/images/pics/foodBg.png')}
           resizeMode="cover"
@@ -252,7 +258,7 @@ const Home = ({navigation}) => {
             justifyContent: 'center',
           }}>
           <Image
-            style={{height: 30, width: 30}}
+            style={{height: 50, width: 50}}
             source={{uri: item.icon}}
             resizeMode="contain"
           />
@@ -306,7 +312,7 @@ const Home = ({navigation}) => {
       progress2.value = withSpring(1);
     }
     if (catState) {
-      progress3.value = withSpring(categories[0].length * 31);
+      progress3.value = withSpring((categories[0].length / 4) * 150);
     } else {
       progress3.value = withSpring(235);
     }

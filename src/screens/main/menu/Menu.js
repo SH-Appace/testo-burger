@@ -70,7 +70,7 @@ const Menu = ({navigation, route}) => {
             borderColor: state === item.id ? Color.primary : 'transparent',
           }}>
           <Image
-            style={{height: 30, width: 30}}
+            style={{height: 50, width: 50}}
             source={{uri: item.icon}}
             resizeMode="contain"
           />
@@ -197,7 +197,7 @@ const Cart = ({item}) => {
         flexDirection: 'row',
         overflow: 'hidden',
       }}>
-      <View style={{flex: 0.4}}>
+      <View style={{flex: 0.4, alignItems: 'center', justifyContent: 'center'}}>
         <Image
           style={styles.ImgStyle}
           // source={{uri: item.image}}
