@@ -22,6 +22,8 @@ import {useDispatch} from 'react-redux';
 import PhoneInputComponent from '../../../components/PhoneInput';
 import {SkypeIndicator} from 'react-native-indicators';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {RedLogo, RedLogoAuth} from '../../../assets/svgs/LogoSvg';
+import Loader from '../../../components/Loader';
 
 const SignIn = ({navigation}) => {
   const [hidePass, setHidePass] = useState(true);
@@ -111,10 +113,11 @@ const SignIn = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={{...GlobalStyle.Container}}>
+    <SafeAreaView
+      style={[{...GlobalStyle.Container}, {backgroundColor: Color.light}]}>
       <StatusBar
         animated={true}
-        backgroundColor={loading ? '#555555' : '#F9F9F9'}
+        backgroundColor={loading ? '#555555' : Color.light}
         barStyle={loading ? 'light-content' : 'dark-content'}
         showHideTransition={'fade'}
       />
@@ -125,9 +128,9 @@ const SignIn = ({navigation}) => {
         }}
         keyboardShouldPersistTaps="handled">
         <View style={styles.ImgContainer}>
-          <Image
-            source={require('../../../assets/images/pics/Frame5.png')}
-            resizeMode="contain"
+          <RedLogoAuth
+            width={Window.width / 1.25}
+            height={Window.height / 10}
           />
         </View>
 
@@ -212,26 +215,14 @@ const SignIn = ({navigation}) => {
             }}>
             Need help signing in?{' '}
             <Text
-              style={{color: Color.primary}}
+              style={{color: Color.primary, fontFamily: Font.Urbanist_Bold}}
               onPress={() => navigation.navigate('ForgotPassword')}>
               Click here
             </Text>
           </Text>
         </View>
       </ScrollView>
-      {loading && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: '#000000AA',
-          }}>
-          <SkypeIndicator size={50} color={Color.grey} />
-        </View>
-      )}
+      {loading && <Loader />}
     </SafeAreaView>
   );
 };

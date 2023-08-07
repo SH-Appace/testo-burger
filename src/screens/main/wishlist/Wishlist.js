@@ -8,7 +8,13 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
+import {
+  BorderRadius,
+  Color,
+  Font,
+  GlobalStyle,
+  Window,
+} from '../../../globalStyle/Theme';
 import AppBar from '../../../components/AppBar';
 import {useDispatch, useSelector} from 'react-redux';
 import {useState} from 'react';
@@ -56,127 +62,112 @@ const Wishlist = ({navigation, route}) => {
 
 export default Wishlist;
 
-const Cart = ({item, wishlist, auth}) => {
+const Cart = ({item}) => {
   let navigation = useNavigation();
-  const dispatch = useDispatch();
-
+  const [reRenderHeart, setReRenderHeart] = useState(false);
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate('Custom', {
-          edit: false,
-          productId: item.id,
-          product: item,
-          fromMenu: false,
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'BottomTabScreen',
+              state: {
+                routes: [
+                  {
+                    name: 'HomeStack',
+                    state: {
+                      routes: [
+                        {
+                          name: 'Custom',
+                          params: {
+                            edit: false,
+                            productId: item.id,
+                            product: item,
+                            fromMenu: true,
+                          },
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          ],
         })
       }
       style={{
         backgroundColor: Color.light,
-        shadowColor: 'rgba(0,0,0,0.4)',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 22,
-        borderRadius: 20,
+        borderRadius: BorderRadius,
         marginVertical: 10,
-        height: Window.height / 7,
-        alignItems: 'center',
-        justifyContent: 'center',
+        height: Window.height / 6,
         flexDirection: 'row',
+        overflow: 'hidden',
       }}>
-      <View>
+      <View style={{flex: 0.4, alignItems: 'center', justifyContent: 'center'}}>
         <Image
           style={styles.ImgStyle}
-          source={{uri: item.image}}
-          resizeMode="contain"
+          // source={{uri: item.image}}
+          source={require('../../../assets/images/pics/foodBg.png')}
+          resizeMode="cover"
         />
       </View>
-      <View style={{paddingLeft: 15}}>
-        <Text style={styles.TopTextStyle}>{item.name}</Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
+      <View style={{flex: 0.6, justifyContent: 'center'}}>
+        <View style={{marginHorizontal: 15}}>
+          <Text style={styles.TopTextStyle} numberOfLines={1}>
+            {item.name}
+          </Text>
+          <Text style={styles.DescTextStyle} numberOfLines={2}>
+            {item.description}
+          </Text>
           <View
             style={{
               flexDirection: 'row',
+              justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: 10,
-              marginTop: 15,
             }}>
+            <Text
+              style={{
+                ...styles.Heading,
+                color: Color.primary,
+                marginRight: 10,
+              }}>
+              ${item.price}
+            </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Icon
                 iconFamily={'FontAwesome'}
                 color={Color.orange}
                 size={12}
-                name={'star'}
+                name={parseInt(item.avg_rating) >= 1 ? 'star' : 'star-o'}
               />
-              <Text
-                style={{...styles.MiddleTextStyle}}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {item.order_count}
-              </Text>
-              <Text
-                style={{...styles.MiddleTextStyle}}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                ({item.rating_count})
-              </Text>
+              <Icon
+                iconFamily={'FontAwesome'}
+                color={Color.orange}
+                size={12}
+                name={parseInt(item.avg_rating) >= 2 ? 'star' : 'star-o'}
+              />
+              <Icon
+                iconFamily={'FontAwesome'}
+                color={Color.orange}
+                size={12}
+                name={parseInt(item.avg_rating) >= 3 ? 'star' : 'star-o'}
+              />
+              <Icon
+                iconFamily={'FontAwesome'}
+                color={Color.orange}
+                size={12}
+                name={parseInt(item.avg_rating) >= 4 ? 'star' : 'star-o'}
+              />
+              <Icon
+                iconFamily={'FontAwesome'}
+                color={Color.orange}
+                size={12}
+                name={parseInt(item.avg_rating) >= 5 ? 'star' : 'star-o'}
+              />
             </View>
           </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: Window.width / 1.7,
-            overflow: 'hidden',
-          }}>
-          <Text style={{...styles.Heading, color: Color.primary}}>
-            ${item.price}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              if (wishlist.addedItems.some(e => e.id === item.id)) {
-                dispatch({
-                  type: 'REMOVE_SINGLE_FROM_WISHLIST',
-                  payload: item.id,
-                });
-                removeWishlist(item.id, auth.token);
-              } else {
-                dispatch({
-                  type: 'ADD_SINGLE_TO_WISHLIST',
-                  payload: item,
-                });
-                addWishlist(
-                  {
-                    food_id: item.id,
-                  },
-                  auth.token,
-                );
-              }
-            }}>
-            <Icon
-              iconFamily={'AntDesign'}
-              style={styles.heartIcon}
-              color={
-                wishlist.addedItems.some(e => e.id === item.id)
-                  ? Color.black
-                  : Color.light
-              }
-              name={
-                wishlist.addedItems.some(e => e.id === item.id)
-                  ? 'heart'
-                  : 'hearto'
-              }
-            />
-          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {Color, Font} from '../globalStyle/Theme';
+import {BorderRadius, Color, Font} from '../globalStyle/Theme';
 import {
   ScrollView,
   Text,
@@ -72,14 +72,14 @@ const GooglePlacesInput = ({
       renderRightButton={() => (
         <Ionicons
           name="location-sharp"
-          style={{color: Color.secondary, fontSize: 24}}
+          style={{color: Color.primary, fontSize: 24}}
         />
       )}
       listEmptyComponent={() => (
         <View style={{flex: 1, paddingHorizontal: 20, paddingTop: 25}}>
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Medium,
             }}>
             No results were found
@@ -97,16 +97,16 @@ const styles = {
     flex: 1,
   },
   textInputContainer: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F9F9F9',
     height: 56,
-    borderRadius: 16,
+    borderRadius: BorderRadius,
     paddingHorizontal: 20,
     alignItems: 'center',
   },
   textInput: {
     color: 'black',
     fontSize: 14,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F9F9F9',
   },
   listView: {
     marginTop: 10,

@@ -456,7 +456,7 @@ const Slide = ({
         <View style={{height: '100%'}}>
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Bold,
               fontSize: 20,
               textAlign: 'center',
@@ -488,7 +488,7 @@ const Slide = ({
                 <AddressSvg color={Color.primary} />
                 <Text
                   style={{
-                    color: Color.secondary,
+                    color: Color.tertiary,
                     fontSize: 16,
                     fontFamily: Font.Urbanist_Regular,
                     marginLeft: 10,
@@ -597,12 +597,12 @@ const Slide = ({
                 iconFamily={'AntDesign'}
                 name="close"
                 size={20}
-                color={Color.secondary}
+                color={Color.tertiary}
               />
             </TouchableOpacity>
             <Text
               style={{
-                color: Color.secondary,
+                color: Color.tertiary,
                 fontFamily: Font.Urbanist_Bold,
                 fontSize: 20,
                 textAlign: 'center',

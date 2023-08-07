@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {Color} from '../globalStyle/Theme';
+import {BorderRadius, Color} from '../globalStyle/Theme';
 import PhoneInput from 'react-native-phone-number-input';
 import {Font} from '../globalStyle/Theme';
 import Geolocation from 'react-native-geolocation-service';
@@ -133,9 +133,9 @@ const PhoneInputComponent = ({
       style={[
         styles.TextInputContainer,
         {
-          backgroundColor: focused ? 'rgba(239, 127, 1, 0.08)' : Color.light,
+          backgroundColor: focused ? 'rgba(246, 181, 29, 0.10)' : '#F9F9F9',
           borderWidth: focused ? 1 : 0,
-          borderColor: Color.primary,
+          borderColor: Color.secondary,
         },
       ]}>
       {countryCode !== '' ? (
@@ -206,9 +206,9 @@ const styles = StyleSheet.create({
   TextInputContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: Color.veryLightGray,
+    backgroundColor: '#F9F9F9',
     height: 56,
-    borderRadius: 16,
+    borderRadius: BorderRadius,
     paddingHorizontal: 10,
     marginVertical: 10,
     justifyContent: 'space-between',

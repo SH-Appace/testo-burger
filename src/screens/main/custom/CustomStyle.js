@@ -1,12 +1,18 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
-import {GlobalStyle, Window, Font, Color} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Window,
+  Font,
+  Color,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 
 const styles = StyleSheet.create({
   ImgStyle: {
     width: Window.height / 8,
     height: Window.height / 8,
     backgroundColor: 'black',
-    borderRadius: 20,
+    borderRadius: BorderRadius,
   },
   CartRightContainer: {
     flexDirection: 'row',
@@ -63,13 +69,12 @@ const styles = StyleSheet.create({
 
   heartIcon: {
     fontSize: 20,
-    color: Color.lightRed,
+    color: Color.primary,
     borderRadius: 50,
   },
   ///cart
   cartContainer: {
-    borderRadius: 20,
-    height: Window.height / 7,
+    height: Window.height / 6.5,
     flexDirection: 'row',
     overflow: 'hidden',
     width: '100%',
@@ -78,10 +83,10 @@ const styles = StyleSheet.create({
   incrementDecrementBtn: {
     width: 40,
     height: 40,
-    borderRadius: 16,
+    borderRadius: BorderRadius,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Color.light,
+    backgroundColor: '#F9F9F9',
   },
 });
 

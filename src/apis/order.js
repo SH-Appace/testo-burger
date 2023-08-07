@@ -68,8 +68,8 @@ export async function placeOrder(
     });
     if (data) {
       dispatch({
-        type: 'LOGGED_IN_USER',
-        payload: data.user,
+        type: 'UPDATE_LOYALTY_POINTS',
+        payload: data.user.loyalty_point,
       });
       dispatch({
         type: 'CLEAR_CART',

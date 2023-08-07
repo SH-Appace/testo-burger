@@ -58,12 +58,12 @@ const Referral = ({route, navigation}) => {
     <SafeAreaView style={{flex: 1}}>
       <StatusBar
         animated={true}
-        backgroundColor={'#828282'}
+        backgroundColor={'#961111'}
         barStyle={'light-content'}
         showHideTransition={'fade'}
       />
       <ImageBackground
-        source={require('../../../assets/images/pics/greyBg.png')}
+        source={require('../../../assets/images/pics/backgroundBurger.png')}
         resizeMode="cover"
         style={{flex: 1}}>
         <View style={{paddingHorizontal: Window.fixPadding * 2}}>

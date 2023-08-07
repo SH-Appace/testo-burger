@@ -44,14 +44,14 @@ const App = () => {
 
     colors: {
       primary: Color.primary,
-      accent: Color.secondary,
-      backdrop: Color.secondary,
-      background: Color.secondary,
+      accent: Color.tertiary,
+      backdrop: Color.tertiary,
+      background: Color.tertiary,
       text: Color.light,
       placeholder: Color.light,
       onSurface: Color.light,
       disabled: Color.light,
-      surface: Color.secondary,
+      surface: Color.tertiary,
     },
   };
   return (

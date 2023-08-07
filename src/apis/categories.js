@@ -21,7 +21,7 @@ export async function categoriesReq(dispatch, navigateTo) {
 
 export async function categoriesAllProductsReq(dispatch, navigateTo) {
   try {
-    const {data} = await axios.get('categories/products/1/all');
+    const {data} = await axios.get('products/popular');
     if (data) {
       dispatch({
         type: 'PRODUCTS',
@@ -50,5 +50,19 @@ export async function getRecommendedProductsReq(token, setData) {
       message: err.response.data.errors[0].message,
       type: 'danger',
     });
+  }
+}
+
+export async function getSingleCategoryProducts(catId, setData, setLoading) {
+  try {
+    setLoading(true);
+    const {data} = await axios.get(`categories/products/${catId}/all`);
+    if (data) {
+      setData(data);
+      setLoading(false);
+    }
+  } catch (err) {
+    setLoading(false);
+    console.log(err);
   }
 }

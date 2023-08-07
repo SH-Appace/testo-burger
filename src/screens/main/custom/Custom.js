@@ -9,11 +9,17 @@ import {
 } from 'react-native';
 import AppBar from '../../../components/AppBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
+import {
+  BorderRadius,
+  Color,
+  Font,
+  GlobalStyle,
+  Window,
+} from '../../../globalStyle/Theme';
 import {useNavigation} from '@react-navigation/native';
 import Icon from '../../../core/Icon';
 import styles from './CustomStyle';
-import {Checkbox} from 'react-native-paper';
+import {Checkbox, TouchableRipple} from 'react-native-paper';
 import Button from '../../../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
 import {RadioButton} from 'react-native-paper';
@@ -21,6 +27,7 @@ import {useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {showMessage} from 'react-native-flash-message';
 import {useBackButton} from '../../../hooks';
+import {addWishlist, removeWishlist} from '../../../apis/wishlist';
 
 const Cart = ({item, quantity, setQuantity}) => {
   const decrementValue = name => {
@@ -33,91 +40,101 @@ const Cart = ({item, quantity, setQuantity}) => {
   };
 
   return (
-    <View style={styles.cartContainer}>
-      <View
-        style={{
-          flex: 0.5,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Image
-          style={styles.ImgStyle}
-          // source={{uri: item.image}}
-          source={require('../../../assets/images/pics/foodBg.png')}
-          resizeMode="cover"
-        />
-      </View>
-      <View style={{flex: 1, paddingLeft: 15}}>
-        <Text style={styles.TopTextStyle}>{item.name}</Text>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{flex: 1}}>
+    <View
+      style={{
+        padding: 10,
+        borderColor: '#E7E7E7',
+        // borderWidth: 1,
+        borderRadius: BorderRadius,
+        backgroundColor: Color.light,
+      }}>
+      <View style={styles.cartContainer}>
+        <View
+          style={{
+            flex: 0.5,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Image
+            style={styles.ImgStyle}
+            // source={{uri: item.image}}
+            source={require('../../../assets/images/pics/foodBg.png')}
+            resizeMode="cover"
+          />
+        </View>
+        <View style={{flex: 1, paddingLeft: 15}}>
+          <Text style={styles.TopTextStyle}>{item.name}</Text>
+          <View style={{flexDirection: 'row'}}>
+            <View style={{flex: 1}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginVertical: 10,
+                }}>
+                <Icon
+                  iconFamily={'Ionicons'}
+                  color={'#8A94A3'}
+                  size={12}
+                  name={'lock-closed-outline'}
+                />
+                <Text
+                  style={{...styles.MiddleTextStyle}}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {item.order_count}
+                  {'  '}|{'  '}
+                </Text>
+                <Icon
+                  iconFamily={'Feather'}
+                  color={'#8A94A3'}
+                  size={12}
+                  name={'thumbs-up'}
+                />
+                <Text
+                  style={{...styles.MiddleTextStyle}}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {item.rating_count}
+                </Text>
+              </View>
+              <Text style={styles.LastTextStyle}> ${item.price} </Text>
+            </View>
             <View
               style={{
+                flex: 0.8,
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginVertical: 10,
+                justifyContent: 'flex-end',
               }}>
-              <Icon
-                iconFamily={'Ionicons'}
-                color={'#8A94A3'}
-                size={12}
-                name={'lock-closed-outline'}
-              />
-              <Text
-                style={{...styles.MiddleTextStyle}}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {item.order_count}
-                {'  '}|{'  '}
-              </Text>
-              <Icon
-                iconFamily={'Feather'}
-                color={'#8A94A3'}
-                size={12}
-                name={'thumbs-up'}
-              />
-              <Text
-                style={{...styles.MiddleTextStyle}}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {item.rating_count}
-              </Text>
+              <TouchableOpacity
+                style={styles.incrementDecrementBtn}
+                onPress={() => decrementValue('adult')}>
+                <Icon
+                  iconFamily={'AntDesign'}
+                  name={'minus'}
+                  style={styles.MinusStyle}
+                />
+              </TouchableOpacity>
+              <Text style={styles.NumStyle}>{quantity}</Text>
+              <TouchableOpacity
+                style={[
+                  styles.incrementDecrementBtn,
+                  {backgroundColor: Color.primary},
+                ]}
+                onPress={() => incrementValue('adult')}>
+                <Icon
+                  iconFamily={'Ionicons'}
+                  name={'md-add'}
+                  color={Color.light}
+                  style={styles.AddStyle}
+                />
+              </TouchableOpacity>
             </View>
-            <Text style={styles.LastTextStyle}> ${item.price} </Text>
-          </View>
-          <View
-            style={{
-              flex: 0.8,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-            }}>
-            <TouchableOpacity
-              style={styles.incrementDecrementBtn}
-              onPress={() => decrementValue('adult')}>
-              <Icon
-                iconFamily={'AntDesign'}
-                name={'minus'}
-                style={styles.MinusStyle}
-              />
-            </TouchableOpacity>
-            <Text style={styles.NumStyle}>{quantity}</Text>
-            <TouchableOpacity
-              style={[
-                styles.incrementDecrementBtn,
-                {backgroundColor: Color.primary},
-              ]}
-              onPress={() => incrementValue('adult')}>
-              <Icon
-                iconFamily={'Ionicons'}
-                name={'md-add'}
-                color={Color.light}
-                style={styles.AddStyle}
-              />
-            </TouchableOpacity>
           </View>
         </View>
       </View>
+      <Text style={styles.MiddleTextStyle}>{item.description}</Text>
     </View>
   );
 };
@@ -154,31 +171,34 @@ const AddOns = ({item, setPriceAmount, setSelectedAddons, selectedAddons}) => {
             marginVertical: 10,
           }}>
           <Text style={GlobalStyle.BasicTextStyle}>${item.price}</Text>
-          <View
+          <TouchableRipple
+            onPress={() => onPressFunction(item.price, item)}
             style={{
-              width: 25,
-              height: 25,
-              borderRadius: 24,
-              backgroundColor: selectedAddons.some(e => e.id === item.id)
-                ? Color.light
-                : 'rgba(246, 244, 244, 1)',
+              height: 21,
+              width: 21,
+              borderRadius: 22,
+              borderWidth: 2.2,
+              borderColor: Color.primary,
               alignItems: 'center',
               justifyContent: 'center',
               marginHorizontal: 6,
+              backgroundColor: 'rgba(246, 244, 244, 1)',
               overflow: 'hidden',
             }}>
             <Checkbox.Item
-              style={{transform: [{scaleX: 1.5}, {scaleY: 1.5}]}}
+              style={{
+                transform: [{scaleX: 1}, {scaleY: 1}],
+              }}
               color={Color.primary}
               uncheckedColor="#F6F4F4"
-              onPress={() => onPressFunction(item.price, item)}
+              // onPress={() => onPressFunction(item.price, item)}
               status={
                 selectedAddons.some(e => e.id === item.id)
                   ? 'checked'
                   : 'unchecked'
               }
             />
-          </View>
+          </TouchableRipple>
         </View>
       </View>
     </>
@@ -353,7 +373,38 @@ const VariationItem = ({
               />
             </View>
           ) : (
-            <View
+            <TouchableRipple
+              onPress={() => onPressFunction(parseInt(item.optionPrice), item)}
+              style={{
+                height: 21,
+                width: 21,
+                borderRadius: 22,
+                borderWidth: 2.2,
+                borderColor: Color.primary,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginHorizontal: 6,
+                backgroundColor: 'rgba(246, 244, 244, 1)',
+                overflow: 'hidden',
+              }}>
+              <Checkbox.Item
+                style={{
+                  transform: [{scaleX: 1}, {scaleY: 1}],
+                }}
+                color={Color.primary}
+                uncheckedColor="#F6F4F4"
+                // onPress={() => onPressFunction(item.price, item)}
+                status={
+                  selectedVariations.some(x =>
+                    x.values.some(e => e.label === item.label),
+                  )
+                    ? 'checked'
+                    : 'unchecked'
+                }
+              />
+            </TouchableRipple>
+          )}
+          {/* <View
               style={{
                 width: 25,
                 height: 25,
@@ -383,8 +434,7 @@ const VariationItem = ({
                     : 'unchecked'
                 }
               />
-            </View>
-          )}
+            </View> */}
         </View>
       </View>
     </>
@@ -401,6 +451,8 @@ const Custom = ({route, navigation}) => {
   const [required, setRequired] = useState(false);
   const dispatch = useDispatch();
   const {product, productId} = route.params;
+  const {wishlist, auth} = useSelector(state => ({...state}));
+
   useEffect(() => {
     if (route.params.edit) {
       setQuantity(route.params.quantity);
@@ -426,6 +478,13 @@ const Custom = ({route, navigation}) => {
         routes: [
           {
             name: 'BottomTabScreen',
+            state: {
+              routes: [
+                {
+                  name: 'Menu',
+                },
+              ],
+            },
           },
         ],
       });
@@ -447,6 +506,13 @@ const Custom = ({route, navigation}) => {
                     routes: [
                       {
                         name: 'BottomTabScreen',
+                        state: {
+                          routes: [
+                            {
+                              name: 'Menu',
+                            },
+                          ],
+                        },
                       },
                     ],
                   })
@@ -456,7 +522,7 @@ const Custom = ({route, navigation}) => {
               iconFamily={'AntDesign'}
               name="close"
               size={20}
-              color={Color.secondary}
+              color={Color.tertiary}
             />
           </TouchableOpacity>
         }
@@ -466,6 +532,54 @@ const Custom = ({route, navigation}) => {
             style={GlobalStyle.AppCenterTextStyle}>
             {product.name}
           </Text>
+        }
+        right={
+          <TouchableOpacity
+            style={{
+              height: 40,
+              width: 40,
+              borderRadius: 40,
+              backgroundColor: Color.light,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: 0.5,
+              marginTop: 15,
+            }}
+            onPress={() => {
+              if (wishlist.addedItems.some(e => e.id === product.id)) {
+                dispatch({
+                  type: 'REMOVE_SINGLE_FROM_WISHLIST',
+                  payload: product.id,
+                });
+                removeWishlist(product.id, auth.token);
+              } else {
+                dispatch({
+                  type: 'ADD_SINGLE_TO_WISHLIST',
+                  payload: product,
+                });
+                addWishlist(
+                  {
+                    food_id: product.id,
+                  },
+                  auth.token,
+                );
+              }
+            }}>
+            <Icon
+              iconFamily={'AntDesign'}
+              style={styles.heartIcon}
+              color={
+                wishlist.addedItems.some(e => e.id === product.id)
+                  ? Color.black
+                  : Color.light
+              }
+              name={
+                wishlist.addedItems.some(e => e.id === product.id)
+                  ? 'heart'
+                  : 'hearto'
+              }
+            />
+          </TouchableOpacity>
         }
       />
       <ScrollView>
@@ -477,7 +591,7 @@ const Custom = ({route, navigation}) => {
             setQuantity={setQuantity}
           />
         </View>
-        {product.add_ons && (
+        {product.add_ons.length > 0 && (
           <>
             <View style={{marginTop: 0}}>
               <Text style={{color: '#2A3B56', fontSize: 14, fontWeight: '800'}}>

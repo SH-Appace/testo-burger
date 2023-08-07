@@ -20,6 +20,15 @@ import {useDispatch} from 'react-redux';
 import {signinReq} from '../../../apis/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'react-native';
+import {
+  ArrowDown,
+  ArrowUp,
+  RedLogo,
+  SplashBg,
+  SplashLeftBg,
+  SplashRightBg,
+  SplashText,
+} from '../../../assets/svgs/LogoSvg';
 
 const Splash2 = ({navigation}) => {
   const [loading, setLoading] = useState(false);
@@ -62,58 +71,117 @@ const Splash2 = ({navigation}) => {
     return () => clearTimeout(timer);
   };
   return (
-    <ImageBackground
+    <View
       source={require('../../../assets/images/pics/background.png')}
       resizeMode="cover"
       style={{
         flex: 1,
+        backgroundColor: Color.light,
+        alignItems: 'center',
+        justifyContent: 'center',
       }}>
       <StatusBar
         animated={true}
-        backgroundColor={'#89200B'}
-        barStyle={'light-content'}
+        backgroundColor={Color.light}
+        barStyle={'dark-content'}
         showHideTransition={'fade'}
       />
-      <ImageBackground
-        source={require('../../../assets/images/pics/blackOverlay.png')}
-        resizeMode="cover"
+      <View style={styles.leftBgContainer}>
+        <SplashLeftBg />
+      </View>
+      <View style={styles.rightBgContainer}>
+        <SplashRightBg />
+      </View>
+      <View style={styles.topBgContainer}>
+        <RedLogo width={Window.width / 2} height={Window.width / 1.5} />
+      </View>
+      <Image
+        source={require('../../../assets/images/pics/burgerBackground.png')}
+        resizeMode="contain"
         style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Image
-          source={require('../../../assets/images/pics/burgerBackground.png')}
-          resizeMode="contain"
-          style={{width: Window.width / 1.25}}
-        />
-        <View style={{position: 'absolute', bottom: 50, right: 25, left: 25}}>
-          <Text
-            style={{
-              textAlign: 'center',
-              color: Color.primary,
-              fontSize: Window.width < 375 ? 38 : 40,
-              fontFamily: Font.Urbanist_Bold,
-              marginBottom: 20,
-            }}>
-            Welcome to Testo Burger! 👋
-          </Text>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: Window.width < 375 ? 15 : 16,
-              fontFamily: Font.Urbanist_Medium,
-              color: Color.light,
-            }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </Text>
-        </View>
-      </ImageBackground>
-    </ImageBackground>
+          width: Window.width / 1,
+          height: Window.height,
+          zIndex: 99,
+          position: 'absolute',
+          // top: 0,
+          left: 5,
+          right: 0,
+          bottom: -100,
+        }}
+      />
+
+      <View style={styles.arrrowUp}>
+        <ArrowUp />
+      </View>
+      <View style={styles.arrrowDown}>
+        <ArrowDown />
+      </View>
+      <View style={styles.centerBgContainer}>
+        <SplashBg width={Window.width / 1} height={Window.height / 1} />
+      </View>
+      <View style={styles.bottomBgContainer}>
+        <SplashText width={Window.width / 1.2} height={Window.height / 3.5} />
+      </View>
+    </View>
   );
 };
 
 export default Splash2;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  leftBgContainer: {
+    position: 'absolute',
+    top: 25,
+    // bottom: 0,
+    left: 0,
+  },
+  rightBgContainer: {
+    position: 'absolute',
+    bottom: 50,
+    // top: 0,
+    right: 0,
+  },
+  centerBgContainer: {
+    position: 'absolute',
+    bottom: 0,
+    top: 0,
+    right: 0,
+    left: 0,
+  },
+  topBgContainer: {
+    position: 'absolute',
+    // bottom: 0,
+    top: 0,
+    right: 0,
+    left: 0,
+    alignItems: 'center',
+  },
+  bottomBgContainer: {
+    position: 'absolute',
+    bottom: 0,
+    // top: 50,
+    right: 0,
+    left: 25,
+    alignItems: 'center',
+  },
+  arrrowUp: {
+    position: 'absolute',
+    // alignItems: 'center',
+    justifyContent: 'center',
+    bottom: 0,
+    top: -200,
+    right: 0,
+    // left: 0,
+    zIndex: 99,
+  },
+  arrrowDown: {
+    position: 'absolute',
+    // alignItems: 'center',
+    justifyContent: 'center',
+    bottom: 200,
+    // top: 0,
+    // right: 0,
+    left: 0,
+    zIndex: 99,
+  },
+});

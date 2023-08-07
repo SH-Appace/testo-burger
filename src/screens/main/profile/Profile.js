@@ -3,7 +3,7 @@ import {Text, ScrollView, View, Image, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import AppBar from '../../../components/AppBar';
-import {GlobalStyle, Font,  Color} from '../../../globalStyle/Theme';
+import {GlobalStyle, Font, Color} from '../../../globalStyle/Theme';
 import Icon from '../../../core/Icon';
 import Data from './ProfileDetails';
 import {useSelector} from 'react-redux';
@@ -34,7 +34,7 @@ const ProfileData = ({item, onShowPopup}) => {
             fontSize: 18,
             fontFamily: Font.Urbanist_SemiBold,
             lineHeight: 25.2,
-            color: Color.secondary,
+            color: Color.tertiary,
             marginLeft: 15,
           }}>
           {item.name}
@@ -45,7 +45,7 @@ const ProfileData = ({item, onShowPopup}) => {
           iconFamily={'Feather'}
           name={item.chevron}
           size={20}
-          color={Color.secondary}
+          color={Color.primary}
         />
       </View>
     </TouchableOpacity>
@@ -98,7 +98,7 @@ const Profile = ({navigation}) => {
                   fontSize: 20,
                   lineHeight: 24,
                   fontFamily: Font.Urbanist_Bold,
-                  color: Color.secondary,
+                  color: Color.tertiary,
                   marginBottom: 12,
                 }}>
                 {auth.user.name}

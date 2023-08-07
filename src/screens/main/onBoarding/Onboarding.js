@@ -22,6 +22,7 @@ import {
   Onboard3,
 } from '../../../assets/svgs/OnboardingSvgs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SplashLeftBg, SplashRightBg} from '../../../assets/svgs/LogoSvg';
 
 let hasNotch = deviceInfoModule.hasNotch();
 
@@ -114,6 +115,12 @@ const OnBoarding = ({navigation}) => {
 
   return (
     <>
+      <View style={styles.leftBgContainer}>
+        <SplashLeftBg />
+      </View>
+      <View style={styles.rightBgContainer}>
+        <SplashRightBg />
+      </View>
       <FlatList
         ref={ref}
         onMomentumScrollEnd={updateCurrentSlideIndex}
@@ -175,6 +182,7 @@ const Slide = ({item}) => {
             marginBottom: 10,
             color: Color.tertiary,
             fontFamily: Font.Urbanist_Bold,
+            fontSize: 40,
           }}>
           {item.title}
         </Text>
@@ -182,6 +190,7 @@ const Slide = ({item}) => {
           style={{
             ...GlobalStyle.BasicTextStyle,
             textAlign: 'center',
+            fontSize: 16,
           }}>
           {item.subtitle}
         </Text>
@@ -227,7 +236,7 @@ const Indicators = ({
                 index === 1 && reanimatedIndicator1Style,
                 index === 2 && reanimatedIndicator2Style,
                 currentSlideIndex == index && {
-                  backgroundColor: Color.tertiary,
+                  backgroundColor: Color.primary,
                 },
               ]}
             />
@@ -300,6 +309,20 @@ const styles = StyleSheet.create({
     shadowRadius: 9.51,
     elevation: 15,
   },
+  leftBgContainer: {
+    position: 'absolute',
+    top: 25,
+    // bottom: 0,
+    left: 0,
+    zIndex: 99,
+  },
+  rightBgContainer: {
+    position: 'absolute',
+    // bottom: 50,
+    top: 100,
+    right: 0,
+    zIndex: 99,
+  },
 });
 const slides = [
   {
@@ -308,7 +331,7 @@ const slides = [
     subtitle:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     background: (
-      <Onboard1 width={Window.width / 1.25} height={Window.height / 1.35} />
+      <Onboard1 width={Window.width / 1.5} height={Window.height / 1.35} />
     ),
   },
   {
@@ -317,7 +340,7 @@ const slides = [
     subtitle:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     background: (
-      <Onboard2 width={Window.width / 1.25} height={Window.height / 1.35} />
+      <Onboard2 width={Window.width / 1.5} height={Window.height / 1.35} />
     ),
   },
   {
@@ -326,7 +349,7 @@ const slides = [
     subtitle:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     background: (
-      <Onboard3 width={Window.width / 1.25} height={Window.height / 1.35} />
+      <Onboard3 width={Window.width / 1.5} height={Window.height / 1.35} />
     ),
   },
 ];

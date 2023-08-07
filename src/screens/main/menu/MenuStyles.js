@@ -1,5 +1,11 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
-import {GlobalStyle, Window, Font, Color} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Window,
+  Font,
+  Color,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 
 const styles = StyleSheet.create({
   Heading: {
@@ -12,11 +18,9 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   ImgStyle: {
-    // width: Window.height / 9,
-    width: '80%',
-    height: '80%',
-    borderRadius: 20,
-    // height: Window.height / 9,
+    width: Window.height / 8,
+    borderRadius: BorderRadius,
+    height: Window.height / 8,
   },
 
   TopTextStyle: {

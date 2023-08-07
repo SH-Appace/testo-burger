@@ -2,7 +2,12 @@ import React, {useState} from 'react';
 import {Text, TextInput, View, ScrollView, Image} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AppBar from '../../../components/AppBar';
-import {GlobalStyle, Font, Color} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Font,
+  Color,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 import styles from './CancelOrderStyle';
 import {RadioButton} from 'react-native-paper';
 import CancelOrderData from './CancelOrderDetails';
@@ -72,9 +77,10 @@ const CancelOrder = ({route, navigation}) => {
     backgroundColor: Color.light,
     alignSelf: 'center',
     alevation: 3,
-    borderRadius: 52,
+    borderRadius: BorderRadius,
     alignItem: 'center',
     justifyContent: 'center',
+    marginHorizontal: 25,
   };
   const onBackPress = () => {
     navigation.goBack();
@@ -169,7 +175,7 @@ const CancelOrder = ({route, navigation}) => {
         visible={visible}
         onDismiss={hideModal}
         contentContainerStyle={containerStyle}>
-        <View style={{paddingHorizontal: 32, borderRadius: 20}}>
+        <View style={{marginHorizontal: 32, borderRadius: BorderRadius}}>
           <View style={{paddingVertical: 20}}>
             <View style={{alignItems: 'center', marginTop: 8}}>
               <Image

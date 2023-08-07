@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Color, Font} from '../globalStyle/Theme';
+import {BorderRadius, Color, Font} from '../globalStyle/Theme';
 
 const TextField = ({
   placeholder,
@@ -42,15 +42,15 @@ const TextField = ({
         style={[
           Style.TextInputContainer,
           {
-            backgroundColor: focused ? 'rgba(239, 127, 1, 0.08)' : Color.light,
+            backgroundColor: focused ? 'rgba(246, 181, 29, 0.10)' : '#F9F9F9',
             borderWidth: focused ? 1 : 0,
-            borderColor: Color.primary,
+            borderColor: Color.secondary,
           },
         ]}>
         <MaterialCommunityIcons
           style={Style.TextInputIcon}
           name="lock"
-          color={focused ? Color.primary : '#212121'}
+          color={focused ? Color.secondary : '#212121'}
         />
 
         <TextInput
@@ -68,7 +68,7 @@ const TextField = ({
           style={Style.TextInputIcon}
           name={hidePass ? 'eye-off-outline' : 'eye-outline'}
           onPress={() => setHidePass(!hidePass)}
-          color={focused ? Color.primary : '#212121'}
+          color={focused ? Color.secondary : '#212121'}
         />
       </View>
     );
@@ -79,9 +79,9 @@ const TextField = ({
       style={[
         Style.TextInputContainer,
         {
-          backgroundColor: focused ? 'rgba(239, 127, 1, 0.08)' : Color.light,
+          backgroundColor: focused ? 'rgba(246, 181, 29, 0.10)' : '#F9F9F9',
           borderWidth: focused ? 1 : 0,
-          borderColor: Color.primary,
+          borderColor: Color.secondary,
           height: multiline ? 100 : height,
         },
       ]}>
@@ -89,13 +89,13 @@ const TextField = ({
         IconFamily == 'ion' ? (
           <Ionicons
             style={Style.TextInputIcon}
-            color={focused ? Color.primary : '#212121'}
+            color={focused ? Color.secondary : '#212121'}
             name={icon}
           />
         ) : (
           <MaterialCommunityIcons
             style={Style.TextInputIcon}
-            color={focused ? Color.primary : '#212121'}
+            color={focused ? Color.secondary : '#212121'}
             name={icon}
           />
         )
@@ -112,7 +112,7 @@ const TextField = ({
           }}>
           <MaterialCommunityIcons
             size={23}
-            color={focused ? Color.primary : '#212121'}
+            color={focused ? Color.secondary : '#212121'}
             name={'arrow-left'}
           />
         </TouchableOpacity>
@@ -135,11 +135,11 @@ const TextField = ({
         editable={disabled ? false : true}
         multiline={multiline}
       />
-      {loyaltyPoints && (
+      {loyaltyPoints ? (
         <Text style={{color: Color.primary, fontFamily: Font.Urbanist_Regular}}>
           {loyaltyPoints} Pt.
         </Text>
-      )}
+      ) : null}
       {alternate === true && icon ? (
         IconFamily == 'ion' ? (
           <Ionicons
@@ -206,7 +206,7 @@ const Style = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: Color.veryLightGray,
 
-    borderRadius: 16,
+    borderRadius: BorderRadius,
     paddingHorizontal: 10,
     justifyContent: 'space-between',
     marginVertical: 10,

@@ -10,7 +10,13 @@ import {
   ImageBackground,
 } from 'react-native';
 import AppBar from '../../../components/AppBar';
-import {GlobalStyle, Color, Window, Font} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Color,
+  Window,
+  Font,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {couponApply, couponGet} from '../../../apis/coupon';
 import {useDispatch, useSelector} from 'react-redux';
@@ -34,10 +40,10 @@ const DiscountsDetails = ({item, setLoading, auth, showModal}) => {
         );
       }}>
       <ImageBackground
-        source={require('../../../assets/images/pics/referBg.png')}
+        source={require('../../../assets/images/pics/referBg.jpg')}
         imageStyle={{
           resizeMode: 'cover',
-          borderRadius: 36,
+          borderRadius: BorderRadius,
         }}
         style={{
           height: 180,

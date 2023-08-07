@@ -4,7 +4,8 @@ import {GlobalStyle, Window, Font, Color} from '../../../globalStyle/Theme';
 const styles = StyleSheet.create({
   Heading: {
     fontSize: 20,
-    color: Color.secondary,
+    color: Color.tertiary,
+    lineHeight: 24,
     fontFamily: Font.Urbanist_Bold,
   },
   CartMainContainer: {
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
   },
   headingRow: {
     flexDirection: 'row',
-    marginVertical: 10,
+    marginVertical: 24,
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,

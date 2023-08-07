@@ -12,7 +12,13 @@ import {
 } from 'react-native';
 import AppBar from '../../../components/AppBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
+import {
+  BorderRadius,
+  Color,
+  Font,
+  GlobalStyle,
+  Window,
+} from '../../../globalStyle/Theme';
 import Icon from '../../../core/Icon';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Button from '../../../components/Button';
@@ -34,17 +40,14 @@ import {useBackButton} from '../../../hooks';
 import {PaymentSheet, useStripe} from '@stripe/stripe-react-native';
 import {stripePost} from '../../../apis/stripe';
 import {loyaltyDiscount} from '../../../apis/loyalty';
+import {Linking} from 'react-native';
+import Loader from '../../../components/Loader';
 
 const SummaryDetails = ({
   item,
-  route,
-  productShow,
   setVisible,
-  setProductShow,
   setPopupData,
   index,
-  setRefresh,
-  refresh,
   onShowPopup,
   setAddonsPrice,
   setCartItemIndex,
@@ -52,7 +55,6 @@ const SummaryDetails = ({
   setCartItemQuantity,
   setVariationsPrice,
 }) => {
-  const dispatch = useDispatch();
   let navigation = useNavigation();
   return (
     <TouchableOpacity
@@ -62,9 +64,9 @@ const SummaryDetails = ({
       style={{flexDirection: 'row', justifyContent: 'space-between'}}>
       <View style={{flexDirection: 'row'}}>
         <Image
-          // source={{uri: item.foodDetails.image}}
-          source={require('../../../assets/images/pics/foodBg.png')}
-          style={{width: 80, height: 80, borderRadius: 16}}
+          source={{uri: item.foodDetails.image}}
+          // source={require('../../../assets/images/pics/foodBg.png')}
+          style={{width: 80, height: 80, borderRadius: BorderRadius}}
           resizeMode="cover"
         />
         <FAB
@@ -190,7 +192,7 @@ const CartDetails = ({
               <Text
                 style={{
                   ...styles.TextStyle,
-                  color: Color.secondary,
+                  color: Color.tertiary,
                   marginLeft: 5,
                   marginRight: 5,
                 }}>
@@ -287,14 +289,19 @@ const CartDetails = ({
                     alignItems: 'center',
                     marginRight: 5,
                     height: 50,
-                    borderRadius: 20,
+                    borderRadius: BorderRadius,
                     backgroundColor:
-                      paymentMethod === 1 ? Color.primary : '#F6F4F4',
+                      paymentMethod === 1 ? Color.primary : 'transparent',
+                    borderWidth: 1,
+                    borderColor:
+                      paymentMethod === 1 ? Color.primary : Color.secondary,
                   }}>
                   <Text
                     style={{
                       ...styles.TextStyle,
-                      color: paymentMethod === 1 ? '#F6F4F4' : Color.secondary,
+                      color:
+                        paymentMethod === 1 ? Color.light : Color.secondary,
+                      fontFamily: Font.Urbanist_Bold,
                     }}>
                     COD
                   </Text>
@@ -310,14 +317,19 @@ const CartDetails = ({
                     alignItems: 'center',
                     marginRight: 5,
                     height: 50,
-                    borderRadius: 20,
+                    borderRadius: BorderRadius,
                     backgroundColor:
-                      paymentMethod === 2 ? Color.primary : '#F6F4F4',
+                      paymentMethod === 2 ? Color.primary : 'transparent',
+                    borderColor:
+                      paymentMethod === 2 ? Color.primary : Color.secondary,
+                    borderWidth: 1,
                   }}>
                   <Text
                     style={{
                       ...styles.TextStyle,
-                      color: paymentMethod === 2 ? '#F6F4F4' : Color.secondary,
+                      color:
+                        paymentMethod === 2 ? Color.light : Color.secondary,
+                      fontFamily: Font.Urbanist_Bold,
                     }}>
                     Credit Card
                   </Text>
@@ -350,7 +362,7 @@ const CartDetails = ({
                     }}
                     style={{
                       height: 45,
-                      borderRadius: 16,
+                      borderRadius: BorderRadius,
                       paddingHorizontal: 10,
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -414,7 +426,7 @@ const CartDetails = ({
                     }}
                     style={{
                       height: 45,
-                      borderRadius: 16,
+                      borderRadius: BorderRadius,
                       paddingHorizontal: 10,
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -440,10 +452,25 @@ const CartDetails = ({
     </>
   );
 };
-const DeliveryDetails = ({item, setBranchId, branchId}) => {
+const DeliveryDetails = ({item, setBranchId, branchId, setSelectedBranch}) => {
+  function convertToAMPM(timeString) {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const hours12 = hours % 12 || 12; // Convert 0 to 12 for AM time
+    return `${hours12}:${(minutes < 10 ? '0' : '') + minutes} ${ampm}`;
+  }
+  const openGoogleMaps = address => {
+    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      address,
+    )}`;
+    Linking.openURL(mapUrl);
+  };
   return (
     <TouchableOpacity
-      onPress={() => setBranchId(item.id)}
+      onPress={() => {
+        setSelectedBranch(item);
+        setBranchId(item.id);
+      }}
       style={{
         justifyContent: 'space-between',
         margin: 1,
@@ -453,22 +480,41 @@ const DeliveryDetails = ({item, setBranchId, branchId}) => {
       }}>
       {
         <View style={{alignItems: 'center', flexDirection: 'row'}}>
-          <Icon
-            iconFamily={'Entypo'}
-            name={'location-pin'}
-            size={25}
-            color={Color.primary}
-          />
-          <Text
-            style={{
-              ...styles.TextStyle,
-              color: Color.secondary,
-              marginLeft: 5,
-              marginRight: 5,
-            }}>
-            {' '}
-            {item.name}{' '}
-          </Text>
+          <TouchableOpacity
+            style={{height: 30, width: 30, borderRadius: 30}}
+            onPress={() => openGoogleMaps(item.address)}>
+            <Icon
+              iconFamily={'Entypo'}
+              name={'location-pin'}
+              size={25}
+              color={Color.primary}
+            />
+          </TouchableOpacity>
+          <View>
+            <Text
+              style={{
+                ...styles.TextStyle,
+                color: Color.tertiary,
+                // marginLeft: 0,
+                // marginRight: 5,
+                fontSize: 16,
+              }}>
+              {' '}
+              {item.name}{' '}
+            </Text>
+            <Text
+              style={{
+                ...styles.TextStyle,
+                color: Color.lightGray,
+                // marginLeft: 0,
+                // marginRight: 5,
+              }}>
+              {' '}
+              {convertToAMPM(item.opening_time)}
+              {' - '}
+              {convertToAMPM(item.closeing_time)}
+            </Text>
+          </View>
         </View>
       }
       <RadioButton
@@ -476,7 +522,10 @@ const DeliveryDetails = ({item, setBranchId, branchId}) => {
         color={Color.primary}
         value="first"
         status={branchId === item.id ? 'checked' : 'unchecked'}
-        onPress={() => setBranchId(item.id)}
+        onPress={() => {
+          setSelectedBranch(item);
+          setBranchId(item.id);
+        }}
       />
     </TouchableOpacity>
   );
@@ -520,7 +569,7 @@ const TimeDetails = ({
             <Text
               style={{
                 ...styles.TextStyle,
-                color: Color.secondary,
+                color: Color.tertiary,
                 marginLeft: 5,
                 marginRight: 5,
               }}>
@@ -649,6 +698,7 @@ const CheckOut = ({route, item}) => {
   const [subTotal, setSubTotal] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [visibleBranch, setVisibleBranch] = useState(false);
   const [popupRemoveFromCart, setPopupRemoveFromCart] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
@@ -669,15 +719,16 @@ const CheckOut = ({route, item}) => {
   const [open, setOpen] = useState(false);
   const [openTime, setOpenTime] = useState(false);
   const [branchId, setBranchId] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState({});
   const [paymentMethod, setPaymentMethod] = useState(1);
   const [pointsDiscount, setPointsDiscount] = useState(0);
   const [stripeOpen, setStripeOpen] = useState(false);
+  const [btnDisabled, setBtnDisabled] = useState(true);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
   const {cart, auth, branch} = useSelector(state => ({...state}));
   const {initPaymentSheet, presentPaymentSheet} = useStripe();
-
   //STRIPE
   // const fetchPaymentSheetParams = async () => {
   //   const response = await fetch(`${API_URL}/payment-sheet`, {
@@ -777,6 +828,31 @@ const CheckOut = ({route, item}) => {
       setAddressType(auth.user.default_address.address_type);
     }
   }, [isFocused]);
+  useEffect(() => {
+    function checkBranchIsOpen() {
+      const currentTime = new Date();
+      const openingTime = selectedBranch.opening_time;
+      const closingTime = selectedBranch.closeing_time;
+
+      const currentTimeString = currentTime.toLocaleTimeString('en-US', {
+        hour12: false,
+      });
+
+      return (
+        currentTimeString >= openingTime && currentTimeString <= closingTime
+      );
+    }
+    if (branchId === '') {
+      return;
+    } else if (checkBranchIsOpen()) {
+      setBtnDisabled(false);
+    } else {
+      setVisibleBranch(true);
+      setBtnDisabled(true);
+      setBranchId('');
+      setSelectedBranch({});
+    }
+  }, [branchId]);
 
   const onClosePopup = () => {
     setPopupRemoveFromCart(false);
@@ -970,6 +1046,7 @@ const CheckOut = ({route, item}) => {
                 cart={cart}
                 item={item}
                 setBranchId={setBranchId}
+                setSelectedBranch={setSelectedBranch}
               />
             )}
             columnWrapperStyle={{justifyContent: 'space-between'}}
@@ -982,7 +1059,7 @@ const CheckOut = ({route, item}) => {
                 backgroundColor: Color.light,
                 padding: 15,
                 marginTop: 20,
-                borderRadius: 24,
+                borderRadius: BorderRadius,
                 marginHorizontal: Window.fixPadding * 2,
               }}>
               <Text style={styles.DeliveryStyle}>Deliver to</Text>
@@ -1028,12 +1105,12 @@ const CheckOut = ({route, item}) => {
                           style={{
                             lineHeight: 12,
                             fontSize: 10,
-                            backgroundColor: '#E5E5E5',
-                            color: Color.primary,
+                            backgroundColor: Color.primary,
+                            color: Color.light,
                             padding: 8,
                             marginLeft: 10,
                             fontFamily: Font.Urbanist_SemiBold,
-                            borderRadius: 10,
+                            borderRadius: BorderRadius,
                           }}>
                           Default
                         </Text>
@@ -1072,12 +1149,21 @@ const CheckOut = ({route, item}) => {
                   justifyContent: 'space-between',
                 }}>
                 <Text style={styles.DeliveryStyle}>Select Branch</Text>
+                {branchId === '' && (
+                  <Icon
+                    iconFamily={'Ionicons'}
+                    color={Color.primary}
+                    name="warning"
+                    size={22}
+                  />
+                )}
               </View>
               <View style={GlobalStyle.TopBorderStyle} />
               {branch[0].map((item, index) => (
                 <DeliveryDetails
                   branchId={branchId}
                   setBranchId={setBranchId}
+                  setSelectedBranch={setSelectedBranch}
                   item={item}
                   key={index}
                 />
@@ -1191,7 +1277,7 @@ const CheckOut = ({route, item}) => {
           <CartEmptySvg width={Window.width / 1.5} height={Window.height / 3} />
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Bold,
               fontSize: 30,
               marginTop: 22,
@@ -1200,7 +1286,7 @@ const CheckOut = ({route, item}) => {
           </Text>
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Regular,
               fontSize: 16,
               textAlign: 'center',
@@ -1216,6 +1302,7 @@ const CheckOut = ({route, item}) => {
           {paddingHorizontal: Window.fixPadding * 2},
         ]}>
         <Button
+          disabled={cart.orderType === 'delivery' ? false : btnDisabled}
           text={
             cartData.length > 0
               ? `Place Order - $${
@@ -1252,9 +1339,6 @@ const CheckOut = ({route, item}) => {
                     ],
                   })
           }
-          // ? () => submitHandler()
-
-          // loading={loading}
         />
       </View>
 
@@ -1266,19 +1350,14 @@ const CheckOut = ({route, item}) => {
           item={popupData}
         />
       )}
-      {loading && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: '#000000AA',
-          }}>
-          <SkypeIndicator size={50} color={Color.grey} />
-        </View>
-      )}
+
+      <BranchPopup
+        // item={item}
+        visible={visibleBranch}
+        setVisible={setVisibleBranch}
+      />
+
+      {loading && <Loader />}
 
       <BottomPopupRemoveFromCart
         ref={target => (popupRef = target)}
@@ -1329,7 +1408,7 @@ const Popup = ({item, visible, setVisible}) => {
   const containerStyle = {
     marginHorizontal: 20,
 
-    borderRadius: 40,
+    borderRadius: BorderRadius,
     backgroundColor: Color.light,
   };
   return (
@@ -1353,7 +1432,7 @@ const Popup = ({item, visible, setVisible}) => {
             fontSize: 20,
             fontFamily: Font.Urbanist_Bold,
             // lineHeight: 24,
-            color: Color.secondary,
+            color: Color.tertiary,
             marginBottom: 20,
           }}>
           Food Items
@@ -1377,7 +1456,7 @@ const Popup = ({item, visible, setVisible}) => {
               <Text
                 style={{
                   fontSize: 18,
-                  color: Color.secondary,
+                  color: Color.tertiary,
                   fontFamily: Font.Urbanist_Bold,
                   width: 150,
                 }}>
@@ -1387,7 +1466,7 @@ const Popup = ({item, visible, setVisible}) => {
               <Text
                 style={{
                   fontSize: 18,
-                  color: Color.primary,
+                  color: Color.secondary,
                   fontFamily: Font.Urbanist_Bold,
                 }}>
                 ${item.foodDetails.price}
@@ -1455,7 +1534,62 @@ const Popup = ({item, visible, setVisible}) => {
     </Modal>
   );
 };
-const OrderType = ({item, cart, setBranchId}) => {
+const BranchPopup = ({visible, setVisible}) => {
+  const hideModal = () => {
+    setVisible(false);
+  };
+  const containerStyle = {
+    marginHorizontal: 20,
+
+    borderRadius: BorderRadius,
+    backgroundColor: Color.light,
+  };
+  return (
+    <Modal
+      theme={{
+        colors: {
+          backdrop: '#000000AA',
+        },
+      }}
+      animationType="fade"
+      visible={visible}
+      onDismiss={hideModal}
+      contentContainerStyle={containerStyle}>
+      <View
+        style={{
+          paddingVertical: 40,
+          paddingHorizontal: 20,
+        }}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontFamily: Font.Urbanist_Bold,
+            // lineHeight: 24,
+            color: Color.primary,
+            marginBottom: 20,
+            textAlign: 'center',
+          }}>
+          Warning!
+        </Text>
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: Font.Urbanist_Medium,
+            // lineHeight: 24,
+            color: Color.tertiary,
+            marginBottom: 25,
+            textAlign: 'center',
+          }}>
+          Selected branch is closed at the moment. Sorry for the inconvinience,
+          Please try again later or try another branch!
+        </Text>
+
+        <Button theme="primary" text="OK" onPressFunc={() => hideModal()} />
+      </View>
+    </Modal>
+  );
+};
+const OrderType = ({item, cart, setBranchId, setSelectedBranch}) => {
   const dispatch = useDispatch();
 
   const updateOrderType = type => {
@@ -1469,15 +1603,16 @@ const OrderType = ({item, cart, setBranchId}) => {
       onPress={() => {
         if (item.id === 2) {
           setBranchId('');
+          setSelectedBranch({});
         }
         updateOrderType(item.value);
       }}
       style={{
         flex: 1,
         height: 75,
-        borderRadius: 20,
+        borderRadius: BorderRadius,
         backgroundColor:
-          cart.orderType === item.value ? Color.primary : Color.light,
+          cart.orderType === item.value ? Color.secondary : Color.light,
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: item.id === 1 ? 10 : 0,
@@ -1509,7 +1644,7 @@ const OrderType = ({item, cart, setBranchId}) => {
           style={{
             paddingTop: 0.5,
             color:
-              cart.orderType === item.value ? Color.light : Color.greyscale,
+              cart.orderType === item.value ? Color.tertiary : Color.greyscale,
             fontSize: 11,
             fontFamily: Font.Urbanist_Medium,
           }}>

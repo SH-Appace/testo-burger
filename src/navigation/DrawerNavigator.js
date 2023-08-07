@@ -34,6 +34,7 @@ const DrawerNavigator = () => {
     <Drawer.Navigator
       drawerType="slide"
       screenOptions={{
+        swipeEdgeWidth: 0,
         headerShown: false,
         drawerActiveBackgroundColor: Colors.transparent,
         drawerInactiveBackgroundColor: Colors.transparent,
@@ -74,7 +75,7 @@ const CustomDrawerContent = props => {
       <SafeAreaView style={styles.container}>
         <StatusBar
           animated={true}
-          backgroundColor={IsOpen ? '#F55B02' : '#F9F9F9'}
+          backgroundColor={IsOpen ? '#961111' : '#F9F9F9'}
           barStyle={IsOpen ? 'light-content' : 'dark-content'}
           showHideTransition={'fade'}
         />

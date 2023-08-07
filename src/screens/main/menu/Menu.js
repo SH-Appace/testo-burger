@@ -8,7 +8,13 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
+import {
+  BorderRadius,
+  Color,
+  Font,
+  GlobalStyle,
+  Window,
+} from '../../../globalStyle/Theme';
 import AppBar from '../../../components/AppBar';
 import {useSelector} from 'react-redux';
 import {HorizontalFlatList} from '@idiosync/horizontal-flatlist';
@@ -18,76 +24,60 @@ import {useNavigation} from '@react-navigation/native';
 import styles from './MenuStyles';
 import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {useBackButton} from '../../../hooks';
+import {NoFood} from '../../../assets/svgs/OrderSvgs';
+import {getSingleCategoryProducts} from '../../../apis/categories';
+import Loader from '../../../components/Loader';
 const Menu = ({navigation, route}) => {
   const [active, setActive] = useState(0);
-  const [activeCategory, setActiveCategory] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
   const {categories, products, auth} = useSelector(state => ({...state}));
   useEffect(() => {
     if (route.params) {
       setActive(route.params.activeId);
-      setActiveCategory(route.params.activeCat);
+      getSingleCategoryProducts(route.params.activeId, setData, setLoading);
+    } else {
+      setActive(categories[0][0].id);
+      getSingleCategoryProducts(categories[0][0].id, setData, setLoading);
     }
   }, []);
-  const RenderItemCategories = ({
-    item,
-    setState,
-    state,
-    setActiveCategory,
-    activeCategory,
-  }) => (
-    <View
+  // console.log(active);
+  const RenderItemCategories = ({item, setState, state}) => (
+    <TouchableOpacity
+      onPress={() => {
+        if (state === item.id) return;
+        setState(item.id);
+        getSingleCategoryProducts(item.id, setData, setLoading);
+      }}
       style={{
-        width: Window.width / 4,
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 10,
+        margin: 5,
+        paddingVertical: 5,
+        width: Window.width / 4.5,
+        borderRadius: BorderRadius,
+        backgroundColor: Color.light,
+        borderWidth: 1,
+        borderColor: state === item.id ? Color.secondary : 'transparent',
       }}>
-      <TouchableOpacity
-        onPress={() => {
-          if (state === item.id) {
-            setActiveCategory('');
-            setState(0);
-          } else {
-            setActiveCategory(item.name);
-            setState(item.id);
-          }
-        }}
+      <Image
+        style={{height: 50, width: 50}}
+        source={{uri: item.icon}}
+        resizeMode="contain"
+      />
+
+      <Text
+        numberOfLines={1}
         style={{
-          flexDirection: 'column',
-          alignItems: 'center',
+          ...GlobalStyle.Heading,
+          fontSize: 13,
+          marginTop: 5,
           width: Window.width / 5,
-          justifyContent: 'space-between',
+          textAlign: 'center',
         }}>
-        <View
-          style={{
-            width: 70,
-            height: 75,
-            borderRadius: 20,
-            backgroundColor: Color.light,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderWidth: state === item.id ? 2 : 0,
-            borderColor: state === item.id ? Color.primary : 'transparent',
-          }}>
-          <Image
-            style={{height: 50, width: 50}}
-            source={{uri: item.icon}}
-            resizeMode="contain"
-          />
-        </View>
-        <Text
-          numberOfLines={1}
-          style={{
-            ...GlobalStyle.Heading,
-            fontSize: 14,
-            marginTop: 12,
-            width: Window.width / 5,
-            textAlign: 'center',
-          }}>
-          {item.name}
-        </Text>
-      </TouchableOpacity>
-    </View>
+        {item.name}
+      </Text>
+    </TouchableOpacity>
   );
   const onBackPress = () => {
     navigation.goBack();
@@ -124,8 +114,6 @@ const Menu = ({navigation, route}) => {
               <RenderItemCategories
                 state={active}
                 setState={setActive}
-                setActiveCategory={setActiveCategory}
-                activeCategory={activeCategory}
                 item={item}
               />
             )}
@@ -137,17 +125,38 @@ const Menu = ({navigation, route}) => {
         style={{flex: 1}}
         contentContainerStyle={{flexGrow: 1, paddingVertical: 15}}>
         <View style={[GlobalStyle.Container, {backgroundColor: '#F9F9F9'}]}>
-          {active !== 0
-            ? products[0] &&
-              products[0]
-                .filter(x => x.category_id === active)
-                .map((item, index) => <Cart item={item} key={index} />)
-            : products[0] &&
-              products[0].map((item, index) => (
-                <Cart item={item} key={index} />
-              ))}
+          {active !== 0 ? (
+            data.length > 0 ? (
+              data.map((item, index) => <Cart item={item} key={index} />)
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <NoFood width={Window.width / 4} />
+                <Text
+                  style={{
+                    color: 'grey',
+                    textAlign: 'center',
+                    fontFamily: Font.Urbanist_Bold,
+                    fontSize: 16,
+                    marginVertical: 15,
+                  }}>
+                  "Apologies, but it seems like there are no items available in
+                  this food category at the moment. Please check back later or
+                  explore other categories."
+                </Text>
+              </View>
+            )
+          ) : (
+            products[0] &&
+            products[0].map((item, index) => <Cart item={item} key={index} />)
+          )}
         </View>
       </ScrollView>
+      {loading && <Loader />}
     </SafeAreaView>
   );
 };
@@ -156,7 +165,6 @@ export default Menu;
 
 const Cart = ({item}) => {
   let navigation = useNavigation();
-  const [reRenderHeart, setReRenderHeart] = useState(false);
   return (
     <TouchableOpacity
       onPress={() =>
@@ -191,7 +199,7 @@ const Cart = ({item}) => {
       }
       style={{
         backgroundColor: Color.light,
-        borderRadius: 20,
+        borderRadius: BorderRadius,
         marginVertical: 10,
         height: Window.height / 6,
         flexDirection: 'row',
@@ -200,14 +208,16 @@ const Cart = ({item}) => {
       <View style={{flex: 0.4, alignItems: 'center', justifyContent: 'center'}}>
         <Image
           style={styles.ImgStyle}
-          // source={{uri: item.image}}
-          source={require('../../../assets/images/pics/foodBg.png')}
+          source={{uri: item.image}}
+          // source={require('../../../assets/images/pics/foodBg.png')}
           resizeMode="cover"
         />
       </View>
       <View style={{flex: 0.6, justifyContent: 'center'}}>
         <View style={{marginHorizontal: 15}}>
-          <Text style={styles.TopTextStyle}>{item.name}</Text>
+          <Text style={styles.TopTextStyle} numberOfLines={1}>
+            {item.name}
+          </Text>
           <Text style={styles.DescTextStyle} numberOfLines={2}>
             {item.description}
           </Text>

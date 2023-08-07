@@ -23,6 +23,7 @@ import {Avatar, FAB} from 'react-native-paper';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from '../../../core/Icon';
 import {useBackButton} from '../../../hooks';
+import Loader from '../../../components/Loader';
 
 const EditProfile = ({navigation, route}) => {
   const [email, setEmail] = useState('');
@@ -124,123 +125,118 @@ const EditProfile = ({navigation, route}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{justifyContent: 'flex-end', flex: 1}}>
-      <View style={{...GlobalStyle.Container}}>
-        <AppBar
-          left={
-            fromOTPcode ? (
-              <></>
-            ) : (
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon
-                  iconFamily={'Octicons'}
-                  name="arrow-left"
-                  size={25}
-                  color={Color.secondary}
-                />
-              </TouchableOpacity>
-            )
-          }
-          center={
-            <Text style={GlobalStyle.AppCenterTextStyle}>
-              Fill Your Profile
-            </Text>
-          }
-          right={<Text style={{color: Color.black}}></Text>}
-        />
-        <ScrollView
-          contentContainerStyle={{flexGrow: 1, paddingTop: 25}}
-          keyboardShouldPersistTaps="handled">
+    <SafeAreaView
+      style={[
+        {...GlobalStyle.Container},
+        {
+          justifyContent: 'flex-end',
+          flex: 1,
+          backgroundColor: Color.light,
+        },
+      ]}>
+      <StatusBar
+        animated={true}
+        backgroundColor={loading ? '#555555' : Color.light}
+        barStyle={loading ? 'light-content' : 'dark-content'}
+        showHideTransition={'fade'}
+      />
+      <AppBar
+        left={
+          fromOTPcode ? (
+            <></>
+          ) : (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Icon
+                iconFamily={'Octicons'}
+                name="arrow-left"
+                size={25}
+                color={Color.tertiary}
+              />
+            </TouchableOpacity>
+          )
+        }
+        center={
+          <Text style={GlobalStyle.AppCenterTextStyle}>Fill Your Profile</Text>
+        }
+        right={<Text style={{color: Color.black}}></Text>}
+      />
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1, paddingTop: 25}}
+        keyboardShouldPersistTaps="handled">
+        <View
+          style={{
+            flexDirection: 'row',
+            width: Window.width / 2.5,
+            alignSelf: 'center',
+            marginBottom: 25,
+          }}>
+          <Avatar.Image
+            size={Window.width / 2.5}
+            style={{backgroundColor: '#F0F0F0'}}
+            source={{uri: image}}
+          />
+          <FAB icon="pencil-outline" style={styles.fab} onPress={pickImage} />
+        </View>
+        <View
+          style={{
+            marginTop: 20,
+            flex: 1,
+          }}>
+          <TextField
+            placeholder="Your Name"
+            onChanged={setName}
+            icon="account"
+            value={name}
+          />
+          <View style={{marginVertical: 10}} />
+          <TextField
+            value={email}
+            placeholder="Email addresse"
+            onChanged={setEmail}
+            icon="email"
+            keyboardType="email-address"
+          />
+          <View style={{marginVertical: 10}} />
           <View
             style={{
               flexDirection: 'row',
-              width: Window.width / 2.5,
-              alignSelf: 'center',
-              marginBottom: 25,
+              alignItems: 'center',
+              // justifyContent: 'space-between',
             }}>
-            <Avatar.Image
-              size={Window.width / 2.5}
-              style={{backgroundColor: '#F0F0F0'}}
-              source={{uri: image}}
-            />
-            <FAB icon="pencil-outline" style={styles.fab} onPress={pickImage} />
-          </View>
-          <View
-            style={{
-              marginTop: 20,
-              flex: 1,
-            }}>
-            <TextField
-              placeholder="Your Name"
-              onChanged={setName}
-              icon="account"
-              value={name}
-            />
-            <View style={{marginVertical: 10}} />
-            <TextField
-              value={email}
-              placeholder="Email addresse"
-              onChanged={setEmail}
-              icon="email"
-              keyboardType="email-address"
-            />
-            <View style={{marginVertical: 10}} />
-            <View
+            <Text
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                // justifyContent: 'space-between',
+                color: Color.primary,
+                fontFamily: Font.Urbanist_Bold,
+                fontSize: 12,
+                marginRight: 5,
               }}>
-              <Text
-                style={{
-                  color: Color.primary,
-                  fontFamily: Font.Urbanist_Bold,
-                  fontSize: 12,
-                  marginRight: 5,
-                }}>
-                Verified
-              </Text>
-              <Icon
-                iconFamily={'MaterialCommunityIcons'}
-                name="check-circle-outline"
-                size={16}
-                color={Color.primary}
-              />
-            </View>
-            <PhoneInput
-              disabled={true}
-              setLoading={setLoading}
-              placeholder="XXXXXXXXXX"
-              onChanged={setPhone}
-              value={phone}
+              Verified
+            </Text>
+            <Icon
+              iconFamily={'MaterialCommunityIcons'}
+              name="check-circle-outline"
+              size={16}
+              color={Color.primary}
             />
           </View>
-          {/* </View> */}
-          <View style={GlobalStyle.BottomButtonContainer}>
-            <Button
-              text={fromOTPcode ? 'Continue' : 'Save'}
-              icon="mail"
-              isIcon={false}
-              theme="primary"
-              // navLink="CreatePin"
-              onPressFunc={submitHandler}
-            />
-          </View>
-        </ScrollView>
-      </View>
-      {loading && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: '#000000AA',
-          }}>
-          <SkypeIndicator size={50} color={Color.grey} />
+          <PhoneInput
+            disabled={true}
+            setLoading={setLoading}
+            placeholder="XXXXXXXXXX"
+            onChanged={setPhone}
+            value={phone}
+          />
         </View>
-      )}
+        <View style={GlobalStyle.BottomButtonContainer}>
+          <Button
+            text={fromOTPcode ? 'Continue' : 'Save'}
+            isIcon={false}
+            theme="primary"
+            onPressFunc={submitHandler}
+          />
+        </View>
+      </ScrollView>
+      {loading && <Loader />}
     </SafeAreaView>
   );
 };

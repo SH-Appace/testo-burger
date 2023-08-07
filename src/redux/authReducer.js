@@ -19,6 +19,15 @@ export const authReducer = (state = userState, action) => {
       return {...state, ...action.payload};
     case 'LOGOUT':
       return null;
+    case 'UPDATE_LOYALTY_POINTS':
+      // Update the loyalty points in the user object
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          loyalty_point: action.payload,
+        },
+      };
     default:
       return state;
   }

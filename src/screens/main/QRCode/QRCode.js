@@ -79,7 +79,7 @@ const QRCode = ({navigation}) => {
     <SafeAreaView style={{flex: 1}}>
       <StatusBar
         animated={true}
-        backgroundColor={'#F55B02'}
+        backgroundColor={'#961111'}
         barStyle={'light-content'}
         showHideTransition={'fade'}
       />

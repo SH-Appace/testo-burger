@@ -1,9 +1,9 @@
 import {Dimensions} from 'react-native';
 
 const Color = {
-  primary: '#EF7F01',
-  secondary: '#212121',
-  tertiary: '#831619',
+  primary: '#CC1717',
+  secondary: '#F6B51D',
+  tertiary: '#212121',
   orange: '#FB9400',
   light: '#fff',
   greyscale: '#616161',
@@ -23,7 +23,7 @@ const Color = {
   headingSm: '#2A3B56',
   lightOrange: '#EF7F011A',
 };
-
+const BorderRadius = 10;
 const Font = {
   Urbanist_Bold: 'Urbanist-Bold',
   Urbanist_Light: 'Urbanist-Light',
@@ -60,18 +60,18 @@ const GlobalStyle = {
   },
   Heading: {
     fontSize: 32,
-    color: Color.secondary,
+    color: Color.tertiary,
     fontFamily: Font.Urbanist_Bold,
   },
 
   BasicTextStyle: {
     lineHeight: 19.6,
     fontSize: 14,
-    color: Color.secondary,
+    color: Color.tertiary,
     fontFamily: Font.Urbanist_Regular,
   },
   AppCenterTextStyle: {
-    color: Color.secondary,
+    color: Color.tertiary,
     fontSize: 24,
     fontFamily: Font.Urbanist_Bold,
     left: 40,
@@ -109,4 +109,4 @@ const GlobalStyle = {
   },
 };
 
-export {Color, Font, Window, GlobalStyle};
+export {Color, Font, Window, GlobalStyle, BorderRadius};

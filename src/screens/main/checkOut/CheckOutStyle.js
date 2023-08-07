@@ -1,6 +1,12 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {GlobalStyle, Font, Color, Window} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Font,
+  Color,
+  Window,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 const styles = StyleSheet.create({
   TextStyle: {
     lineHeight: 19.6,
@@ -10,7 +16,7 @@ const styles = StyleSheet.create({
   },
   DeliveryStyle: {
     fontSize: 20,
-    color: Color.secondary,
+    color: Color.tertiary,
     lineHeight: 24,
     fontFamily: Font.Urbanist_Bold,
   },
@@ -22,7 +28,7 @@ const styles = StyleSheet.create({
   },
   Heading: {
     fontSize: 18,
-    color: Color.secondary,
+    color: Color.tertiary,
     lineHeight: 21.6,
     width: 150,
     fontFamily: Font.Urbanist_Bold,
@@ -43,7 +49,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.light,
     padding: 15,
     marginTop: 20,
-    borderRadius: 24,
+    borderRadius: BorderRadius,
     marginHorizontal: Window.fixPadding * 2,
   },
   fab: {

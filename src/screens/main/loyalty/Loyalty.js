@@ -53,12 +53,12 @@ const Loyalty = ({route, navigation}) => {
     <SafeAreaView style={{flex: 1}}>
       <StatusBar
         animated={true}
-        backgroundColor={'#F55B02'}
+        backgroundColor={'#f6b41c'}
         barStyle={'light-content'}
         showHideTransition={'fade'}
       />
       <ImageBackground
-        source={require('../../../assets/images/pics/backgroundBurger.png')}
+        source={require('../../../assets/images/pics/backgroundBurgerYellow.png')}
         resizeMode="cover"
         style={{flex: 1}}>
         <View style={{paddingHorizontal: Window.fixPadding * 2}}>
@@ -116,7 +116,7 @@ const Loyalty = ({route, navigation}) => {
           }}>
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontSize: 18,
               fontFamily: Font.Urbanist_Regular,
               alignSelf: 'center',
@@ -145,7 +145,7 @@ const Loyalty = ({route, navigation}) => {
           </View>
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontSize: 14,
               fontFamily: Font.Urbanist_Regular,
               marginVertical: 30,
@@ -160,7 +160,7 @@ const Loyalty = ({route, navigation}) => {
             }}>
             <Text
               style={{
-                color: Color.secondary,
+                color: Color.tertiary,
                 fontSize: 18,
                 fontFamily: Font.Urbanist_Regular,
               }}>

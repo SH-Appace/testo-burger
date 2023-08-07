@@ -1,5 +1,11 @@
 import {StyleSheet} from 'react-native';
-import {GlobalStyle, Font, Color, Window} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Font,
+  Color,
+  Window,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 
 const styles = StyleSheet.create({
   Heading: {
@@ -18,7 +24,7 @@ const styles = StyleSheet.create({
   BasicHeading: {
     fontSize: 20,
     // lineHeight: 24,
-    color: Color.secondary,
+    color: Color.tertiary,
     fontFamily: Font.Urbanist_Bold,
   },
   BottomText: {
@@ -55,9 +61,9 @@ const styles = StyleSheet.create({
     fontFamily: Font.Urbanist_SemiBold,
   },
   selectButtomStyle: {
-    borderColor: Color.primary,
+    borderColor: Color.secondary,
     borderWidth: 2,
-    borderRadius: 100,
+    borderRadius: BorderRadius,
     flex: 1,
     alignItems: 'center',
     height: 37,
@@ -74,7 +80,7 @@ const styles = StyleSheet.create({
   orderBox: {
     // borderWidth: 1,
     // borderColor: Color.light,
-    borderRadius: 28,
+    borderRadius: BorderRadius,
     backgroundColor: Color.light,
     marginVertical: 10,
     paddingHorizontal: 10,

@@ -8,7 +8,13 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
+import {
+  BorderRadius,
+  Color,
+  Font,
+  GlobalStyle,
+  Window,
+} from '../../../globalStyle/Theme';
 import AppBar from '../../../components/AppBar';
 import {useSelector} from 'react-redux';
 import {HorizontalFlatList} from '@idiosync/horizontal-flatlist';
@@ -49,7 +55,7 @@ const RecommendedFoods = ({navigation, route}) => {
           <View style={styles.BoxContainerStyle}>
             <Text
               style={{
-                color: Color.primary,
+                color: Color.tertiary,
                 fontFamily: Font.Urbanist_Bold,
                 fontSize: 24,
               }}>
@@ -58,7 +64,7 @@ const RecommendedFoods = ({navigation, route}) => {
             {route.params.points !== null && (
               <Text
                 style={{
-                  color: Color.secondary,
+                  color: Color.primary,
                   fontFamily: Font.Urbanist_Medium,
                   fontSize: 14,
                   marginTop: 5,
@@ -113,7 +119,7 @@ const RecommendedFoods = ({navigation, route}) => {
           <Text
             style={{
               fontSize: 20,
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Bold,
               marginBottom: 10,
               marginTop: 25,
@@ -133,7 +139,6 @@ export default RecommendedFoods;
 
 const Cart = ({item}) => {
   let navigation = useNavigation();
-  const [reRenderHeart, setReRenderHeart] = useState(false);
   return (
     <TouchableOpacity
       onPress={() =>
@@ -168,13 +173,13 @@ const Cart = ({item}) => {
       }
       style={{
         backgroundColor: Color.light,
-        borderRadius: 20,
+        borderRadius: BorderRadius,
         marginVertical: 10,
         height: Window.height / 6,
         flexDirection: 'row',
         overflow: 'hidden',
       }}>
-      <View style={{flex: 0.4}}>
+      <View style={{flex: 0.4, alignItems: 'center', justifyContent: 'center'}}>
         <Image
           style={styles.ImgStyle}
           // source={{uri: item.image}}
@@ -184,7 +189,9 @@ const Cart = ({item}) => {
       </View>
       <View style={{flex: 0.6, justifyContent: 'center'}}>
         <View style={{marginHorizontal: 15}}>
-          <Text style={styles.TopTextStyle}>{item.name}</Text>
+          <Text style={styles.TopTextStyle} numberOfLines={1}>
+            {item.name}
+          </Text>
           <Text style={styles.DescTextStyle} numberOfLines={2}>
             {item.description}
           </Text>

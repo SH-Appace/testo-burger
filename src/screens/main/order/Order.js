@@ -11,7 +11,13 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import AppBar from '../../../components/AppBar';
-import {GlobalStyle, Font, Window, Color} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Font,
+  Window,
+  Color,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 import {TabView} from 'react-native-tab-view';
 import {TabBar} from 'react-native-tab-view';
 import styles from './OrderStyle';
@@ -56,7 +62,7 @@ const ActiveRoute = ({setVisible, orders, setPopupData}) => {
                 style={{
                   height: Window.width / 4.5,
                   width: Window.width / 4.5,
-                  borderRadius: Window.width / 15,
+                  borderRadius: BorderRadius,
                   marginRight: 15,
                   backgroundColor: Color.primary,
                   alignItems: 'center',
@@ -110,6 +116,7 @@ const ActiveRoute = ({setVisible, orders, setPopupData}) => {
               </View>
             </TouchableOpacity>
             <View style={GlobalStyle.TopBorderStyle} />
+
             <View
               style={{
                 flexDirection: 'row',
@@ -122,7 +129,7 @@ const ActiveRoute = ({setVisible, orders, setPopupData}) => {
                 <Text
                   style={{
                     ...styles.buttonTextStlye,
-                    color: Color.primary,
+                    color: Color.secondary,
                   }}>
                   Cancel Order
                 </Text>
@@ -143,7 +150,7 @@ const ActiveRoute = ({setVisible, orders, setPopupData}) => {
           />
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Bold,
               fontSize: 22,
               marginTop: 22,
@@ -152,7 +159,7 @@ const ActiveRoute = ({setVisible, orders, setPopupData}) => {
           </Text>
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Regular,
               fontSize: 16,
               textAlign: 'center',
@@ -188,7 +195,7 @@ const CompletedRoute = ({setVisible, orders, setPopupData, onShowPopup}) => {
                 style={{
                   height: Window.width / 4.5,
                   width: Window.width / 4.5,
-                  borderRadius: Window.width / 15,
+                  borderRadius: BorderRadius,
                   marginRight: 15,
                   backgroundColor: '#859B5D',
                   alignItems: 'center',
@@ -247,7 +254,7 @@ const CompletedRoute = ({setVisible, orders, setPopupData, onShowPopup}) => {
                 <Text
                   style={{
                     ...styles.buttonTextStlye,
-                    color: Color.primary,
+                    color: Color.secondary,
                   }}>
                   Leave a Review
                 </Text>
@@ -260,6 +267,7 @@ const CompletedRoute = ({setVisible, orders, setPopupData, onShowPopup}) => {
                 style={{
                   ...styles.selectButtomStyle,
                   backgroundColor: Color.primary,
+                  borderColor: Color.primary,
                 }}>
                 <Text
                   style={{
@@ -285,7 +293,7 @@ const CompletedRoute = ({setVisible, orders, setPopupData, onShowPopup}) => {
           />
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Bold,
               fontSize: 22,
               marginTop: 22,
@@ -294,7 +302,7 @@ const CompletedRoute = ({setVisible, orders, setPopupData, onShowPopup}) => {
           </Text>
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Regular,
               fontSize: 16,
               textAlign: 'center',
@@ -309,14 +317,10 @@ const CompletedRoute = ({setVisible, orders, setPopupData, onShowPopup}) => {
 };
 
 const CancelledRoute = ({setVisible, orders, setPopupData}) => {
-  const [active, setActive] = useState(1);
-  let navigation = useNavigation();
-
   return (
     <View
       style={{
         marginVertical: 10,
-        // backgroundColor: Color.light,
         marginHorizontal: Window.fixPadding * 2,
       }}>
       {orders.length > 0 ? (
@@ -332,7 +336,7 @@ const CancelledRoute = ({setVisible, orders, setPopupData}) => {
                 style={{
                   height: Window.width / 4.5,
                   width: Window.width / 4.5,
-                  borderRadius: Window.width / 15,
+                  borderRadius: BorderRadius,
                   marginRight: 15,
                   backgroundColor: '#C0161B',
                   alignItems: 'center',
@@ -395,7 +399,7 @@ const CancelledRoute = ({setVisible, orders, setPopupData}) => {
           />
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Bold,
               fontSize: 22,
               marginTop: 22,
@@ -404,7 +408,7 @@ const CancelledRoute = ({setVisible, orders, setPopupData}) => {
           </Text>
           <Text
             style={{
-              color: Color.secondary,
+              color: Color.tertiary,
               fontFamily: Font.Urbanist_Regular,
               fontSize: 16,
               textAlign: 'center',
@@ -605,7 +609,7 @@ const Popup = ({visible, setVisible, popupData}) => {
   const containerStyle = {
     marginHorizontal: 20,
 
-    borderRadius: 40,
+    borderRadius: BorderRadius,
     backgroundColor: Color.light,
   };
 
@@ -629,7 +633,7 @@ const Popup = ({visible, setVisible, popupData}) => {
             fontSize: 20,
             fontFamily: Font.Urbanist_Bold,
             // lineHeight: 24,
-            color: Color.secondary,
+            color: Color.tertiary,
             marginBottom: 20,
           }}>
           Food Items
@@ -639,9 +643,9 @@ const Popup = ({visible, setVisible, popupData}) => {
             <>
               <View style={{flexDirection: 'row', marginTop: 0}}>
                 <Image
-                  style={{width: 80, height: 80, borderRadius: 15}}
-                  // source={{uri: item.food_details.image}}
-                  source={require('../../../assets/images/pics/foodBg.png')}
+                  style={{width: 80, height: 80, borderRadius: BorderRadius}}
+                  source={{uri: item.food_details.image}}
+                  // source={require('../../../assets/images/pics/foodBg.png')}
                   resizeMode="cover"
                 />
                 <View style={{flexDirection: 'column', flex: 1}}>
@@ -655,7 +659,7 @@ const Popup = ({visible, setVisible, popupData}) => {
                     <Text
                       style={{
                         fontSize: 18,
-                        color: Color.secondary,
+                        color: Color.tertiary,
                         fontFamily: Font.Urbanist_Bold,
                         width: 150,
                       }}>
@@ -665,7 +669,7 @@ const Popup = ({visible, setVisible, popupData}) => {
                     <Text
                       style={{
                         fontSize: 18,
-                        color: Color.primary,
+                        color: Color.secondary,
                         fontFamily: Font.Urbanist_Bold,
                       }}>
                       ${item.food_details.price}

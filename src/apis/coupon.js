@@ -48,7 +48,7 @@ export async function couponApply(
         },
       });
       showModal();
-      // setLoading(false);
+      setLoading(false);
     }
   } catch (err) {
     setLoading(false);

@@ -36,7 +36,7 @@ const BottomTabScreen = ({navigation, style}) => {
       navigation.getParent()?.setOptions({
         tabBarStyle: {
           display: 'flex',
-          height: hasNotch ? 80 : 75,
+          height: hasNotch ? 75 : 70,
           backgroundColor: '#fff',
         },
       });
@@ -180,6 +180,7 @@ const hiddenTabrBarScreens = [
   'Wishlist',
   'RecommendedFoods',
   'OrderReview',
+  'Loyalty',
 ];
 const styles = StyleSheet.create({
   stack: {

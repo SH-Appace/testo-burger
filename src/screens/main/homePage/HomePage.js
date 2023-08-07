@@ -12,7 +12,13 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
-import {GlobalStyle, Font, Window, Color} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Font,
+  Window,
+  Color,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 import Icon from '../../../core/Icon';
 import styles from './HomePageStyle';
 import {OrderTypeData} from './HomePageDetails';
@@ -32,7 +38,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import SearchComponent from '../../../components/SearchComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {addWishlist, removeWishlist} from '../../../apis/wishlist';
 import Swiper from 'react-native-swiper';
 import {updateFCMToken} from '../../../apis/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -52,9 +57,9 @@ const OrderType = ({item, cart, navigation}) => {
       style={{
         flex: 1,
         height: 75,
-        borderRadius: 20,
+        borderRadius: BorderRadius,
         backgroundColor:
-          cart.orderType === item.value ? Color.primary : Color.light,
+          cart.orderType === item.value ? Color.secondary : Color.light,
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: item.id === 1 ? 10 : 0,
@@ -71,7 +76,7 @@ const OrderType = ({item, cart, navigation}) => {
           color={cart.orderType === item.value ? Color.light : '#2A3B56'}
         />
       ) : null}
-      <View style={{marginLeft: 8, width: 85}}>
+      <View style={{marginLeft: 10, width: 85}}>
         <Text
           style={{
             color:
@@ -86,7 +91,7 @@ const OrderType = ({item, cart, navigation}) => {
           style={{
             paddingTop: 0.5,
             color:
-              cart.orderType === item.value ? Color.light : Color.greyscale,
+              cart.orderType === item.value ? Color.tertiary : Color.greyscale,
             fontSize: 11,
             fontFamily: Font.Urbanist_Medium,
           }}>
@@ -99,9 +104,7 @@ const OrderType = ({item, cart, navigation}) => {
 
 const FeaturedItem = ({item, index, auth, wishlist}) => {
   let navigation = useNavigation();
-  const [reRenderHeart, setReRenderHeart] = useState(false);
 
-  const dispatch = useDispatch();
   return (
     <TouchableOpacity
       onPress={() =>
@@ -114,85 +117,81 @@ const FeaturedItem = ({item, index, auth, wishlist}) => {
       }
       style={{
         backgroundColor: Color.light,
-        borderRadius: 28,
-        width: Window.width / 2,
-        height: Window.height / 3,
+        borderRadius: BorderRadius,
+        width: 160,
+        height: 240,
         overflow: 'hidden',
-
-        marginLeft: index === 0 ? 0 : 20,
+        marginLeft: index === 0 ? 0 : 12,
+        padding: 15,
       }}>
+      <Image
+        style={{
+          height: 130,
+          width: 130,
+          borderRadius: BorderRadius,
+        }}
+        source={{uri: item.image}}
+        // source={require('../../../assets/images/pics/foodBg.png')}
+        resizeMode="cover"
+      />
+      <Text
+        style={[styles.Heading, {fontSize: 18, width: '90%', marginTop: 2.5}]}
+        numberOfLines={1}>
+        {item.name}
+      </Text>
+      <Text
+        style={[
+          {
+            fontSize: 12,
+            fontFamily: Font.Urbanist_Light,
+            color: '#616161',
+            height: 30,
+          },
+        ]}
+        numberOfLines={2}>
+        {item.description}
+      </Text>
       <View
         style={{
-          height: '57%',
-          width: '100%',
+          flexDirection: 'row',
+          marginTop: 2.5,
+          justifyContent: 'space-between',
           alignItems: 'center',
-          justifyContent: 'center',
         }}>
-        <Image
-          style={{width: '80%', height: '80%', borderRadius: 20}}
-          // source={{uri: item.image}}
-          source={require('../../../assets/images/pics/foodBg.png')}
-          resizeMode="cover"
-        />
-      </View>
-
-      <View style={{height: '43%', width: '100%', padding: 10}}>
-        <Text
-          style={[styles.Heading, {fontSize: 18, width: '90%'}]}
-          numberOfLines={1}>
-          {item.name}
+        <Text style={{...styles.Heading, color: Color.primary, fontSize: 18}}>
+          ${item.price}
         </Text>
-        <Text
-          style={[
-            styles.Heading,
-            {fontSize: 14, fontFamily: Font.Urbanist_Light, width: '90%'},
-          ]}
-          numberOfLines={2}>
-          {item.description}
-        </Text>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            marginTop: 7,
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <Text style={{...styles.Heading, color: Color.primary, fontSize: 18}}>
-            ${item.price}
-          </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Icon
-              iconFamily={'FontAwesome'}
-              color={Color.orange}
-              size={12}
-              name={parseInt(item.avg_rating) >= 1 ? 'star' : 'star-o'}
-            />
-            <Icon
-              iconFamily={'FontAwesome'}
-              color={Color.orange}
-              size={12}
-              name={parseInt(item.avg_rating) >= 2 ? 'star' : 'star-o'}
-            />
-            <Icon
-              iconFamily={'FontAwesome'}
-              color={Color.orange}
-              size={12}
-              name={parseInt(item.avg_rating) >= 3 ? 'star' : 'star-o'}
-            />
-            <Icon
-              iconFamily={'FontAwesome'}
-              color={Color.orange}
-              size={12}
-              name={parseInt(item.avg_rating) >= 4 ? 'star' : 'star-o'}
-            />
-            <Icon
-              iconFamily={'FontAwesome'}
-              color={Color.orange}
-              size={12}
-              name={parseInt(item.avg_rating) >= 5 ? 'star' : 'star-o'}
-            />
-          </View>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Icon
+            iconFamily={'FontAwesome'}
+            color={Color.primary}
+            size={12}
+            name={parseInt(item.avg_rating) >= 1 ? 'star' : 'star-o'}
+          />
+          <Icon
+            iconFamily={'FontAwesome'}
+            color={Color.primary}
+            size={12}
+            name={parseInt(item.avg_rating) >= 2 ? 'star' : 'star-o'}
+          />
+          <Icon
+            iconFamily={'FontAwesome'}
+            color={Color.primary}
+            size={12}
+            name={parseInt(item.avg_rating) >= 3 ? 'star' : 'star-o'}
+          />
+          <Icon
+            iconFamily={'FontAwesome'}
+            color={Color.primary}
+            size={12}
+            name={parseInt(item.avg_rating) >= 4 ? 'star' : 'star-o'}
+          />
+          <Icon
+            iconFamily={'FontAwesome'}
+            color={Color.primary}
+            size={12}
+            name={parseInt(item.avg_rating) >= 5 ? 'star' : 'star-o'}
+          />
         </View>
       </View>
     </TouchableOpacity>
@@ -210,72 +209,58 @@ const Home = ({navigation}) => {
     }),
   );
   const renderItemCategories = ({item}) => (
-    <View
+    <TouchableOpacity
+      onPress={() =>
+        navigation.reset({
+          routes: [
+            {
+              name: 'BottomTabScreen',
+              state: {
+                routes: [
+                  {
+                    name: 'Menu',
+                    params: {
+                      activeId: item.id,
+                      activeCat: item.name,
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        })
+      }
       style={[
         {
           justifyContent: 'center',
           alignItems: 'center',
-          marginVertical: 10,
-          width: Window.width / 4,
+          margin: 5,
+          paddingVertical: 5,
+          width: catState ? Window.width / 4 : Window.width / 4.5,
+          borderRadius: BorderRadius,
+          backgroundColor: Color.light,
         },
         catState && {
           flex: 1,
         },
       ]}>
-      <TouchableOpacity
-        onPress={() =>
-          navigation.reset({
-            routes: [
-              {
-                name: 'BottomTabScreen',
-                state: {
-                  routes: [
-                    {
-                      name: 'Menu',
-                      params: {
-                        activeId: item.id,
-                        activeCat: item.name,
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-          })
-        }
+      <Image
+        style={{height: 50, width: 50}}
+        source={{uri: item.icon}}
+        resizeMode="contain"
+      />
+      <Text
+        numberOfLines={1}
         style={{
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          ...GlobalStyle.Heading,
+          fontSize: 13,
+          marginTop: 5,
+          width: Window.width / 5,
+          textAlign: 'center',
         }}>
-        <View
-          style={{
-            width: 70,
-            height: 75,
-            borderRadius: 20,
-            backgroundColor: Color.light,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Image
-            style={{height: 50, width: 50}}
-            source={{uri: item.icon}}
-            resizeMode="contain"
-          />
-        </View>
-        <Text
-          numberOfLines={1}
-          style={{
-            ...GlobalStyle.Heading,
-            fontSize: 14,
-            marginTop: 12,
-            width: Window.width / 5,
-            textAlign: 'center',
-          }}>
-          {item.name}
-        </Text>
-      </TouchableOpacity>
-    </View>
+        {item.name}
+      </Text>
+    </TouchableOpacity>
   );
   useEffect(() => {
     banners[0].map(x => setBannerImg(prev => [x.image, ...prev]));
@@ -312,9 +297,9 @@ const Home = ({navigation}) => {
       progress2.value = withSpring(1);
     }
     if (catState) {
-      progress3.value = withSpring((categories[0].length / 4) * 150);
+      progress3.value = withSpring((categories[0].length / 4) * 110);
     } else {
-      progress3.value = withSpring(235);
+      progress3.value = withSpring(180);
     }
   }, [catState]);
 
@@ -350,26 +335,26 @@ const Home = ({navigation}) => {
             paddingHorizontal: Window.fixPadding * 2,
           }}>
           <Header navigation={navigation} cart={cart} wishlist={wishlist} />
-          <View style={{marginVertical: 10}}>
+          <View style={{marginTop: 10}}>
             <TouchableOpacity
               style={{
                 alignItems: 'center',
                 flexDirection: 'row',
                 backgroundColor: Color.light,
                 height: 56,
-                borderRadius: 16,
+                borderRadius: BorderRadius,
                 paddingHorizontal: 10,
                 marginVertical: 10,
               }}
               onPress={() => setOpenSearch(true)}>
               <MaterialCommunityIcons
-                color={'#212121'}
+                color={'#BDBDBD'}
                 name={'magnify'}
                 size={23}
               />
               <Text
                 style={{
-                  color: '#807F7E',
+                  color: '#BDBDBD',
                   fontFamily: Font.Urbanist_SemiBold,
                   fontSize: 14,
                   marginLeft: 10,
@@ -380,9 +365,7 @@ const Home = ({navigation}) => {
           </View>
         </View>
         <View style={styles.headingRow}>
-          <Text style={[GlobalStyle.Heading, {fontSize: 20}]}>
-            Special Offers
-          </Text>
+          <Text style={styles.Heading}>Special Offers</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SpecialOffer')}>
             <Text
               style={{
@@ -425,7 +408,7 @@ const Home = ({navigation}) => {
               source={{uri: x}}
               style={{
                 height: 180,
-                borderRadius: 36,
+                borderRadius: BorderRadius,
                 width: '90%',
                 alignSelf: 'center',
               }}
@@ -435,22 +418,14 @@ const Home = ({navigation}) => {
           ))}
         </Swiper>
 
-        <View style={[styles.headingRow, {marginTop: 10}]}>
+        <View style={[styles.headingRow]}>
+          <Text style={styles.Heading}>Order Type</Text>
           <Text
             style={{
-              fontSize: 20,
-              color: Color.secondary,
-              lineHeight: 24,
+              fontSize: 14,
+              color: Color.primary,
               fontFamily: Font.Urbanist_Bold,
-            }}>
-            Order Type
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              color: '#BBB9B7',
-              fontFamily: Font.Urbanist_Bold,
-              lineHeight: 16.8,
+              lineHeight: 22,
             }}>
             Select any 1 Option
           </Text>
@@ -460,7 +435,7 @@ const Home = ({navigation}) => {
           data={OrderTypeData}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            padding: 20,
+            paddingHorizontal: 20,
           }}
           initialNumToRender={5}
           renderItem={({item}) => (
@@ -494,7 +469,7 @@ const Home = ({navigation}) => {
           horizontal
           contentContainerStyle={{
             flexGrow: 1,
-            padding: 20,
+            paddingHorizontal: 20,
           }}>
           {products[0] &&
             products[0].map((item, index) => (
@@ -552,7 +527,7 @@ const Home = ({navigation}) => {
               <HorizontalFlatList
                 initialNumToRender={2}
                 data={categories[0]}
-                contentContainerStyle={{paddingHorizontal: 10, paddingLeft: 20}}
+                contentContainerStyle={{paddingHorizontal: 10}}
                 numRows={2}
                 keyExtractor={(item, row, col) => item.id}
                 renderItem={renderItemCategories}
@@ -560,8 +535,8 @@ const Home = ({navigation}) => {
             </Animated.View>
           </Animated.View>
         )}
-        <LoyaltyCard navigation={navigation} />
         <ReferCard navigation={navigation} />
+        <LoyaltyCard navigation={navigation} />
       </ScrollView>
 
       <SearchComponent open={openSearch} setOpen={setOpenSearch} />
@@ -602,7 +577,7 @@ const LoyaltyCard = ({navigation}) => {
       <ImageBackground
         imageStyle={{
           resizeMode: 'contain',
-          borderRadius: 20,
+          borderRadius: BorderRadius,
         }}
         style={{
           shadowColor: 'rgba(0,0,0,0.4)',
@@ -619,9 +594,8 @@ const LoyaltyCard = ({navigation}) => {
           justifyContent: 'center',
           flex: 1,
           marginBottom: 30,
-          marginTop: 30,
         }}
-        source={require('../../../assets/images/pics/loyaltyBg.png')}>
+        source={require('../../../assets/images/pics/loyaltyBg.jpg')}>
         <Text
           style={{
             fontSize: 24,
@@ -686,7 +660,7 @@ const ReferCard = ({navigation}) => {
       <ImageBackground
         imageStyle={{
           resizeMode: 'contain',
-          borderRadius: 20,
+          borderRadius: BorderRadius,
         }}
         style={{
           shadowColor: 'rgba(0,0,0,0.4)',
@@ -702,10 +676,10 @@ const ReferCard = ({navigation}) => {
           paddingLeft: 25,
           justifyContent: 'center',
           flex: 1,
-          marginBottom: 20,
-          marginTop: 0,
+          marginBottom: 30,
+          marginTop: 30,
         }}
-        source={require('../../../assets/images/pics/referBg.png')}>
+        source={require('../../../assets/images/pics/referBg.jpg')}>
         <Text
           style={{
             fontSize: 24,
@@ -767,7 +741,7 @@ const Header = ({navigation, cart, wishlist}) => {
               iconFamily={'Ionicons'}
               name={'heart-outline'}
               size={20}
-              color={Color.secondary}
+              color={Color.tertiary}
             />
           </TouchableOpacity>
           {wishlist.addedItems.length > 0 && (
@@ -791,7 +765,7 @@ const Header = ({navigation, cart, wishlist}) => {
             iconFamily={'Ionicons'}
             name={'scan'}
             size={20}
-            color={Color.secondary}
+            color={Color.tertiary}
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -801,7 +775,7 @@ const Header = ({navigation, cart, wishlist}) => {
             iconFamily={'Ionicons'}
             name={'notifications-outline'}
             size={20}
-            color={Color.secondary}
+            color={Color.tertiary}
           />
         </TouchableOpacity>
         <View>
@@ -816,7 +790,7 @@ const Header = ({navigation, cart, wishlist}) => {
               iconFamily={'Feather'}
               name={'shopping-bag'}
               size={20}
-              color={Color.secondary}
+              color={Color.tertiary}
             />
           </TouchableOpacity>
           {cart.addedItems.length > 0 && (

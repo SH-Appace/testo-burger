@@ -10,7 +10,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useIsFocused} from '@react-navigation/native';
 import AppBar from '../../../components/AppBar';
 import Button from '../../../components/Button';
-import {GlobalStyle, Font, Window, Color} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Font,
+  Window,
+  Color,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 import Icon from '../../../core/Icon';
 import {RadioButton} from 'react-native-paper';
 import styles from './DeliveryStyle';
@@ -90,16 +96,8 @@ const DeliverTo = ({
         backgroundColor: Color.light,
 
         marginTop: 20,
-        borderRadius: 24,
-        shadowColor: 'rgba(0,0,0,0.4)',
-        shadowOffset: {
-          width: 0,
-          height: 5,
-        },
-        shadowOpacity: 0.36,
-        shadowRadius: 6.68,
+        borderRadius: BorderRadius,
 
-        elevation: 11,
         overflow: 'hidden',
       }}>
       <Swipeable
@@ -236,10 +234,10 @@ const Delivery = ({route, navigation}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{backgroundColor: Color.light, flex: 1}}>
+    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}}>
       <StatusBar
         animated={true}
-        backgroundColor={loading ? '#555555' : Color.light}
+        backgroundColor={loading ? '#555555' : '#F9F9F9'}
         barStyle={loading ? 'light-content' : 'dark-content'}
         showHideTransition={'fade'}
       />
@@ -268,7 +266,7 @@ const Delivery = ({route, navigation}) => {
         <Button
           text="Add New Address"
           isIcon={false}
-          theme="alternate"
+          theme="secondary"
           onPressFunc={() =>
             navigation.navigate('SetLocation', {
               edit: false,
