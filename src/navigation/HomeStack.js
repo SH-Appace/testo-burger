@@ -46,17 +46,3 @@ const HomeStack = ({style}) => {
   );
 };
 export default HomeStack;
-const styles = StyleSheet.create({
-  stack: {
-    flex: 1,
-    shadowColor: '#FFF',
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.44,
-    shadowRadius: 10.32,
-    elevation: 5,
-    overflow: 'hidden',
-  },
-});
