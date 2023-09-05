@@ -1,5 +1,12 @@
-import {Linking, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  FlatList,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import React, {useRef} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   BorderRadius,
@@ -27,9 +34,10 @@ const BookATable = ({navigation}) => {
   const [deliveryTimeObject, setDeliveryTimeObject] = useState(null);
   const [open, setOpen] = useState(false);
   const [openTime, setOpenTime] = useState(false);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
-  const {cart, auth, branch} = useSelector(state => ({...state}));
-  console.log(selectedBranch);
+  const screenRef = useRef(null);
+
   const decrementValue = name => {
     if (quantity === 1) return;
     setQuantity(prevVal => prevVal - 1);
@@ -71,14 +79,39 @@ const BookATable = ({navigation}) => {
     setDeliveryTimeObject(dateObject);
     setDeliveryTime(prev => `${prev} ${hours}:${minutes}:00`);
   };
+  //Update tabs functions
+  const goToNextSlide = () => {
+    const nextSlideIndex = currentSlideIndex + 1;
+    if (currentSlideIndex === 1) {
+      return;
+    }
+    if (nextSlideIndex != 2) {
+      const offset = nextSlideIndex * Window.width;
+      screenRef?.current.scrollToOffset({offset});
+      setCurrentSlideIndex(currentSlideIndex + 1);
+    }
+  };
+  const goToPrevSlide = () => {
+    const nextSlideIndex = currentSlideIndex - 1;
+    if (currentSlideIndex === 0) {
+      return;
+    }
+    if (nextSlideIndex != 2) {
+      const offset = nextSlideIndex * Window.width;
+      screenRef?.current.scrollToOffset({offset});
 
+      setCurrentSlideIndex(currentSlideIndex - 1);
+    }
+  };
   return (
-    <SafeAreaView style={GlobalStyle.Container}>
-      <AppBar
-        center={
-          <Text style={GlobalStyle.AppCenterTextStyle}>Book A Table</Text>
-        }
-      />
+    <SafeAreaView style={styles.container}>
+      <View style={{paddingHorizontal: Window.fixPadding * 2}}>
+        <AppBar
+          center={
+            <Text style={GlobalStyle.AppCenterTextStyle}>Book A Table</Text>
+          }
+        />
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{flex: 1}}
@@ -88,112 +121,34 @@ const BookATable = ({navigation}) => {
           style={{alignSelf: 'center', marginVertical: 25}}
           resizeMode="contain"
         />
-        <View style={styles.box}>
-          <View style={[styles.boxRow, {justifyContent: 'space-between'}]}>
-            <Text style={styles.boxHeading}>Select Branch</Text>
-            {branchId === '' && (
-              <Icon
-                iconFamily={'Ionicons'}
-                color={Color.primary}
-                name="warning"
-                size={22}
-              />
-            )}
-          </View>
-          <View style={GlobalStyle.TopBorderStyle} />
-          {branch[0].map((item, index) => (
-            <DeliveryDetails
+        <FlatList
+          ref={screenRef}
+          data={[1, 2]}
+          horizontal
+          snapToAlignment="start"
+          decelerationRate={'fast'}
+          snapToInterval={Window.width}
+          scrollEnabled={false}
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          renderItem={({item}) => (
+            <Slide
+              item={item}
+              navigation={navigation}
               branchId={branchId}
               setBranchId={setBranchId}
+              selectedBranch={selectedBranch}
               setSelectedBranch={setSelectedBranch}
-              item={item}
-              key={index}
+              decrementValue={decrementValue}
+              incrementValue={incrementValue}
+              setOpen={setOpen}
+              deliveryTimeObject={deliveryTimeObject}
+              quantity={quantity}
+              goToNextSlide={goToNextSlide}
+              goToPrevSlide={goToPrevSlide}
             />
-          ))}
-        </View>
-        {selectedBranch !== null && (
-          <View style={styles.box}>
-            <Text style={styles.boxHeading}>Reservation Date/Time</Text>
-            <View style={GlobalStyle.TopBorderStyle}></View>
-            <TouchableOpacity
-              onPress={() => setOpen(true)}
-              style={[styles.boxRow, {justifyContent: 'space-between'}]}>
-              <View style={styles.boxRow}>
-                <Icon
-                  iconFamily={'MaterialCommunityIcons'}
-                  name={'clock'}
-                  size={35}
-                  color={Color.primary}
-                />
-                <Text style={[styles.boxText, {marginLeft: 15}]}>
-                  {deliveryTimeObject !== null
-                    ? deliveryTimeObject.toDateString() +
-                      ', ' +
-                      deliveryTimeObject.toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true,
-                      })
-                    : 'Select'}
-                </Text>
-              </View>
-
-              <Icon
-                iconFamily={'Entypo'}
-                name={'chevron-right'}
-                size={20}
-                color={Color.primary}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
-        <View style={styles.box}>
-          <Text style={styles.boxHeading}>How Many Persons?</Text>
-          <View style={GlobalStyle.TopBorderStyle}></View>
-          <View style={[styles.boxRow, {justifyContent: 'space-between'}]}>
-            <View style={styles.boxRow}>
-              <View style={styles.circle}>
-                <Icon
-                  iconFamily={'Ionicons'}
-                  color={Color.light}
-                  name="person-add"
-                  size={15}
-                />
-              </View>
-              <Text style={styles.boxText}>
-                {quantity} Adult{quantity > 1 ? 's' : ''}
-              </Text>
-            </View>
-
-            <View style={styles.boxRow}>
-              <TouchableOpacity
-                style={styles.incrementDecrementBtn}
-                onPress={() => decrementValue('adult')}>
-                <Icon
-                  iconFamily={'AntDesign'}
-                  name={'minus'}
-                  style={styles.minusStyle}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.incrementDecrementBtn,
-                  {backgroundColor: Color.primary, marginLeft: 15},
-                ]}
-                onPress={() => incrementValue('adult')}>
-                <Icon
-                  iconFamily={'Ionicons'}
-                  name={'md-add'}
-                  color={Color.light}
-                  style={styles.addStyle}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-        <View style={{marginVertical: 15}} />
-        <Button theme="primary" text="Confirm Now" onPressFunc={() => {}} />
+          )}
+        />
       </ScrollView>
       <DatePickerModal
         locale="en"
@@ -234,6 +189,10 @@ const BookATable = ({navigation}) => {
 export default BookATable;
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#F9F9F9',
+    flex: 1,
+  },
   boxHeading: {
     fontSize: 20,
     color: Color.tertiary,
@@ -281,6 +240,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontFamily: Font.Urbanist_Black,
+  },
+  confirmHeading: {
+    color: Color.primary,
+    fontFamily: Font.Urbanist_Medium,
+    letterSpacing: 0.13,
+    fontSize: 13,
+    textTransform: 'uppercase',
   },
 });
 const DeliveryDetails = ({item, setBranchId, branchId, setSelectedBranch}) => {
@@ -347,5 +313,228 @@ const DeliveryDetails = ({item, setBranchId, branchId, setSelectedBranch}) => {
         }}
       />
     </TouchableOpacity>
+  );
+};
+
+const Slide = ({
+  item,
+  branchId,
+  setBranchId,
+  selectedBranch,
+  setSelectedBranch,
+  decrementValue,
+  incrementValue,
+  setOpen,
+  deliveryTimeObject,
+  quantity,
+  navigation,
+  goToNextSlide,
+  goToPrevSlide,
+}) => {
+  const {branch} = useSelector(state => ({...state}));
+  const timeObj = deliveryTimeObject !== null ? deliveryTimeObject : new Date();
+  const formattedTime = timeObj.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+  const [time, amOrPm] = formattedTime.split(' ');
+
+  return (
+    <View
+      style={{
+        // alignItems: 'center',
+        width: Window.width,
+        paddingHorizontal: Window.fixPadding * 2,
+      }}>
+      {item === 1 ? (
+        <>
+          <View style={styles.box}>
+            <View style={[styles.boxRow, {justifyContent: 'space-between'}]}>
+              <Text style={styles.boxHeading}>Select Branch</Text>
+              {branchId === '' && (
+                <Icon
+                  iconFamily={'Ionicons'}
+                  color={Color.primary}
+                  name="warning"
+                  size={22}
+                />
+              )}
+            </View>
+            <View style={GlobalStyle.TopBorderStyle} />
+            {branch[0].map((item, index) => (
+              <DeliveryDetails
+                branchId={branchId}
+                setBranchId={setBranchId}
+                setSelectedBranch={setSelectedBranch}
+                item={item}
+                key={index}
+              />
+            ))}
+          </View>
+          {selectedBranch !== null && (
+            <View style={styles.box}>
+              <Text style={styles.boxHeading}>Reservation Date/Time</Text>
+              <View style={GlobalStyle.TopBorderStyle}></View>
+              <TouchableOpacity
+                onPress={() => setOpen(true)}
+                style={[styles.boxRow, {justifyContent: 'space-between'}]}>
+                <View style={styles.boxRow}>
+                  <Icon
+                    iconFamily={'MaterialCommunityIcons'}
+                    name={'clock'}
+                    size={35}
+                    color={Color.primary}
+                  />
+                  <Text style={[styles.boxText, {marginLeft: 15}]}>
+                    {deliveryTimeObject !== null
+                      ? deliveryTimeObject.toDateString() +
+                        ', ' +
+                        deliveryTimeObject.toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true,
+                        })
+                      : 'Select'}
+                  </Text>
+                </View>
+
+                <Icon
+                  iconFamily={'Entypo'}
+                  name={'chevron-right'}
+                  size={20}
+                  color={Color.primary}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+          <View style={styles.box}>
+            <Text style={styles.boxHeading}>How Many Persons?</Text>
+            <View style={GlobalStyle.TopBorderStyle}></View>
+            <View style={[styles.boxRow, {justifyContent: 'space-between'}]}>
+              <View style={styles.boxRow}>
+                <View style={styles.circle}>
+                  <Icon
+                    iconFamily={'Ionicons'}
+                    color={Color.light}
+                    name="person-add"
+                    size={15}
+                  />
+                </View>
+                <Text style={styles.boxText}>
+                  {quantity} Adult{quantity > 1 ? 's' : ''}
+                </Text>
+              </View>
+
+              <View style={styles.boxRow}>
+                <TouchableOpacity
+                  style={styles.incrementDecrementBtn}
+                  onPress={() => decrementValue('adult')}>
+                  <Icon
+                    iconFamily={'AntDesign'}
+                    name={'minus'}
+                    style={styles.minusStyle}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.incrementDecrementBtn,
+                    {backgroundColor: Color.primary, marginLeft: 15},
+                  ]}
+                  onPress={() => incrementValue('adult')}>
+                  <Icon
+                    iconFamily={'Ionicons'}
+                    name={'md-add'}
+                    color={Color.light}
+                    style={styles.addStyle}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View style={{marginVertical: 15}} />
+          <Button
+            theme="primary"
+            text="Confirm Now"
+            onPressFunc={() => {
+              goToNextSlide();
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <View
+            style={[
+              styles.boxRow,
+              {
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+                borderColor: '#ebebeb',
+                padding: 10,
+              },
+            ]}>
+            <View style={{flex: 1}}>
+              <Text style={styles.confirmHeading}>NUMBER OF PERSONS </Text>
+              <Text
+                style={{
+                  fontFamily: Font.Urbanist_Bold,
+                  fontSize: 18,
+                  lineHeight: 21.6,
+                  color: Color.tertiary,
+                  marginTop: 10,
+                }}>
+                <Text style={{fontSize: 30, lineHeight: 40.8}}>{quantity}</Text>{' '}
+                Adult
+                {quantity > 1 ? 's' : ''}{' '}
+              </Text>
+            </View>
+            <View style={{flex: 1}}>
+              <Text style={styles.confirmHeading}>TIME SLOT</Text>
+              {deliveryTimeObject !== null && (
+                <Text
+                  style={{
+                    fontFamily: Font.Urbanist_Bold,
+                    fontSize: 18,
+                    color: Color.tertiary,
+                    marginTop: 10,
+                  }}>
+                  <Text style={{fontSize: 30, lineHeight: 40.8}}>{time}</Text>{' '}
+                  {amOrPm}
+                </Text>
+              )}
+            </View>
+          </View>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderColor: '#ebebeb',
+              padding: 10,
+            }}>
+            <Text style={styles.confirmHeading}>Reservation Date</Text>
+            <Text
+              style={{
+                fontFamily: Font.Urbanist_Bold,
+                fontSize: 18,
+                lineHeight: 21.6,
+                color: Color.tertiary,
+                marginTop: 10,
+              }}>
+              {deliveryTimeObject.toDateString()}
+            </Text>
+          </View>
+          <View style={{marginVertical: 15}} />
+          <Button theme="primary" text="Book Now" onPressFunc={() => {}} />
+          <View style={{marginVertical: 15}} />
+          <Button
+            theme="secondary"
+            text="Cancel"
+            onPressFunc={() => {
+              goToPrevSlide();
+            }}
+          />
+        </>
+      )}
+    </View>
   );
 };
