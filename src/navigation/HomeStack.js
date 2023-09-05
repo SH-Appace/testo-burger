@@ -16,6 +16,7 @@ import QRCode from '../screens/main/QRCode/QRCode';
 import Wishlist from '../screens/main/wishlist/Wishlist';
 import RecommendedFoods from '../screens/main/recommendedFoods/RecommendedFoods';
 import PaymentScreen from '../screens/main/paymentScreen/PaymentScreen';
+import BookATable from '../screens/main/bookATable/BookATable';
 
 const HomeStack = ({style}) => {
   const Stack = createNativeStackNavigator();
@@ -42,6 +43,7 @@ const HomeStack = ({style}) => {
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="SearchType" component={SearchType} />
       <Stack.Screen name="Wishlist" component={Wishlist} />
+      <Stack.Screen name="BookATable" component={BookATable} />
     </Stack.Navigator>
   );
 };

@@ -81,12 +81,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   incrementDecrementBtn: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     borderRadius: BorderRadius,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F9F9F9',
+    borderWidth: 1,
+    borderColor: Color.primary,
   },
 });
 

@@ -25,6 +25,7 @@ import styles from './HomePageStyle';
 import {OrderTypeData} from './HomePageDetails';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  BookSvg,
   DeliverySvgs,
   LoyaltySvg,
   PickupSvgs,
@@ -332,8 +333,17 @@ const Home = ({navigation}) => {
     return () => backHandler.remove();
   }, []);
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#F9F9F9'}} edges={{ top: 'maximum',right: 'maximum', left: 'maximum', bottom: hasNotch && Platform.OS === 'ios' ? "": "maximum"}}>
-      <ScrollView contentContainerStyle={{flexGrow: 1, paddingTop: 20}} showsVerticalScrollIndicator={false}>
+    <SafeAreaView
+      style={{flex: 1, backgroundColor: '#F9F9F9'}}
+      edges={{
+        top: 'maximum',
+        right: 'maximum',
+        left: 'maximum',
+        bottom: hasNotch && Platform.OS === 'ios' ? '' : 'maximum',
+      }}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1, paddingTop: 20}}
+        showsVerticalScrollIndicator={false}>
         <View
           style={{
             paddingHorizontal: Window.fixPadding * 2,
@@ -541,6 +551,7 @@ const Home = ({navigation}) => {
         )}
         <ReferCard navigation={navigation} />
         <LoyaltyCard navigation={navigation} />
+        <BookCard navigation={navigation} />
       </ScrollView>
 
       <SearchComponent open={openSearch} setOpen={setOpenSearch} />
@@ -551,7 +562,21 @@ const Home = ({navigation}) => {
 const LoyaltyCard = ({navigation}) => {
   return (
     <TouchableOpacity
-    style={{borderRadius: BorderRadius,overflow: 'hidden'}}
+      style={{
+        borderRadius: BorderRadius,
+        marginHorizontal: Window.fixPadding * 2,
+        height: 113,
+        marginVertical: 15,
+        shadowColor: 'rgba(0,0,0,0.4)',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 22,
+      }}
       onPress={() =>
         navigation.reset({
           index: 0,
@@ -581,25 +606,15 @@ const LoyaltyCard = ({navigation}) => {
       }>
       <ImageBackground
         imageStyle={{
-          resizeMode: 'contain',
+          resizeMode: 'cover',
           borderRadius: BorderRadius,
         }}
         style={{
+          width: '100%',
+          height: '100%',
           borderRadius: BorderRadius,
-          shadowColor: 'rgba(0,0,0,0.4)',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 22,
-          marginHorizontal: 20,
-          height: 113,
-          paddingLeft: 25,
+
           justifyContent: 'center',
-          flex: 1,
-          marginBottom: 30,
         }}
         source={require('../../../assets/images/pics/loyaltyBg.jpg')}>
         <Text
@@ -608,6 +623,7 @@ const LoyaltyCard = ({navigation}) => {
             fontFamily: Font.Urbanist_Black,
             color: Color.light,
             width: Window.width / 2.2,
+            marginLeft: 25,
           }}>
           Collect Points For Every Order
         </Text>
@@ -616,6 +632,7 @@ const LoyaltyCard = ({navigation}) => {
             fontSize: 14,
             fontFamily: Font.Urbanist_Regular,
             color: Color.light,
+            marginLeft: 25,
           }}>
           earn points & get discounts
         </Text>
@@ -636,6 +653,23 @@ const LoyaltyCard = ({navigation}) => {
 const ReferCard = ({navigation}) => {
   return (
     <TouchableOpacity
+      style={{
+        borderRadius: BorderRadius,
+        // overflow: 'hidden',
+        marginHorizontal: Window.fixPadding * 2,
+        height: 113,
+        marginVertical: 15,
+        marginTop: 30,
+        shadowColor: 'rgba(0,0,0,0.4)',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 22,
+      }}
       onPress={() =>
         navigation.reset({
           index: 0,
@@ -665,25 +699,15 @@ const ReferCard = ({navigation}) => {
       }>
       <ImageBackground
         imageStyle={{
-          resizeMode: 'contain',
+          resizeMode: 'cover',
           borderRadius: BorderRadius,
         }}
         style={{
-          shadowColor: 'rgba(0,0,0,0.4)',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 22,
-          marginHorizontal: 20,
-          height: 113,
-          paddingLeft: 25,
+          width: '100%',
+          height: '100%',
+          borderRadius: BorderRadius,
+
           justifyContent: 'center',
-          flex: 1,
-          marginBottom: 30,
-          marginTop: 30,
         }}
         source={require('../../../assets/images/pics/referBg.jpg')}>
         <Text
@@ -691,6 +715,7 @@ const ReferCard = ({navigation}) => {
             fontSize: 24,
             fontFamily: Font.Urbanist_Black,
             color: Color.light,
+            marginLeft: 25,
           }}>
           Refer a Friend
         </Text>
@@ -699,6 +724,7 @@ const ReferCard = ({navigation}) => {
             fontSize: 14,
             fontFamily: Font.Urbanist_Regular,
             color: Color.light,
+            marginLeft: 25,
           }}>
           and both get a discount!
         </Text>
@@ -711,6 +737,71 @@ const ReferCard = ({navigation}) => {
             top: -40,
           }}>
           <ReferSvg width={Window.width / 2.35} height={Window.width / 2.2} />
+        </View>
+      </ImageBackground>
+    </TouchableOpacity>
+  );
+};
+const BookCard = ({navigation}) => {
+  return (
+    <TouchableOpacity
+      style={{
+        borderRadius: BorderRadius,
+        overflow: 'hidden',
+        marginHorizontal: Window.fixPadding * 2,
+        height: 113,
+        marginVertical: 15,
+        shadowColor: 'rgba(0,0,0,0.4)',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 22,
+      }}
+      onPress={() => navigation.navigate('BookATable')}>
+      <ImageBackground
+        imageStyle={{
+          resizeMode: 'cover',
+          borderRadius: BorderRadius,
+        }}
+        style={{
+          width: '100%',
+          height: '100%',
+          borderRadius: BorderRadius,
+
+          justifyContent: 'center',
+        }}
+        source={require('../../../assets/images/pics/bookBg.png')}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontFamily: Font.Urbanist_Black,
+            color: Color.light,
+            marginLeft: 25,
+          }}>
+          Book a Table
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: Font.Urbanist_Regular,
+            color: Color.light,
+            marginLeft: 25,
+          }}>
+          earn point & get discount
+        </Text>
+        <View
+          style={{
+            width: Window.width / 2.2,
+            height: Window.width / 2.2,
+            position: 'absolute',
+            right: -20,
+            top: -30,
+          }}>
+          <BookSvg width={Window.width / 2.35} height={Window.width / 2.2} />
         </View>
       </ImageBackground>
     </TouchableOpacity>

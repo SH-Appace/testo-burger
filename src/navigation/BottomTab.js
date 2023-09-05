@@ -181,6 +181,7 @@ const hiddenTabrBarScreens = [
   'RecommendedFoods',
   'OrderReview',
   'Loyalty',
+  'BookATable',
 ];
 const styles = StyleSheet.create({
   stack: {
