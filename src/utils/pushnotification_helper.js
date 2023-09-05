@@ -16,10 +16,17 @@ async function GetFCMToken() {
   let fcmtoken = await AsyncStorage.getItem('fcmtoken');
   if (!fcmtoken) {
     try {
-      let fcmtoken = await messaging().getToken();
-      if (fcmtoken) {
-        await AsyncStorage.setItem('fcmtoken', fcmtoken);
-      }
+      messaging().registerDeviceForRemoteMessages().then(async() => {
+        // Now you can safely call getToken
+        let fcmtoken =  await messaging().getToken();
+        return fcmtoken
+      }).then(async(token) => {
+        await AsyncStorage.setItem('fcmtoken', token);
+        // Do something with the token
+      }).catch((error) => {
+        console.error('Error registering device:', error);
+      });
+     
     } catch (e) {
       console.log('err', e);
     }

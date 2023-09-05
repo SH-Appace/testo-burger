@@ -25,6 +25,7 @@ import {SkypeIndicator} from 'react-native-indicators';
 import {showMessage} from 'react-native-flash-message';
 import {useBackButton} from '../../../hooks';
 import {StatusBar} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const QRCode = ({navigation}) => {
   const [coupon, setCoupon] = useState('');
@@ -33,6 +34,7 @@ const QRCode = ({navigation}) => {
 
   const {auth} = useSelector(state => ({...state}));
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
 
   const onSuccess = e => {
     if (coupon !== '') {
@@ -76,7 +78,7 @@ const QRCode = ({navigation}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <StatusBar
         animated={true}
         backgroundColor={'#961111'}
@@ -86,7 +88,7 @@ const QRCode = ({navigation}) => {
       <ImageBackground
         source={require('../../../assets/images/pics/backgroundBurger.png')}
         resizeMode="cover"
-        style={{flex: 1}}>
+        style={{flex: 1,paddingTop: insets.top}}>
         <View style={{paddingHorizontal: Window.fixPadding * 2}}>
           <AppBar
             iconColor={Color.light}
@@ -231,7 +233,7 @@ const QRCode = ({navigation}) => {
           <SkypeIndicator size={50} color={Color.grey} />
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 export default QRCode;

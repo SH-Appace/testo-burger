@@ -25,7 +25,7 @@ const PhoneInputComponent = ({
   setRefresh,
 }) => {
   const [focused, setFocused] = useState(false);
-  const [countryCode, setCountryCode] = useState('PK');
+  const [countryCode, setCountryCode] = useState('US');
   const [newNumber, setNewNumber] = useState('');
 
   const phoneInputRef = useRef(null);

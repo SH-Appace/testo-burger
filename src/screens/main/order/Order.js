@@ -39,6 +39,7 @@ import {SkypeIndicator} from 'react-native-indicators';
 import BottomPopupReorder from '../../../components/BottomPopupReorder';
 import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {useBackButton} from '../../../hooks';
+import DeviceInfo from 'react-native-device-info';
 
 const ActiveRoute = ({setVisible, orders, setPopupData}) => {
   let navigation = useNavigation();
@@ -426,7 +427,7 @@ const renderScene = props => {
   switch (props.route.key) {
     case 'active':
       return (
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
           <ActiveRoute
             setVisible={props.route.setVisible}
             orders={props.route.orders}
@@ -437,7 +438,7 @@ const renderScene = props => {
       );
     case 'completed':
       return (
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
           <CompletedRoute
             setVisible={props.route.setVisible}
             orders={props.route.orders}
@@ -449,7 +450,7 @@ const renderScene = props => {
       );
     case 'cancelled':
       return (
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
           <CancelledRoute
             setVisible={props.route.setVisible}
             orders={props.route.orders}
@@ -494,7 +495,7 @@ const Order = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
   const [routes, setRoutes] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
-
+  let hasNotch = DeviceInfo.hasNotch();
   const isFocused = useIsFocused();
   const {auth} = useSelector(state => ({...state}));
   useEffect(() => {
@@ -549,7 +550,7 @@ const Order = ({navigation, route}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}}>
+    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}} edges={{ top: 'maximum',right: 'maximum', left: 'maximum', bottom: hasNotch && Platform.OS === 'ios' ? "": "maximum"}}>
       <StatusBar
         animated={true}
         backgroundColor={loading ? '#555555' : '#F9F9F9'}

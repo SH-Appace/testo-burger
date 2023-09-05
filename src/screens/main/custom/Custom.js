@@ -19,10 +19,9 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Icon from '../../../core/Icon';
 import styles from './CustomStyle';
-import {Checkbox, TouchableRipple} from 'react-native-paper';
+import {Checkbox, TouchableRipple,RadioButton} from 'react-native-paper';
 import Button from '../../../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
-import {RadioButton} from 'react-native-paper';
 import {useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {showMessage} from 'react-native-flash-message';
@@ -185,7 +184,7 @@ const AddOns = ({item, setPriceAmount, setSelectedAddons, selectedAddons}) => {
               backgroundColor: 'rgba(246, 244, 244, 1)',
               overflow: 'hidden',
             }}>
-            <Checkbox.Item
+            <Checkbox.Android
               style={{
                 transform: [{scaleX: 1}, {scaleY: 1}],
               }}
@@ -354,13 +353,14 @@ const VariationItem = ({
                 justifyContent: 'center',
                 marginHorizontal: 6,
                 overflow: 'hidden',
-                transform: [{scaleX: 1.1}, {scaleY: 1.1}],
+                transform: [{scaleX: 1.1}, {scaleY: 1.1},],
               }}>
-              <RadioButton
+              <RadioButton.Android
                 uncheckedColor={Color.primary}
                 color={Color.primary}
                 value={index}
                 name="meal"
+                style={{marginLeft: -10}}
                 // status={radioState === index ? 'checked' : 'unchecked'}
                 status={
                   selectedVariations.some(x =>
@@ -387,7 +387,7 @@ const VariationItem = ({
                 backgroundColor: 'rgba(246, 244, 244, 1)',
                 overflow: 'hidden',
               }}>
-              <Checkbox.Item
+              <Checkbox.Android
                 style={{
                   transform: [{scaleX: 1}, {scaleY: 1}],
                 }}
@@ -582,8 +582,8 @@ const Custom = ({route, navigation}) => {
           </TouchableOpacity>
         }
       />
-      <ScrollView>
-        <View style={{marginTop: 25}}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{marginVertical: 25}}>
           <Cart
             setPriceAmount={setPriceAmount}
             item={product}
@@ -593,11 +593,9 @@ const Custom = ({route, navigation}) => {
         </View>
         {product.add_ons.length > 0 && (
           <>
-            <View style={{marginTop: 0}}>
-              <Text style={{color: '#2A3B56', fontSize: 14, fontWeight: '800'}}>
+              <Text style={{color: '#2A3B56', fontSize: 14, fontFamily:Font.Urbanist_Black}}>
                 Add Ons
               </Text>
-            </View>
             <View style={{marginVertical: 10}}>
               {product.add_ons.map((item, index) => (
                 <AddOns
@@ -615,7 +613,6 @@ const Custom = ({route, navigation}) => {
           <>
             {product.variations.map((variation, index) => (
               <>
-                <View key={index} style={{marginVertical: 10}} />
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text

@@ -517,7 +517,7 @@ const DeliveryDetails = ({item, setBranchId, branchId, setSelectedBranch}) => {
           </View>
         </View>
       }
-      <RadioButton
+      <RadioButton.Android
         uncheckedColor={Color.primary}
         color={Color.primary}
         value="first"
@@ -597,7 +597,7 @@ const TimeDetails = ({
           </View>
         </View>
       }
-      <RadioButton
+      <RadioButton.Android
         uncheckedColor={Color.primary}
         color={Color.primary}
         value="first"

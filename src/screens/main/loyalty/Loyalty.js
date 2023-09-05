@@ -6,7 +6,6 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import AppBar from '../../../components/AppBar';
 import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
 import {useSelector} from 'react-redux';
@@ -15,9 +14,11 @@ import Icon from '../../../core/Icon';
 import {useBackButton} from '../../../hooks';
 import {Switch} from 'react-native-paper';
 import {StatusBar} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Loyalty = ({route, navigation}) => {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const {auth} = useSelector(state => ({
     ...state,
@@ -50,7 +51,7 @@ const Loyalty = ({route, navigation}) => {
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <StatusBar
         animated={true}
         backgroundColor={'#f6b41c'}
@@ -60,7 +61,7 @@ const Loyalty = ({route, navigation}) => {
       <ImageBackground
         source={require('../../../assets/images/pics/backgroundBurgerYellow.png')}
         resizeMode="cover"
-        style={{flex: 1}}>
+        style={{flex: 1,paddingTop: insets.top}}>
         <View style={{paddingHorizontal: Window.fixPadding * 2}}>
           <AppBar
             left={
@@ -186,7 +187,7 @@ const Loyalty = ({route, navigation}) => {
           </View>
         </View>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 

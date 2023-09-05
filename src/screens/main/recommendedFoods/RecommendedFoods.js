@@ -22,13 +22,14 @@ import {useState} from 'react';
 import Icon from '../../../core/Icon';
 import {useNavigation} from '@react-navigation/native';
 import styles from './RecommendedFoodsStyles';
-import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {getRecommendedProductsReq} from '../../../apis/categories';
 import Button from '../../../components/Button';
 import {useBackButton} from '../../../hooks';
+import DeviceInfo from 'react-native-device-info';
 
 const RecommendedFoods = ({navigation, route}) => {
-  const [active, setActive] = useState(0);
+  let hasNotch = DeviceInfo.hasNotch();
+
   const [data, setData] = useState([]);
   const {categories, products, auth} = useSelector(state => ({...state}));
   useEffect(() => {
@@ -41,7 +42,7 @@ const RecommendedFoods = ({navigation, route}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}}>
+    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}} edges={{ top: 'maximum', bottom: hasNotch && Platform.OS === 'ios' ? "": "maximum"}}>
       <View style={{marginHorizontal: Window.fixPadding * 2}}>
         <AppBar
           center={

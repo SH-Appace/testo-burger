@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AppBar from '../../../components/AppBar';
-import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
+import {BorderRadius, Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
 import Button from '../../../components/Button';
 import {useSelector} from 'react-redux';
 import {ReferaFriendSvg} from '../../../assets/svgs/ReferralsSvgs';
@@ -18,11 +18,14 @@ import Icon from '../../../core/Icon';
 import Share from 'react-native-share';
 import {useBackButton} from '../../../hooks';
 import {StatusBar} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Referral = ({route, navigation}) => {
   const {auth} = useSelector(state => ({
     ...state,
   }));
+  const insets = useSafeAreaInsets();
+
   const url = auth.user.ref_code;
   const title = 'Testo Burger';
   const message = 'Use the referral url to sign up now and get discounts';
@@ -55,7 +58,8 @@ const Referral = ({route, navigation}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1,}}>
+      
       <StatusBar
         animated={true}
         backgroundColor={'#961111'}
@@ -65,7 +69,7 @@ const Referral = ({route, navigation}) => {
       <ImageBackground
         source={require('../../../assets/images/pics/backgroundBurger.png')}
         resizeMode="cover"
-        style={{flex: 1}}>
+        style={{flex: 1,paddingTop: insets.top}}>
         <View style={{paddingHorizontal: Window.fixPadding * 2}}>
           <AppBar
             left={
@@ -118,8 +122,8 @@ const Referral = ({route, navigation}) => {
             paddingTop: 25,
             paddingBottom: 25,
             backgroundColor: Color.light,
-            borderTopLeftRadius: 36,
-            borderTopRightRadius: 36,
+            borderTopLeftRadius: BorderRadius,
+            borderTopRightRadius: BorderRadius,
             justifyContent: 'space-evenly',
           }}>
           <Text
@@ -136,7 +140,7 @@ const Referral = ({route, navigation}) => {
             style={{
               // flex: 1,
               borderColor: Color.primary,
-              borderRadius: 15,
+              borderRadius: BorderRadius,
               borderWidth: 2,
               borderStyle: 'dashed',
               paddingHorizontal: 10,
@@ -187,7 +191,7 @@ const Referral = ({route, navigation}) => {
           />
         </View>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 

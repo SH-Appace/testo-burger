@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   BackHandler,
+  Platform,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
@@ -41,6 +42,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Swiper from 'react-native-swiper';
 import {updateFCMToken} from '../../../apis/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DeviceInfo from 'react-native-device-info';
 const OrderType = ({item, cart, navigation}) => {
   const dispatch = useDispatch();
 
@@ -203,6 +205,8 @@ const Home = ({navigation}) => {
   const [catState, setCatState] = useState(false);
   const [bannerImg, setBannerImg] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
+  let hasNotch = DeviceInfo.hasNotch();
+
   const {categories, products, banners, auth, wishlist, cart} = useSelector(
     state => ({
       ...state,
@@ -328,8 +332,8 @@ const Home = ({navigation}) => {
     return () => backHandler.remove();
   }, []);
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#F9F9F9'}}>
-      <ScrollView contentContainerStyle={{flexGrow: 1, paddingTop: 20}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#F9F9F9'}} edges={{ top: 'maximum',right: 'maximum', left: 'maximum', bottom: hasNotch && Platform.OS === 'ios' ? "": "maximum"}}>
+      <ScrollView contentContainerStyle={{flexGrow: 1, paddingTop: 20}} showsVerticalScrollIndicator={false}>
         <View
           style={{
             paddingHorizontal: Window.fixPadding * 2,
@@ -547,6 +551,7 @@ const Home = ({navigation}) => {
 const LoyaltyCard = ({navigation}) => {
   return (
     <TouchableOpacity
+    style={{borderRadius: BorderRadius,overflow: 'hidden'}}
       onPress={() =>
         navigation.reset({
           index: 0,
@@ -580,6 +585,7 @@ const LoyaltyCard = ({navigation}) => {
           borderRadius: BorderRadius,
         }}
         style={{
+          borderRadius: BorderRadius,
           shadowColor: 'rgba(0,0,0,0.4)',
           shadowOffset: {
             width: 0,

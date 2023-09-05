@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Color.primary,
     height: 32,
+    lineHeight: 32,
     width: 32,
     borderRadius: 10,
   },

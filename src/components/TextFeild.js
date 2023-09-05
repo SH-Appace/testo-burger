@@ -44,7 +44,7 @@ const TextField = ({
           {
             backgroundColor: focused ? 'rgba(246, 181, 29, 0.10)' : '#F9F9F9',
             borderWidth: focused ? 1 : 0,
-            borderColor: Color.secondary,
+            borderColor: Color.secondary,height: multiline ? 100 : height,
           },
         ]}>
         <MaterialCommunityIcons

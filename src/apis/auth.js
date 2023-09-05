@@ -125,3 +125,29 @@ export async function signinReq(
     console.log('error sign in', err.response.data);
   }
 }
+
+export async function deleteAccount(setLoading,func,token,setModalVisible){
+  try{
+    setLoading(true)
+    const {data} = await axios.delete('customer/remove-account',{
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if(data){
+      func()
+      setLoading(false)
+      
+    }
+    
+  }catch(err){
+    setLoading(false)
+    setModalVisible(false)
+    showMessage({
+      message: err.response.data.errors[0].message,
+      type: 'danger',
+    });
+    console.log(err.response.data.errors[0].message)
+  }
+  }

@@ -8,7 +8,9 @@ import {
   LogoutIcon,
   ReferIcon,
   LoyaltyIcon,
+  DeleteAccountSvg,
 } from '../../../assets/svgs/ProfileSvgs';
+import { LogoutSvg, LogoutSvgPrimary } from '../../../assets/svgs/DrawerSvgs';
 
 const Data = [
   {
@@ -54,6 +56,17 @@ const Data = [
     name: 'Help Center',
     chevron: 'chevron-right',
     link: 'Faq',
+  },
+  {
+    id: 8,
+    icon: <LogoutSvgPrimary />,
+    name: 'Logout',
+  },
+  {
+    id: 9,
+    icon: <DeleteAccountSvg />,
+    name: 'Delete Account',
+
   },
 ];
 export default Data;

@@ -27,10 +27,13 @@ import {useBackButton} from '../../../hooks';
 import {NoFood} from '../../../assets/svgs/OrderSvgs';
 import {getSingleCategoryProducts} from '../../../apis/categories';
 import Loader from '../../../components/Loader';
+import DeviceInfo from 'react-native-device-info';
 const Menu = ({navigation, route}) => {
   const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  let hasNotch = DeviceInfo.hasNotch();
+
   const {categories, products, auth} = useSelector(state => ({...state}));
   useEffect(() => {
     if (route.params) {
@@ -85,7 +88,7 @@ const Menu = ({navigation, route}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}}>
+    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}} edges={{ top: 'maximum',right: 'maximum', left: 'maximum', bottom: hasNotch && Platform.OS === 'ios' ? "": "maximum"}}>
       <View style={{marginHorizontal: Window.fixPadding * 2}}>
         <AppBar
           left={
