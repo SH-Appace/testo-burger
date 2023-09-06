@@ -427,7 +427,9 @@ const renderScene = props => {
   switch (props.route.key) {
     case 'active':
       return (
-        <ScrollView contentContainerStyle={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}>
           <ActiveRoute
             setVisible={props.route.setVisible}
             orders={props.route.orders}
@@ -438,7 +440,9 @@ const renderScene = props => {
       );
     case 'completed':
       return (
-        <ScrollView contentContainerStyle={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}>
           <CompletedRoute
             setVisible={props.route.setVisible}
             orders={props.route.orders}
@@ -450,7 +454,9 @@ const renderScene = props => {
       );
     case 'cancelled':
       return (
-        <ScrollView contentContainerStyle={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}>
           <CancelledRoute
             setVisible={props.route.setVisible}
             orders={props.route.orders}
@@ -550,7 +556,14 @@ const Order = ({navigation, route}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}} edges={{ top: 'maximum',right: 'maximum', left: 'maximum', bottom: hasNotch && Platform.OS === 'ios' ? "": "maximum"}}>
+    <SafeAreaView
+      style={{backgroundColor: '#F9F9F9', flex: 1}}
+      edges={{
+        top: 'maximum',
+        right: 'maximum',
+        left: 'maximum',
+        bottom: hasNotch && Platform.OS === 'ios' ? '' : 'maximum',
+      }}>
       <StatusBar
         animated={true}
         backgroundColor={loading ? '#555555' : '#F9F9F9'}
@@ -591,7 +604,7 @@ const Order = ({navigation, route}) => {
             right: 0,
             backgroundColor: '#000000AA',
           }}>
-          <SkypeIndicator size={50} color={Color.grey} />
+          <SkypeIndicator size={50} color={Color.secondary} />
         </View>
       )}
       <BottomPopupReorder

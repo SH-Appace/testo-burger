@@ -20,13 +20,16 @@ import Icon from '../../../core/Icon';
 import {TouchableOpacity} from 'react-native';
 import {useState} from 'react';
 import {useSelector} from 'react-redux';
-import {RadioButton} from 'react-native-paper';
+import {Modal, RadioButton} from 'react-native-paper';
 import {TimePickerModal} from 'react-native-paper-dates';
 import {DatePickerModal} from 'react-native-paper-dates';
 import Button from '../../../components/Button';
 import {Image} from 'react-native';
+import {postBooking} from '../../../apis/bookATable';
+import {SkypeIndicator} from 'react-native-indicators';
 
 const BookATable = ({navigation}) => {
+  const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [branchId, setBranchId] = useState('');
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -35,8 +38,10 @@ const BookATable = ({navigation}) => {
   const [open, setOpen] = useState(false);
   const [openTime, setOpenTime] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [visiblePlaced, setVisiblePlaced] = useState(false);
 
   const screenRef = useRef(null);
+  const scrollViewRef = useRef();
 
   const decrementValue = name => {
     if (quantity === 1) return;
@@ -103,6 +108,20 @@ const BookATable = ({navigation}) => {
       setCurrentSlideIndex(currentSlideIndex - 1);
     }
   };
+  // Function to scroll to the top
+  const scrollToTop = () => {
+    if (scrollViewRef?.current) {
+      scrollViewRef?.current.scrollTo({y: 0, animated: true});
+    }
+  };
+
+  //modal
+  const hideModal = () => {
+    setVisiblePlaced(false);
+  };
+  const showModal = () => {
+    setVisiblePlaced(true);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={{paddingHorizontal: Window.fixPadding * 2}}>
@@ -113,9 +132,10 @@ const BookATable = ({navigation}) => {
         />
       </View>
       <ScrollView
+        ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
         style={{flex: 1}}
-        contentContainerStyle={{flexGrow: 1}}>
+        contentContainerStyle={{flexGrow: 1, paddingBottom: 25}}>
         <Image
           source={require('../../../assets/images/pics/tableImage.png')}
           style={{alignSelf: 'center', marginVertical: 25}}
@@ -146,6 +166,10 @@ const BookATable = ({navigation}) => {
               quantity={quantity}
               goToNextSlide={goToNextSlide}
               goToPrevSlide={goToPrevSlide}
+              scrollToTop={scrollToTop}
+              setLoading={setLoading}
+              loading={loading}
+              showModal={showModal}
             />
           )}
         />
@@ -181,6 +205,24 @@ const BookATable = ({navigation}) => {
         hours={12}
         minutes={0}
         confirmLabel={'Save'}
+      />
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: '#000000AA',
+          }}>
+          <SkypeIndicator size={50} color={Color.secondary} />
+        </View>
+      )}
+      <ReservationPopup
+        visible={visiblePlaced}
+        hideModal={hideModal}
+        navigation={navigation}
       />
     </SafeAreaView>
   );
@@ -330,8 +372,12 @@ const Slide = ({
   navigation,
   goToNextSlide,
   goToPrevSlide,
+  scrollToTop,
+  setLoading,
+  loading,
+  showModal,
 }) => {
-  const {branch} = useSelector(state => ({...state}));
+  const {branch, auth} = useSelector(state => ({...state}));
   const timeObj = deliveryTimeObject !== null ? deliveryTimeObject : new Date();
   const formattedTime = timeObj.toLocaleTimeString([], {
     hour: '2-digit',
@@ -339,7 +385,6 @@ const Slide = ({
     hour12: true,
   });
   const [time, amOrPm] = formattedTime.split(' ');
-
   return (
     <View
       style={{
@@ -457,7 +502,15 @@ const Slide = ({
           <Button
             theme="primary"
             text="Confirm Now"
+            disabled={
+              branchId === ''
+                ? true
+                : deliveryTimeObject === null
+                ? true
+                : false
+            }
             onPressFunc={() => {
+              scrollToTop();
               goToNextSlide();
             }}
           />
@@ -520,21 +573,114 @@ const Slide = ({
                 color: Color.tertiary,
                 marginTop: 10,
               }}>
-              {deliveryTimeObject.toDateString()}
+              {deliveryTimeObject !== null && deliveryTimeObject.toDateString()}
             </Text>
           </View>
           <View style={{marginVertical: 15}} />
-          <Button theme="primary" text="Book Now" onPressFunc={() => {}} />
+          <Button
+            theme="primary"
+            text="Book Now"
+            onPressFunc={() => {
+              const timestamp = new Date(deliveryTimeObject);
+              const year = timestamp.getFullYear();
+              const month = timestamp.getMonth() + 1; // Months are 0-based, so add 1
+              const day = timestamp.getDate();
+              const hours = timestamp.getHours();
+              const minutes = timestamp.getMinutes();
+              const seconds = timestamp.getSeconds();
+              postBooking(
+                {
+                  branch_id: branchId,
+                  date: `${year}-${month}-${day}`,
+                  time: `${hours}:${minutes}:${seconds}`,
+                  person: quantity,
+                },
+                setLoading,
+                auth.token,
+                () => showModal(),
+              );
+            }}
+          />
           <View style={{marginVertical: 15}} />
           <Button
             theme="secondary"
             text="Cancel"
             onPressFunc={() => {
+              scrollToTop();
               goToPrevSlide();
             }}
           />
         </>
       )}
     </View>
+  );
+};
+
+const ReservationPopup = ({visible, hideModal, navigation}) => {
+  return (
+    <Modal
+      theme={{
+        colors: {
+          backdrop: '#000000AA',
+        },
+      }}
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+      onDismiss={hideModal}
+      // contentContainerStyle={containerStyle}
+    >
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#000000AA',
+          justifyContent: 'center',
+          paddingHorizontal: 30,
+        }}>
+        <View
+          style={{
+            height: 443,
+            backgroundColor: Color.light,
+            borderRadius: 20,
+            paddingHorizontal: 20,
+            marginHorizontal: 20,
+            justifyContent: 'center',
+          }}>
+          <Image
+            style={{alignSelf: 'center', width: 160, height: 160}}
+            source={require('../../../assets/images/pics/SmileEmoji.png')}
+          />
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: Font.Urbanist_Bold,
+              lineHeight: 24,
+              textAlign: 'center',
+              color: Color.primary,
+              marginTop: 20,
+            }}>
+            Table Reservation completed
+          </Text>
+          <View
+            style={{
+              marginVertical: 25,
+              width: 155,
+              alignSelf: 'center',
+            }}>
+            <Text style={{...GlobalStyle.BasicTextStyle, textAlign: 'center'}}>
+              Hope you will enjoy the dinner
+            </Text>
+          </View>
+          <Button
+            theme="primary"
+            text="OK"
+            onPressFunc={() => {
+              hideModal();
+              navigation.goBack();
+            }}
+          />
+        </View>
+      </View>
+    </Modal>
   );
 };

@@ -12,6 +12,12 @@ const CardData = [
     icon: 'shopping-outline',
     chevron: 'chevron-small-right',
   },
+  {
+    id: 3,
+    payment: 'Add Tips',
+    icon: 'plus',
+    chevron: 'chevron-small-right',
+  },
 ];
 const DeliveryData = [
   {

@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Keyboard,
   FlatList,
-  Alert,
   StatusBar,
 } from 'react-native';
 import AppBar from '../../../components/AppBar';
@@ -154,7 +153,9 @@ const CartDetails = ({
   setLoading,
   setPointsDiscount,
   pointsDiscount,
+  setTip,
 }) => {
+  const [initTip, setInitTip] = useState(0);
   return (
     <>
       <TouchableOpacity
@@ -336,7 +337,7 @@ const CartDetails = ({
                 </TouchableOpacity>
               </View>
             </>
-          ) : (
+          ) : item.id === 2 ? (
             <>
               <View
                 style={{
@@ -446,6 +447,48 @@ const CartDetails = ({
                 </View>
               </View>
             </>
+          ) : (
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+              }}>
+              <View style={{flex: 0.7, marginRight: 0}}>
+                <TextField
+                  placeholder="Enter Tip Amount"
+                  blurOnSubmit={true}
+                  onChanged={setInitTip}
+                  value={initTip}
+                  height={46}
+                />
+              </View>
+              <View style={{flex: 0.3, marginLeft: 10}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setTip(parseInt(initTip));
+                    initializePaymentSheet();
+                  }}
+                  style={{
+                    height: 45,
+                    borderRadius: BorderRadius,
+                    paddingHorizontal: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginVertical: 10,
+
+                    backgroundColor: Color.primary,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: Font.Urbanist_Bold,
+                      color: Color.light,
+                    }}>
+                    Add
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           )}
         </>
       )}
@@ -623,7 +666,13 @@ const TimeDetails = ({
   );
 };
 
-const PaymentDetails = ({deliveryFee, subTotal, discount, pointsDiscount}) => {
+const PaymentDetails = ({
+  deliveryFee,
+  subTotal,
+  discount,
+  pointsDiscount,
+  tip,
+}) => {
   return (
     <View>
       <View
@@ -633,7 +682,7 @@ const PaymentDetails = ({deliveryFee, subTotal, discount, pointsDiscount}) => {
           alignItems: 'center',
           flexDirection: 'row',
         }}>
-        <Text style={styles.TextStyle}> Subtotal </Text>
+        <Text style={styles.TextStyle}>Subtotal </Text>
         <Text style={styles.TotalStyle}>${subTotal} </Text>
       </View>
       <View
@@ -643,8 +692,18 @@ const PaymentDetails = ({deliveryFee, subTotal, discount, pointsDiscount}) => {
           alignItems: 'center',
           flexDirection: 'row',
         }}>
-        <Text style={styles.TextStyle}> Delivery Fee </Text>
+        <Text style={styles.TextStyle}>Delivery Fee </Text>
         <Text style={styles.TotalStyle}>${deliveryFee} </Text>
+      </View>
+      <View
+        style={{
+          justifyContent: 'space-between',
+          marginVertical: 10,
+          alignItems: 'center',
+          flexDirection: 'row',
+        }}>
+        <Text style={styles.TextStyle}>Tip </Text>
+        <Text style={styles.TotalStyle}>${tip} </Text>
       </View>
       {discount !== 0 && (
         <View
@@ -685,7 +744,8 @@ const PaymentDetails = ({deliveryFee, subTotal, discount, pointsDiscount}) => {
           {subTotal -
             (subTotal / 100) * discount -
             pointsDiscount +
-            deliveryFee}
+            deliveryFee +
+            tip}
         </Text>
       </View>
     </View>
@@ -724,6 +784,7 @@ const CheckOut = ({route, item}) => {
   const [pointsDiscount, setPointsDiscount] = useState(0);
   const [stripeOpen, setStripeOpen] = useState(false);
   const [btnDisabled, setBtnDisabled] = useState(true);
+  const [tip, setTip] = useState(0);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
@@ -758,6 +819,8 @@ const CheckOut = ({route, item}) => {
       initializePaymentSheet();
     } else if (cart.coupon.discount === 0 && paymentMethod === 2) {
       initializePaymentSheet();
+    } else if (tip !== 0) {
+      initializePaymentSheet();
     } else return;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart.coupon.discount, pointsDiscount]);
@@ -769,7 +832,8 @@ const CheckOut = ({route, item}) => {
             cart.total -
             (cart.total / 100) * cart.coupon.discount -
             pointsDiscount +
-            deliveryFee,
+            deliveryFee +
+            tip,
         },
         auth.token,
         setLoading,
@@ -883,9 +947,10 @@ const CheckOut = ({route, item}) => {
         type: 'danger',
       });
     }
-    if (!auth.user.default_address) {
+    if (!auth.user.default_address && cart.orderType === 'delivery') {
       return showMessage({
-        message: 'Please set a delivery address!',
+        message:
+          'Please set a delivery address! Delivery Address is complusory.',
         type: 'danger',
       });
     }
@@ -898,52 +963,94 @@ const CheckOut = ({route, item}) => {
       });
       return item.selectedVariations;
     });
+    if (cart.orderType === 'delivery') {
+      placeOrder(
+        {
+          loyalty_discount: cart.loyaltyPoints.enable
+            ? cart.loyaltyPoints.discount
+            : null,
+          branch_id: branchId !== '' ? branchId : null,
+          schedule_at: deliveryTime === '' ? null : deliveryTime,
+          order_amount:
+            subTotal -
+            (subTotal / 100) * cart.coupon.discount -
+            pointsDiscount +
+            deliveryFee,
+          payment_method: 'cash_on_delivery',
+          order_type: cart.orderType,
+          longitude: auth.user.default_address.longitude,
+          latitude: auth.user.default_address.latitude,
+          dm_tips: tip,
+          coupon_code: coupon,
+          contact_person_name: auth.user.name,
+          contact_person_number: auth.user.phone,
+          address: auth.user.default_address.address,
+          address_type: auth.user.default_address.address_type,
+          floor: auth.user.default_address.floor,
+          road: auth.user.default_address.road,
+          house: auth.user.default_address.house,
+          order_note: 'Bring it Hot!',
+          cart: cart.addedItems.map(item => {
+            return {
+              food_id: item.foodId,
+              item_campaign_id: null,
+              variations: filtered.flat(),
+              quantity: item.quantity,
+              price: item.foodDetails.price,
+              name: item.foodDetails.name,
+              image: item.foodDetails.image,
+              add_on_ids: item.selectedAddOns.map(item => item.id),
+              add_on_qtys: item.selectedAddOns.map(qty => item.quantity),
+            };
+          }),
+        },
+        auth.token,
+        setLoading,
+        dispatch,
+        navigation,
+      );
+    } else {
+      placeOrder(
+        {
+          loyalty_discount: cart.loyaltyPoints.enable
+            ? cart.loyaltyPoints.discount
+            : null,
+          branch_id: branchId !== '' ? branchId : null,
+          schedule_at: deliveryTime === '' ? null : deliveryTime,
+          order_amount:
+            subTotal -
+            (subTotal / 100) * cart.coupon.discount -
+            pointsDiscount +
+            deliveryFee,
+          payment_method: 'cash_on_delivery',
+          order_type: cart.orderType,
 
-    placeOrder(
-      {
-        loyalty_discount: cart.loyaltyPoints.enable
-          ? cart.loyaltyPoints.discount
-          : null,
-        branch_id: branchId !== '' ? branchId : null,
-        schedule_at: deliveryTime === '' ? null : deliveryTime,
-        order_amount:
-          subTotal -
-          (subTotal / 100) * cart.coupon.discount -
-          pointsDiscount +
-          deliveryFee,
-        payment_method: 'cash_on_delivery',
-        order_type: cart.orderType,
-        longitude: auth.user.default_address.longitude,
-        latitude: auth.user.default_address.latitude,
-        dm_tips: null,
-        coupon_code: coupon,
-        contact_person_name: auth.user.name,
-        contact_person_number: auth.user.phone,
-        address: auth.user.default_address.address,
-        address_type: auth.user.default_address.address_type,
-        floor: auth.user.default_address.floor,
-        road: auth.user.default_address.road,
-        house: auth.user.default_address.house,
-        order_note: 'Bring it Hot!',
-        cart: cart.addedItems.map(item => {
-          return {
-            food_id: item.foodId,
-            item_campaign_id: null,
-            variations: filtered.flat(),
-            quantity: item.quantity,
-            price: item.foodDetails.price,
-            name: item.foodDetails.name,
-            image: item.foodDetails.image,
-            add_on_ids: item.selectedAddOns.map(item => item.id),
-            add_on_qtys: item.selectedAddOns.map(qty => item.quantity),
-          };
-        }),
-      },
-      auth.token,
-      setLoading,
-      dispatch,
-      navigation,
-    );
+          dm_tips: tip,
+          coupon_code: coupon,
+          contact_person_name: auth.user.name,
+          contact_person_number: auth.user.phone,
+
+          order_note: 'Bring it Hot!',
+          cart: cart.addedItems.map(item => {
+            return {
+              food_id: item.foodId,
+              item_campaign_id: null,
+              variations: filtered.flat(),
+              quantity: item.quantity,
+              price: item.foodDetails.price,
+              name: item.foodDetails.name,
+              image: item.foodDetails.image,
+              add_on_ids: item.selectedAddOns.map(item => item.id),
+              add_on_qtys: item.selectedAddOns.map(qty => item.quantity),
+            };
+          }),
+        },
+        auth.token,
+        setLoading,
+        dispatch,
+        navigation,
+      );
+    }
   };
   const couponHandler = () => {
     Keyboard.dismiss();
@@ -1254,6 +1361,8 @@ const CheckOut = ({route, item}) => {
                 initializePaymentSheet={initializePaymentSheet}
                 setPointsDiscount={setPointsDiscount}
                 pointsDiscount={pointsDiscount}
+                setTip={setTip}
+                tip={tip}
               />
             ))}
           </View>
@@ -1264,6 +1373,7 @@ const CheckOut = ({route, item}) => {
               deliveryFee={deliveryFee}
               discount={cart.coupon.discount}
               pointsDiscount={pointsDiscount}
+              tip={tip}
             />
           </View>
         </ScrollView>
@@ -1309,7 +1419,8 @@ const CheckOut = ({route, item}) => {
                   subTotal -
                   (subTotal / 100) * cart.coupon.discount -
                   pointsDiscount +
-                  deliveryFee
+                  deliveryFee +
+                  tip
                 }`
               : 'Browse Menu'
           }
