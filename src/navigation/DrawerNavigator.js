@@ -22,6 +22,7 @@ import {
   LogoutSvg,
   OrderSvg,
   ProfileSvg,
+  ReservationSvg,
   SettingsSvg,
   VoucherSvg,
 } from '../assets/svgs/DrawerSvgs';
@@ -237,12 +238,12 @@ const sidebarData = [
     icon: <HelpSvg />,
     navLink: 'Faq',
   },
-  // {
-  //   id: 7,
-  //   screen: 'Referrals',
-  //   icon: <HelpSvg />,
-  //   navLink: 'Referral',
-  // },
+  {
+    id: 7,
+    screen: 'Reservations',
+    icon: <ReservationSvg />,
+    navLink: 'Reservation',
+  },
   // {
   //   id: 7,
   //   screen: 'Settings',

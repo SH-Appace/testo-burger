@@ -182,6 +182,7 @@ const hiddenTabrBarScreens = [
   'OrderReview',
   'Loyalty',
   'BookATable',
+  'Reservation',
 ];
 const styles = StyleSheet.create({
   stack: {

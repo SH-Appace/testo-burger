@@ -25,7 +25,13 @@ import {CardData, TimeData} from './CheckOutDetails';
 import styles from './CheckOutStyle';
 import {useDispatch, useSelector} from 'react-redux';
 import {placeOrder} from '../../../apis/order';
-import {FAB, Modal, RadioButton} from 'react-native-paper';
+import {
+  FAB,
+  Modal,
+  RadioButton,
+  Switch,
+  ToggleButton,
+} from 'react-native-paper';
 import {showMessage} from 'react-native-flash-message';
 import {SkypeIndicator} from 'react-native-indicators';
 import BottomPopupRemoveFromCart from '../../../components/BottomPopupRemoveFromCart';
@@ -154,8 +160,45 @@ const CartDetails = ({
   setPointsDiscount,
   pointsDiscount,
   setTip,
+  tip,
+  subTotal,
 }) => {
-  const [initTip, setInitTip] = useState(0);
+  const [status, setStatus] = useState(false);
+  const [tipPercent, setTipPercent] = useState(0);
+
+  useEffect(() => {
+    // Calculate tip when subtotal or tipPercent changes
+    const calculatedTip = (subTotal * tipPercent) / 100;
+    setTip(calculatedTip);
+  }, [subTotal, tipPercent]);
+  const handleCustomTipChange = text => {
+    // Remove any non-numeric characters and parse the input as a floating-point number
+    const parsedValue = parseInt(text) || 0;
+
+    if (!isNaN(parsedValue)) {
+      setTip(parsedValue);
+    } else {
+      // Handle invalid input (e.g., display an error message)
+    }
+  };
+
+  const incrementTipPercent = () => {
+    if (tipPercent < 40) {
+      const newTipPercent = tipPercent + 5;
+      const newTipAmount = (subTotal * newTipPercent) / 100;
+      setTip(newTipAmount);
+      setTipPercent(newTipPercent);
+    }
+  };
+
+  const decrementTipPercent = () => {
+    if (tipPercent > 0) {
+      const newTipPercent = tipPercent - 5;
+      const newTipAmount = (subTotal * newTipPercent) / 100;
+      setTip(newTipAmount);
+      setTipPercent(newTipPercent);
+    }
+  };
   return (
     <>
       <TouchableOpacity
@@ -275,68 +318,64 @@ const CartDetails = ({
       {openInput === item.id && (
         <>
           {item.id === 1 ? (
-            <>
-              <View
+            <View
+              style={{
+                flexDirection: 'row',
+                marginVertical: 10,
+                width: '100%',
+              }}>
+              <TouchableOpacity
+                onPress={() => setPaymentMethod(1)}
                 style={{
-                  flexDirection: 'row',
-                  marginVertical: 10,
-                  width: '100%',
+                  flex: 0.5,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: 5,
+                  height: 50,
+                  borderRadius: BorderRadius,
+                  backgroundColor:
+                    paymentMethod === 1 ? Color.primary : 'transparent',
+                  borderWidth: 1,
+                  borderColor:
+                    paymentMethod === 1 ? Color.primary : Color.secondary,
                 }}>
-                <TouchableOpacity
-                  onPress={() => setPaymentMethod(1)}
+                <Text
                   style={{
-                    flex: 0.5,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginRight: 5,
-                    height: 50,
-                    borderRadius: BorderRadius,
-                    backgroundColor:
-                      paymentMethod === 1 ? Color.primary : 'transparent',
-                    borderWidth: 1,
-                    borderColor:
-                      paymentMethod === 1 ? Color.primary : Color.secondary,
+                    ...styles.TextStyle,
+                    color: paymentMethod === 1 ? Color.light : Color.secondary,
+                    fontFamily: Font.Urbanist_Bold,
                   }}>
-                  <Text
-                    style={{
-                      ...styles.TextStyle,
-                      color:
-                        paymentMethod === 1 ? Color.light : Color.secondary,
-                      fontFamily: Font.Urbanist_Bold,
-                    }}>
-                    COD
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    initializePaymentSheet();
-                    setPaymentMethod(2);
-                  }}
+                  COD
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  initializePaymentSheet();
+                  setPaymentMethod(2);
+                }}
+                style={{
+                  flex: 0.5,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: 5,
+                  height: 50,
+                  borderRadius: BorderRadius,
+                  backgroundColor:
+                    paymentMethod === 2 ? Color.primary : 'transparent',
+                  borderColor:
+                    paymentMethod === 2 ? Color.primary : Color.secondary,
+                  borderWidth: 1,
+                }}>
+                <Text
                   style={{
-                    flex: 0.5,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginRight: 5,
-                    height: 50,
-                    borderRadius: BorderRadius,
-                    backgroundColor:
-                      paymentMethod === 2 ? Color.primary : 'transparent',
-                    borderColor:
-                      paymentMethod === 2 ? Color.primary : Color.secondary,
-                    borderWidth: 1,
+                    ...styles.TextStyle,
+                    color: paymentMethod === 2 ? Color.light : Color.secondary,
+                    fontFamily: Font.Urbanist_Bold,
                   }}>
-                  <Text
-                    style={{
-                      ...styles.TextStyle,
-                      color:
-                        paymentMethod === 2 ? Color.light : Color.secondary,
-                      fontFamily: Font.Urbanist_Bold,
-                    }}>
-                    Credit Card
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </>
+                  Credit Card
+                </Text>
+              </TouchableOpacity>
+            </View>
           ) : item.id === 2 ? (
             <>
               <View
@@ -448,47 +487,93 @@ const CartDetails = ({
               </View>
             </>
           ) : (
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '100%',
-              }}>
-              <View style={{flex: 0.7, marginRight: 0}}>
-                <TextField
-                  placeholder="Enter Tip Amount"
-                  blurOnSubmit={true}
-                  onChanged={setInitTip}
-                  value={initTip}
-                  height={46}
+            <>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  alignItems: 'center',
+                }}>
+                <View style={{flex: 0.66, marginRight: 0}}>
+                  <TextField
+                    placeholder="0"
+                    blurOnSubmit={true}
+                    onChanged={setTip}
+                    value={tip.toString()}
+                    height={46}
+                    prefix="$"
+                    keyboardType="number-pad"
+                    tipPercent={tipPercent.toString()}
+                    handleCustomTipChange={handleCustomTipChange}
+                    disabled={status ? false : true}
+                  />
+                </View>
+                <View
+                  style={{flex: 0.34, flexDirection: 'row', marginLeft: 10}}>
+                  <TouchableOpacity
+                    style={[
+                      styles.incrementDecrementBtn,
+                      {
+                        borderColor: status ? '#F9F9F9' : Color.primary,
+                        backgroundColor: status ? '#F9F9F9' : Color.light,
+                      },
+                    ]}
+                    disabled={status}
+                    onPress={decrementTipPercent}>
+                    <Icon
+                      iconFamily={'AntDesign'}
+                      name={'minus'}
+                      style={styles.minusStyle}
+                      color={Color.tertiary}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    disabled={status}
+                    style={[
+                      styles.incrementDecrementBtn,
+                      {
+                        backgroundColor: status ? '#F9F9F9' : Color.primary,
+                        marginLeft: 15,
+                        borderColor: status ? '#F9F9F9' : Color.primary,
+                      },
+                    ]}
+                    onPress={incrementTipPercent}>
+                    <Icon
+                      iconFamily={'Ionicons'}
+                      name={'md-add'}
+                      color={status ? Color.tertiary : Color.light}
+                      style={styles.addStyle}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginTop: 10,
+                }}>
+                <Text
+                  style={{
+                    ...styles.TextStyle,
+                    color: Color.tertiary,
+                    marginLeft: 5,
+                    marginRight: 5,
+                  }}>
+                  Enter Custom Amount
+                </Text>
+                <Switch
+                  value={status}
+                  onValueChange={() => {
+                    setTipPercent(0);
+                    setTip(0);
+                    setStatus(!status);
+                  }}
                 />
               </View>
-              <View style={{flex: 0.3, marginLeft: 10}}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setTip(parseInt(initTip));
-                    initializePaymentSheet();
-                  }}
-                  style={{
-                    height: 45,
-                    borderRadius: BorderRadius,
-                    paddingHorizontal: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginVertical: 10,
-
-                    backgroundColor: Color.primary,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontFamily: Font.Urbanist_Bold,
-                      color: Color.light,
-                    }}>
-                    Add
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+            </>
           )}
         </>
       )}
@@ -1363,6 +1448,7 @@ const CheckOut = ({route, item}) => {
                 pointsDiscount={pointsDiscount}
                 setTip={setTip}
                 tip={tip}
+                subTotal={subTotal}
               />
             ))}
           </View>

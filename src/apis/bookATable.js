@@ -20,3 +20,21 @@ export async function postBooking(body, setLoading, token, func) {
     console.log('error', err.response.data);
   }
 }
+export async function getBookings(setLoading, token, setData) {
+  try {
+    setLoading(true);
+    const {data} = await axios.get('customer/get-table-reservation', {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (data) {
+      setLoading(false);
+      setData(data);
+    }
+  } catch (err) {
+    setLoading(false);
+    console.log('error', err.response.data);
+  }
+}

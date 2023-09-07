@@ -65,5 +65,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  incrementDecrementBtn: {
+    width: 46,
+    height: 46,
+    borderRadius: BorderRadius,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Color.primary,
+  },
+  minusStyle: {
+    fontSize: 20,
+    fontFamily: Font.Urbanist_Black,
+  },
+  addStyle: {
+    fontSize: 20,
+    fontFamily: Font.Urbanist_Black,
+  },
 });
 export default styles;

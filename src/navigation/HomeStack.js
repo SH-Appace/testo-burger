@@ -17,6 +17,7 @@ import Wishlist from '../screens/main/wishlist/Wishlist';
 import RecommendedFoods from '../screens/main/recommendedFoods/RecommendedFoods';
 import PaymentScreen from '../screens/main/paymentScreen/PaymentScreen';
 import BookATable from '../screens/main/bookATable/BookATable';
+import Reservation from '../screens/main/reservation/Reservation';
 
 const HomeStack = ({style}) => {
   const Stack = createNativeStackNavigator();
@@ -44,6 +45,7 @@ const HomeStack = ({style}) => {
       <Stack.Screen name="SearchType" component={SearchType} />
       <Stack.Screen name="Wishlist" component={Wishlist} />
       <Stack.Screen name="BookATable" component={BookATable} />
+      <Stack.Screen name="Reservation" component={Reservation} />
     </Stack.Navigator>
   );
 };

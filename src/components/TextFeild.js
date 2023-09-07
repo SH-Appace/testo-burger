@@ -32,6 +32,9 @@ const TextField = ({
   loyaltyPoints,
   pointsDiscount,
   removePoints,
+  prefix,
+  tipPercent,
+  handleCustomTipChange,
   onChanged = val => console.log('No Onchange Event', val),
 }) => {
   const [focused, setFocused] = useState(false);
@@ -44,7 +47,8 @@ const TextField = ({
           {
             backgroundColor: focused ? 'rgba(246, 181, 29, 0.10)' : '#F9F9F9',
             borderWidth: focused ? 1 : 0,
-            borderColor: Color.secondary,height: multiline ? 100 : height,
+            borderColor: Color.secondary,
+            height: multiline ? 100 : height,
           },
         ]}>
         <MaterialCommunityIcons
@@ -117,6 +121,16 @@ const TextField = ({
           />
         </TouchableOpacity>
       )}
+      {prefix ? (
+        <Text
+          style={{
+            color: Color.primary,
+            fontFamily: Font.Urbanist_Regular,
+            marginRight: 5,
+          }}>
+          {prefix}
+        </Text>
+      ) : null}
 
       <TextInput
         style={{
@@ -127,7 +141,13 @@ const TextField = ({
         }}
         placeholder={placeholder}
         placeholderTextColor="#828282"
-        onChangeText={text => onChanged(text)}
+        onChangeText={text => {
+          if (tipPercent) {
+            handleCustomTipChange(text);
+          } else {
+            onChanged(text);
+          }
+        }}
         value={value}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
@@ -138,6 +158,11 @@ const TextField = ({
       {loyaltyPoints ? (
         <Text style={{color: Color.primary, fontFamily: Font.Urbanist_Regular}}>
           {loyaltyPoints} Pt.
+        </Text>
+      ) : null}
+      {tipPercent && disabled ? (
+        <Text style={{color: Color.primary, fontFamily: Font.Urbanist_Bold}}>
+          {tipPercent}%
         </Text>
       ) : null}
       {alternate === true && icon ? (

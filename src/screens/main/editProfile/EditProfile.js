@@ -191,7 +191,7 @@ const EditProfile = ({navigation, route}) => {
           <View style={{marginVertical: 10}} />
           <TextField
             value={email}
-            placeholder="Email addresse"
+            placeholder="Email address"
             onChanged={setEmail}
             icon="email"
             keyboardType="email-address"
