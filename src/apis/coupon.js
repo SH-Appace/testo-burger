@@ -12,6 +12,7 @@ export async function couponGet(token, setLoading, setCouponData) {
       },
     });
     if (data) {
+      console.log(data);
       setCouponData(data);
       setLoading(false);
     }
@@ -21,7 +22,7 @@ export async function couponGet(token, setLoading, setCouponData) {
     //   message: err.response.data.errors[0].message,
     //   type: 'danger',
     // });
-    console.log('error', err);
+    // console.log('error', err);
   }
 }
 export async function couponApply(
@@ -40,14 +41,15 @@ export async function couponApply(
       },
     });
     if (data) {
-      dispatch({
-        type: 'ADD_COUPON',
-        payload: {
-          code: body.code,
-          discount: data.discount,
-        },
-      });
-      showModal();
+      console.log(data, 'dekh le 321323');
+      // dispatch({
+      //   type: 'ADD_COUPON',
+      //   payload: {
+      //     code: body.code,
+      //     discount: data.discount,
+      //   },
+      // });
+      // showModal();
       setLoading(false);
     }
   } catch (err) {
@@ -56,6 +58,6 @@ export async function couponApply(
       message: err.response.data.errors[0].message,
       type: 'danger',
     });
-    console.log('error', err.response.data.errors[0][0]);
+    console.log('error', err.response.data);
   }
 }

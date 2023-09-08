@@ -12,7 +12,6 @@ import {
   Platform,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useNavigation} from '@react-navigation/native';
 import {
   GlobalStyle,
   Font,
@@ -22,15 +21,8 @@ import {
 } from '../../../globalStyle/Theme';
 import Icon from '../../../core/Icon';
 import styles from './HomePageStyle';
-import {OrderTypeData} from './HomePageDetails';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  BookSvg,
-  DeliverySvgs,
-  LoyaltySvg,
-  PickupSvgs,
-  ReferSvg,
-} from '../../../assets/svgs/HomePage';
+import {useSelector} from 'react-redux';
+import {BookSvg, LoyaltySvg, ReferSvg} from '../../../assets/svgs/HomePage';
 import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {HorizontalFlatList} from '@idiosync/horizontal-flatlist';
 import Animated, {
@@ -39,167 +31,13 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import SearchComponent from '../../../components/SearchComponent';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swiper from 'react-native-swiper';
 import {updateFCMToken} from '../../../apis/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DeviceInfo from 'react-native-device-info';
-const OrderType = ({item, cart, navigation}) => {
-  const dispatch = useDispatch();
-
-  const updateOrderType = type => {
-    dispatch({
-      type: 'UPDATE_ORDER_TYPE',
-      payload: type,
-    });
-    navigation.navigate('Menu');
-  };
-  return (
-    <TouchableOpacity
-      onPress={() => updateOrderType(item.value)}
-      style={{
-        flex: 1,
-        height: 75,
-        borderRadius: BorderRadius,
-        backgroundColor:
-          cart.orderType === item.value ? Color.secondary : Color.light,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: item.id === 1 ? 10 : 0,
-        marginLeft: item.id === 2 ? 10 : 0,
-        paddingHorizontal: 10,
-        flexDirection: 'row',
-      }}>
-      {item.id === 1 ? (
-        <PickupSvgs
-          color={cart.orderType === item.value ? Color.light : '#2A3B56'}
-        />
-      ) : item.id === 2 ? (
-        <DeliverySvgs
-          color={cart.orderType === item.value ? Color.light : '#2A3B56'}
-        />
-      ) : null}
-      <View style={{marginLeft: 10, width: 85}}>
-        <Text
-          style={{
-            color:
-              cart.orderType === item.value ? Color.light : Color.headingSm,
-            fontSize: 15,
-            fontFamily: Font.Urbanist_Bold,
-          }}>
-          {item.name}
-        </Text>
-        <Text
-          numberOfLines={2}
-          style={{
-            paddingTop: 0.5,
-            color:
-              cart.orderType === item.value ? Color.tertiary : Color.greyscale,
-            fontSize: 11,
-            fontFamily: Font.Urbanist_Medium,
-          }}>
-          {item.discount}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-const FeaturedItem = ({item, index, auth, wishlist}) => {
-  let navigation = useNavigation();
-
-  return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('Custom', {
-          edit: false,
-          productId: item.id,
-          product: item,
-          fromMenu: false,
-        })
-      }
-      style={{
-        backgroundColor: Color.light,
-        borderRadius: BorderRadius,
-        width: 160,
-        height: 240,
-        overflow: 'hidden',
-        marginLeft: index === 0 ? 0 : 12,
-        padding: 15,
-      }}>
-      <Image
-        style={{
-          height: 130,
-          width: 130,
-          borderRadius: BorderRadius,
-        }}
-        source={{uri: item.image}}
-        // source={require('../../../assets/images/pics/foodBg.png')}
-        resizeMode="cover"
-      />
-      <Text
-        style={[styles.Heading, {fontSize: 18, width: '90%', marginTop: 2.5}]}
-        numberOfLines={1}>
-        {item.name}
-      </Text>
-      <Text
-        style={[
-          {
-            fontSize: 12,
-            fontFamily: Font.Urbanist_Light,
-            color: '#616161',
-            height: 30,
-          },
-        ]}
-        numberOfLines={2}>
-        {item.description}
-      </Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 2.5,
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-        <Text style={{...styles.Heading, color: Color.primary, fontSize: 18}}>
-          ${item.price}
-        </Text>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Icon
-            iconFamily={'FontAwesome'}
-            color={Color.primary}
-            size={12}
-            name={parseInt(item.avg_rating) >= 1 ? 'star' : 'star-o'}
-          />
-          <Icon
-            iconFamily={'FontAwesome'}
-            color={Color.primary}
-            size={12}
-            name={parseInt(item.avg_rating) >= 2 ? 'star' : 'star-o'}
-          />
-          <Icon
-            iconFamily={'FontAwesome'}
-            color={Color.primary}
-            size={12}
-            name={parseInt(item.avg_rating) >= 3 ? 'star' : 'star-o'}
-          />
-          <Icon
-            iconFamily={'FontAwesome'}
-            color={Color.primary}
-            size={12}
-            name={parseInt(item.avg_rating) >= 4 ? 'star' : 'star-o'}
-          />
-          <Icon
-            iconFamily={'FontAwesome'}
-            color={Color.primary}
-            size={12}
-            name={parseInt(item.avg_rating) >= 5 ? 'star' : 'star-o'}
-          />
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+import OrderType from '../../../components/OrderType';
+import FeaturedCard from '../../../components/FeaturedCard';
+import SearchBar from '../../../components/SearchBar';
 
 const Home = ({navigation}) => {
   const [activeBg, setActiveBg] = useState(1);
@@ -349,48 +187,13 @@ const Home = ({navigation}) => {
             paddingHorizontal: Window.fixPadding * 2,
           }}>
           <Header navigation={navigation} cart={cart} wishlist={wishlist} />
-          <View style={{marginTop: 10}}>
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                backgroundColor: Color.light,
-                height: 56,
-                borderRadius: BorderRadius,
-                paddingHorizontal: 10,
-                marginVertical: 10,
-              }}
-              onPress={() => setOpenSearch(true)}>
-              <MaterialCommunityIcons
-                color={'#BDBDBD'}
-                name={'magnify'}
-                size={23}
-              />
-              <Text
-                style={{
-                  color: '#BDBDBD',
-                  fontFamily: Font.Urbanist_SemiBold,
-                  fontSize: 14,
-                  marginLeft: 10,
-                }}>
-                What are you craving?
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <SearchBar setOpenSearch={setOpenSearch} />
         </View>
-        <View style={styles.headingRow}>
-          <Text style={styles.Heading}>Special Offers</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('SpecialOffer')}>
-            <Text
-              style={{
-                ...GlobalStyle.Heading,
-                color: Color.primary,
-                fontSize: 16,
-              }}>
-              See All
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <SectionRow
+          title="Special Offers"
+          altTitle="See All"
+          onPress={() => navigation.navigate('SpecialOffer')}
+        />
         <Swiper
           autoplay
           style={{height: 180}}
@@ -445,26 +248,7 @@ const Home = ({navigation}) => {
           </Text>
         </View>
 
-        <FlatList
-          data={OrderTypeData}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: 20,
-          }}
-          initialNumToRender={5}
-          renderItem={({item}) => (
-            <OrderType
-              setActiveBg={setActiveBg}
-              activeBg={activeBg}
-              cart={cart}
-              item={item}
-              navigation={navigation}
-            />
-          )}
-          columnWrapperStyle={{justifyContent: 'space-between'}}
-          keyExtractor={(item, index) => index.toString()}
-          numColumns={2}
-        />
+        <OrderType setActiveBg={setActiveBg} activeBg={activeBg} />
 
         <View style={styles.headingRow}>
           <Text style={styles.Heading}>Discount Guaranteed! 👌</Text>
@@ -481,19 +265,14 @@ const Home = ({navigation}) => {
 
         <ScrollView
           horizontal
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             flexGrow: 1,
             paddingHorizontal: 20,
           }}>
           {products[0] &&
             products[0].map((item, index) => (
-              <FeaturedItem
-                item={item}
-                key={index}
-                index={index}
-                auth={auth}
-                wishlist={wishlist}
-              />
+              <FeaturedCard item={item} key={index} index={index} />
             ))}
         </ScrollView>
         <View style={styles.headingRow}>
@@ -905,6 +684,23 @@ const Header = ({navigation, cart, wishlist}) => {
           )}
         </View>
       </View>
+    </View>
+  );
+};
+const SectionRow = ({title, altTitle, onPress}) => {
+  return (
+    <View style={styles.headingRow}>
+      <Text style={styles.Heading}>{title}</Text>
+      <TouchableOpacity onPress={onPress}>
+        <Text
+          style={{
+            ...GlobalStyle.Heading,
+            color: Color.primary,
+            fontSize: 16,
+          }}>
+          {altTitle}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

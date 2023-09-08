@@ -1,14 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  Keyboard,
-  FlatList,
-  StatusBar,
-} from 'react-native';
+import {View, Text, Image, ScrollView, Keyboard, StatusBar} from 'react-native';
 import AppBar from '../../../components/AppBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -18,828 +9,30 @@ import {
   GlobalStyle,
   Window,
 } from '../../../globalStyle/Theme';
-import Icon from '../../../core/Icon';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Button from '../../../components/Button';
-import {CardData, TimeData} from './CheckOutDetails';
-import styles from './CheckOutStyle';
 import {useDispatch, useSelector} from 'react-redux';
 import {placeOrder} from '../../../apis/order';
-import {
-  FAB,
-  Modal,
-  RadioButton,
-  Switch,
-  ToggleButton,
-} from 'react-native-paper';
+import {Modal} from 'react-native-paper';
 import {showMessage} from 'react-native-flash-message';
-import {SkypeIndicator} from 'react-native-indicators';
 import BottomPopupRemoveFromCart from '../../../components/BottomPopupRemoveFromCart';
-import TextField from '../../../components/TextFeild';
 import {couponApply} from '../../../apis/coupon';
 import {CartEmptySvg} from '../../../assets/svgs/CheckoutSvg';
-import {OrderTypeData} from '../homePage/HomePageDetails';
-import {DeliverySvgs, PickupSvgs} from '../../../assets/svgs/HomePage';
 import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
 import {useBackButton} from '../../../hooks';
 import {PaymentSheet, useStripe} from '@stripe/stripe-react-native';
 import {stripePost} from '../../../apis/stripe';
-import {loyaltyDiscount} from '../../../apis/loyalty';
-import {Linking} from 'react-native';
 import Loader from '../../../components/Loader';
-
-const SummaryDetails = ({
-  item,
-  setVisible,
-  setPopupData,
-  index,
-  onShowPopup,
-  setAddonsPrice,
-  setCartItemIndex,
-  setCartItemAmount,
-  setCartItemQuantity,
-  setVariationsPrice,
-}) => {
-  let navigation = useNavigation();
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        setVisible(true), setPopupData(item);
-      }}
-      style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-      <View style={{flexDirection: 'row'}}>
-        <Image
-          source={{uri: item.foodDetails.image}}
-          // source={require('../../../assets/images/pics/foodBg.png')}
-          style={{width: 80, height: 80, borderRadius: BorderRadius}}
-          resizeMode="cover"
-        />
-        <FAB
-          style={styles.fab}
-          icon="close"
-          customSize={40}
-          onPress={() => {
-            onShowPopup();
-            item.selectedAddOns.map(x =>
-              setAddonsPrice(prev => prev + x.price),
-            );
-            item.selectedVariations.map(x =>
-              x.values.map(y =>
-                setVariationsPrice(prev => prev + parseInt(y.optionPrice)),
-              ),
-            );
-            setCartItemIndex(index);
-            setCartItemAmount(item.foodDetails.price);
-            setCartItemQuantity(item.quantity);
-          }}
-        />
-        <View
-          style={{
-            flexDirection: 'column',
-            justifyContent: 'space-around',
-            marginLeft: 10,
-          }}>
-          <Text style={styles.Heading}>{item.foodDetails.name}</Text>
-          <Text style={{...styles.Heading, color: Color.primary}}>
-            ${item.totalPrice}{' '}
-            <Text style={{color: Color.greyscale, fontSize: 12}}>
-              - View More
-            </Text>
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: 'column',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-        }}>
-        <Text style={styles.OneStyle}>{item.quantity}</Text>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.replace('Custom', {
-              edit: true,
-              productId: item.foodId,
-              product: item.foodDetails,
-              quantity: item.quantity,
-              selectedAddOns: item.selectedAddOns,
-              selectedVariations: item.selectedVariations,
-              index: index,
-              totalPrice: item.totalPrice,
-            })
-          }>
-          <Icon
-            iconFamily={'MaterialCommunityIcons'}
-            name="pencil-minus"
-            size={20}
-            color={Color.primary}
-          />
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-const CartDetails = ({
-  item,
-  setOpenInput,
-  openInput,
-  discount,
-  coupon,
-  setCoupon,
-  cart,
-  removeCoupon,
-  couponHandler,
-  setPoints,
-  points,
-  auth,
-  paymentMethod,
-  setPaymentMethod,
-  initializePaymentSheet,
-  setLoading,
-  setPointsDiscount,
-  pointsDiscount,
-  setTip,
-  tip,
-  subTotal,
-}) => {
-  const [status, setStatus] = useState(false);
-  const [tipPercent, setTipPercent] = useState(0);
-
-  useEffect(() => {
-    // Calculate tip when subtotal or tipPercent changes
-    const calculatedTip = (subTotal * tipPercent) / 100;
-    setTip(calculatedTip);
-  }, [subTotal, tipPercent]);
-  const handleCustomTipChange = text => {
-    // Remove any non-numeric characters and parse the input as a floating-point number
-    const parsedValue = parseInt(text) || 0;
-
-    if (!isNaN(parsedValue)) {
-      setTip(parsedValue);
-    } else {
-      // Handle invalid input (e.g., display an error message)
-    }
-  };
-
-  const incrementTipPercent = () => {
-    if (tipPercent < 40) {
-      const newTipPercent = tipPercent + 5;
-      const newTipAmount = (subTotal * newTipPercent) / 100;
-      setTip(newTipAmount);
-      setTipPercent(newTipPercent);
-    }
-  };
-
-  const decrementTipPercent = () => {
-    if (tipPercent > 0) {
-      const newTipPercent = tipPercent - 5;
-      const newTipAmount = (subTotal * newTipPercent) / 100;
-      setTip(newTipAmount);
-      setTipPercent(newTipPercent);
-    }
-  };
-  return (
-    <>
-      <TouchableOpacity
-        onPress={() => {
-          if (openInput === item.id) {
-            setOpenInput('');
-          } else {
-            setOpenInput(item.id);
-          }
-        }}
-        style={{
-          justifyContent: 'space-between',
-          margin: 1,
-          marginVertical: 10,
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}>
-        {
-          <View style={{alignItems: 'center', flexDirection: 'row'}}>
-            <Icon
-              iconFamily={'MaterialCommunityIcons'}
-              name={item.icon}
-              size={25}
-              color={Color.primary}
-            />
-            <View
-              style={{
-                flexDirection:
-                  discount !== 0 && pointsDiscount !== 0 ? 'column' : 'row',
-                alignItems:
-                  discount !== 0 && pointsDiscount !== 0
-                    ? 'flex-start'
-                    : 'center',
-              }}>
-              <Text
-                style={{
-                  ...styles.TextStyle,
-                  color: Color.tertiary,
-                  marginLeft: 5,
-                  marginRight: 5,
-                }}>
-                {' '}
-                {item.payment}{' '}
-              </Text>
-              <View style={{flexDirection: 'row', marginTop: 5}}>
-                {discount > 0 && item.id === 2 && (
-                  <View
-                    style={{
-                      paddingHorizontal: 10,
-                      paddingVertical: 5,
-                      backgroundColor: Color.primary,
-                      borderRadius: 15,
-                      marginLeft: 5,
-                    }}>
-                    <Text
-                      style={{
-                        color: Color.light,
-                        fontSize: 12,
-                        fontFamily: Font.Urbanist_Light,
-                      }}>
-                      Discount {discount}%
-                    </Text>
-                  </View>
-                )}
-                {pointsDiscount > 0 && item.id === 2 && (
-                  <View
-                    style={{
-                      paddingHorizontal: 10,
-                      paddingVertical: 5,
-                      backgroundColor: Color.primary,
-                      borderRadius: 15,
-                      marginLeft: 5,
-                    }}>
-                    <Text
-                      style={{
-                        color: Color.light,
-                        fontSize: 12,
-                        fontFamily: Font.Urbanist_Light,
-                      }}>
-                      Points Discount ${pointsDiscount}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            </View>
-            {openInput !== 1 && item.id === 1 && (
-              <View
-                style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                  backgroundColor: Color.primary,
-                  borderRadius: 15,
-                }}>
-                <Text
-                  style={{
-                    color: Color.light,
-                    fontSize: 12,
-                    fontFamily: Font.Urbanist_Light,
-                  }}>
-                  {paymentMethod === 1 ? 'COD' : 'Credit Card'}
-                </Text>
-              </View>
-            )}
-          </View>
-        }
-
-        <Icon
-          iconFamily={'Entypo'}
-          name={item.chevron}
-          size={20}
-          color={Color.primary}
-          style={{
-            transform: [{rotate: openInput === item.id ? '90deg' : '0deg'}],
-          }}
-        />
-      </TouchableOpacity>
-      {openInput === item.id && (
-        <>
-          {item.id === 1 ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                marginVertical: 10,
-                width: '100%',
-              }}>
-              <TouchableOpacity
-                onPress={() => setPaymentMethod(1)}
-                style={{
-                  flex: 0.5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 5,
-                  height: 50,
-                  borderRadius: BorderRadius,
-                  backgroundColor:
-                    paymentMethod === 1 ? Color.primary : 'transparent',
-                  borderWidth: 1,
-                  borderColor:
-                    paymentMethod === 1 ? Color.primary : Color.secondary,
-                }}>
-                <Text
-                  style={{
-                    ...styles.TextStyle,
-                    color: paymentMethod === 1 ? Color.light : Color.secondary,
-                    fontFamily: Font.Urbanist_Bold,
-                  }}>
-                  COD
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  initializePaymentSheet();
-                  setPaymentMethod(2);
-                }}
-                style={{
-                  flex: 0.5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 5,
-                  height: 50,
-                  borderRadius: BorderRadius,
-                  backgroundColor:
-                    paymentMethod === 2 ? Color.primary : 'transparent',
-                  borderColor:
-                    paymentMethod === 2 ? Color.primary : Color.secondary,
-                  borderWidth: 1,
-                }}>
-                <Text
-                  style={{
-                    ...styles.TextStyle,
-                    color: paymentMethod === 2 ? Color.light : Color.secondary,
-                    fontFamily: Font.Urbanist_Bold,
-                  }}>
-                  Credit Card
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : item.id === 2 ? (
-            <>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                }}>
-                <View style={{flex: 0.7, marginRight: 0}}>
-                  <TextField
-                    placeholder="Enter Coupon"
-                    blurOnSubmit={true}
-                    onChanged={setCoupon}
-                    value={coupon}
-                    height={46}
-                    discount={cart.coupon.discount}
-                    removeCoupon={removeCoupon}
-                  />
-                </View>
-                <View style={{flex: 0.3, marginLeft: 10}}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      couponHandler();
-                      initializePaymentSheet();
-                    }}
-                    style={{
-                      height: 45,
-                      borderRadius: BorderRadius,
-                      paddingHorizontal: 10,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginVertical: 10,
-
-                      backgroundColor: Color.primary,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontFamily: Font.Urbanist_Bold,
-                        color: Color.light,
-                      }}>
-                      Apply
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                }}>
-                <View style={{flex: 0.7, marginRight: 0}}>
-                  <TextField
-                    placeholder="Points Amount"
-                    keyboardType="number-pad"
-                    blurOnSubmit={true}
-                    onChanged={setPoints}
-                    value={points}
-                    height={46}
-                    pointsDiscount={pointsDiscount}
-                    removePoints={() => {
-                      setPointsDiscount(0);
-                      setPoints(0);
-                    }}
-                    loyaltyPoints={parseFloat(auth.user.loyalty_point)}
-                  />
-                </View>
-                <View style={{flex: 0.3, marginLeft: 10}}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (points.length < 1) {
-                        return showMessage({
-                          message: 'Enter more points amount!',
-                          type: 'danger',
-                        });
-                      }
-                      loyaltyDiscount(
-                        {
-                          loyalty_point: points,
-                          total_amount:
-                            cart.total -
-                            (cart.total / 100) * cart.coupon.discount,
-                        },
-                        auth.token,
-                        setLoading,
-                        setPointsDiscount,
-                        setOpenInput,
-                      );
-                    }}
-                    style={{
-                      height: 45,
-                      borderRadius: BorderRadius,
-                      paddingHorizontal: 10,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginVertical: 10,
-
-                      backgroundColor: Color.primary,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontFamily: Font.Urbanist_Bold,
-                        color: Color.light,
-                      }}>
-                      Use Points
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </>
-          ) : (
-            <>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  alignItems: 'center',
-                }}>
-                <View style={{flex: 0.66, marginRight: 0}}>
-                  <TextField
-                    placeholder="0"
-                    blurOnSubmit={true}
-                    onChanged={setTip}
-                    value={tip.toString()}
-                    height={46}
-                    prefix="$"
-                    keyboardType="number-pad"
-                    tipPercent={tipPercent.toString()}
-                    handleCustomTipChange={handleCustomTipChange}
-                    disabled={status ? false : true}
-                  />
-                </View>
-                <View
-                  style={{flex: 0.34, flexDirection: 'row', marginLeft: 10}}>
-                  <TouchableOpacity
-                    style={[
-                      styles.incrementDecrementBtn,
-                      {
-                        borderColor: status ? '#F9F9F9' : Color.primary,
-                        backgroundColor: status ? '#F9F9F9' : Color.light,
-                      },
-                    ]}
-                    disabled={status}
-                    onPress={decrementTipPercent}>
-                    <Icon
-                      iconFamily={'AntDesign'}
-                      name={'minus'}
-                      style={styles.minusStyle}
-                      color={Color.tertiary}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    disabled={status}
-                    style={[
-                      styles.incrementDecrementBtn,
-                      {
-                        backgroundColor: status ? '#F9F9F9' : Color.primary,
-                        marginLeft: 15,
-                        borderColor: status ? '#F9F9F9' : Color.primary,
-                      },
-                    ]}
-                    onPress={incrementTipPercent}>
-                    <Icon
-                      iconFamily={'Ionicons'}
-                      name={'md-add'}
-                      color={status ? Color.tertiary : Color.light}
-                      style={styles.addStyle}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginTop: 10,
-                }}>
-                <Text
-                  style={{
-                    ...styles.TextStyle,
-                    color: Color.tertiary,
-                    marginLeft: 5,
-                    marginRight: 5,
-                  }}>
-                  Enter Custom Amount
-                </Text>
-                <Switch
-                  value={status}
-                  onValueChange={() => {
-                    setTipPercent(0);
-                    setTip(0);
-                    setStatus(!status);
-                  }}
-                />
-              </View>
-            </>
-          )}
-        </>
-      )}
-    </>
-  );
-};
-const DeliveryDetails = ({item, setBranchId, branchId, setSelectedBranch}) => {
-  function convertToAMPM(timeString) {
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const hours12 = hours % 12 || 12; // Convert 0 to 12 for AM time
-    return `${hours12}:${(minutes < 10 ? '0' : '') + minutes} ${ampm}`;
-  }
-  const openGoogleMaps = address => {
-    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-      address,
-    )}`;
-    Linking.openURL(mapUrl);
-  };
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        setSelectedBranch(item);
-        setBranchId(item.id);
-      }}
-      style={{
-        justifyContent: 'space-between',
-        margin: 1,
-        marginVertical: 10,
-        alignItems: 'center',
-        flexDirection: 'row',
-      }}>
-      {
-        <View style={{alignItems: 'center', flexDirection: 'row'}}>
-          <TouchableOpacity
-            style={{height: 30, width: 30, borderRadius: 30}}
-            onPress={() => openGoogleMaps(item.address)}>
-            <Icon
-              iconFamily={'Entypo'}
-              name={'location-pin'}
-              size={25}
-              color={Color.primary}
-            />
-          </TouchableOpacity>
-          <View>
-            <Text
-              style={{
-                ...styles.TextStyle,
-                color: Color.tertiary,
-                // marginLeft: 0,
-                // marginRight: 5,
-                fontSize: 16,
-              }}>
-              {' '}
-              {item.name}{' '}
-            </Text>
-            <Text
-              style={{
-                ...styles.TextStyle,
-                color: Color.lightGray,
-                // marginLeft: 0,
-                // marginRight: 5,
-              }}>
-              {' '}
-              {convertToAMPM(item.opening_time)}
-              {' - '}
-              {convertToAMPM(item.closeing_time)}
-            </Text>
-          </View>
-        </View>
-      }
-      <RadioButton.Android
-        uncheckedColor={Color.primary}
-        color={Color.primary}
-        value="first"
-        status={branchId === item.id ? 'checked' : 'unchecked'}
-        onPress={() => {
-          setSelectedBranch(item);
-          setBranchId(item.id);
-        }}
-      />
-    </TouchableOpacity>
-  );
-};
-const TimeDetails = ({
-  item,
-  setDeliveryTime,
-  setOpen,
-  deliveryTime,
-  deliveryTimeObject,
-  setDeliveryTimeObject,
-}) => {
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        if (item.id === 1) {
-          setDeliveryTime('');
-          setDeliveryTimeObject(null);
-          return;
-        } else if (item.id === 2) {
-          setOpen(true);
-          return;
-        }
-      }}
-      style={{
-        justifyContent: 'space-between',
-        margin: 1,
-        marginVertical: 10,
-        alignItems: 'center',
-        flexDirection: 'row',
-      }}>
-      {
-        <View style={{alignItems: 'center', flexDirection: 'row'}}>
-          <Icon
-            iconFamily={'MaterialCommunityIcons'}
-            name={item.icon}
-            size={25}
-            color={Color.primary}
-          />
-          <View>
-            <Text
-              style={{
-                ...styles.TextStyle,
-                color: Color.tertiary,
-                marginLeft: 5,
-                marginRight: 5,
-              }}>
-              {' '}
-              {item.name}{' '}
-            </Text>
-            {deliveryTimeObject !== null && item.id === 2 && (
-              <Text
-                style={{
-                  ...styles.TextStyle,
-                  color: Color.secondary,
-                  marginLeft: 5,
-                  marginRight: 5,
-                }}>
-                {' '}
-                {deliveryTimeObject.toDateString() +
-                  ', ' +
-                  deliveryTimeObject.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true,
-                  })}{' '}
-              </Text>
-            )}
-          </View>
-        </View>
-      }
-      <RadioButton.Android
-        uncheckedColor={Color.primary}
-        color={Color.primary}
-        value="first"
-        status={
-          deliveryTime === '' && item.id === 1
-            ? 'checked'
-            : deliveryTime !== '' && item.id === 2
-            ? 'checked'
-            : 'unchecked'
-        }
-        onPress={() => {
-          if (item.id === 1) {
-            setDeliveryTime('');
-            setDeliveryTimeObject(null);
-            return;
-          } else if (item.id === 2) {
-            setOpen(true);
-            return;
-          }
-        }}
-      />
-    </TouchableOpacity>
-  );
-};
-
-const PaymentDetails = ({
-  deliveryFee,
-  subTotal,
-  discount,
-  pointsDiscount,
-  tip,
-}) => {
-  return (
-    <View>
-      <View
-        style={{
-          justifyContent: 'space-between',
-          marginVertical: 10,
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}>
-        <Text style={styles.TextStyle}>Subtotal </Text>
-        <Text style={styles.TotalStyle}>${subTotal} </Text>
-      </View>
-      <View
-        style={{
-          justifyContent: 'space-between',
-          marginVertical: 10,
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}>
-        <Text style={styles.TextStyle}>Delivery Fee </Text>
-        <Text style={styles.TotalStyle}>${deliveryFee} </Text>
-      </View>
-      <View
-        style={{
-          justifyContent: 'space-between',
-          marginVertical: 10,
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}>
-        <Text style={styles.TextStyle}>Tip </Text>
-        <Text style={styles.TotalStyle}>${tip} </Text>
-      </View>
-      {discount !== 0 && (
-        <View
-          style={{
-            justifyContent: 'space-between',
-            marginVertical: 10,
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
-          <Text style={styles.TextStyle}> Coupon Discount </Text>
-          <Text style={styles.TotalStyle}>{discount}%</Text>
-        </View>
-      )}
-      {pointsDiscount !== 0 && (
-        <View
-          style={{
-            justifyContent: 'space-between',
-            marginVertical: 10,
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
-          <Text style={styles.TextStyle}> Loyalty Points Discount </Text>
-          <Text style={styles.TotalStyle}>${pointsDiscount}</Text>
-        </View>
-      )}
-
-      <View style={GlobalStyle.TopBorderStyle}></View>
-      <View
-        style={{
-          justifyContent: 'space-between',
-          marginVertical: 10,
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}>
-        <Text style={styles.TextStyle}>Total</Text>
-        <Text style={styles.TotalStyle}>
-          $
-          {subTotal -
-            (subTotal / 100) * discount -
-            pointsDiscount +
-            deliveryFee +
-            tip}
-        </Text>
-      </View>
-    </View>
-  );
-};
+import OrderType from '../../../components/OrderType';
+import CheckoutDeliverTo from '../../../components/CheckoutDeliverTo';
+import CheckOutSelectBranch from '../../../components/CheckOutSelectBranch';
+import CheckoutSelectWhen from '../../../components/CheckoutSelectWhen';
+import CheckoutSummaryDetails from '../../../components/CheckoutSummaryDetails';
+import CheckoutOptions from '../../../components/CheckoutOptions';
+import CheckoutPaymentDetails from '../../../components/CheckoutPaymentDetails';
 
 const CheckOut = ({route, item}) => {
   let navigation = useNavigation();
-  const [cartData, setCartData] = useState([]);
   const [subTotal, setSubTotal] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [visible, setVisible] = useState(false);
@@ -848,8 +41,6 @@ const CheckOut = ({route, item}) => {
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [popupData, setPopupData] = useState();
-  const [addressType, setAddressType] = useState('');
-  const [address, setAddress] = useState('');
   const [coupon, setCoupon] = useState('');
   const [points, setPoints] = useState(0);
   const [addonsPrice, setAddonsPrice] = useState(0);
@@ -871,26 +62,10 @@ const CheckOut = ({route, item}) => {
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [tip, setTip] = useState(0);
   const dispatch = useDispatch();
-  const isFocused = useIsFocused();
 
-  const {cart, auth, branch} = useSelector(state => ({...state}));
-  const {initPaymentSheet, presentPaymentSheet} = useStripe();
+  const {cart, auth} = useSelector(state => ({...state}));
   //STRIPE
-  // const fetchPaymentSheetParams = async () => {
-  //   const response = await fetch(`${API_URL}/payment-sheet`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   });
-  //   const {paymentIntent, ephemeralKey, customer} = await response.json();
-
-  //   return {
-  //     paymentIntent,
-  //     ephemeralKey,
-  //     customer,
-  //   };
-  // };
+  const {initPaymentSheet, presentPaymentSheet} = useStripe();
   useEffect(() => {
     if (
       cart.coupon.discount !== 0 &&
@@ -965,18 +140,17 @@ const CheckOut = ({route, item}) => {
   };
 
   useEffect(() => {
-    setCartData(cart.addedItems);
     setSubTotal(cart.total);
     setCoupon(cart.coupon.code);
     // const amount =
     // if (cart.total !== 0) initializePaymentSheet();
   }, [refresh]);
-  useEffect(() => {
-    if (auth.user.default_address !== null) {
-      setAddress(auth.user.default_address.address);
-      setAddressType(auth.user.default_address.address_type);
-    }
-  }, [isFocused]);
+  // useEffect(() => {
+  //   if (auth.user.default_address !== null) {
+  //     setAddress(auth.user.default_address.address);
+  //     setAddressType(auth.user.default_address.address_type);
+  //   }
+  // }, [isFocused]);
   useEffect(() => {
     function checkBranchIsOpen() {
       const currentTime = new Date();
@@ -1209,259 +383,82 @@ const CheckOut = ({route, item}) => {
         <AppBar
           center={
             <Text style={GlobalStyle.AppCenterTextStyle}>
-              {cartData.length > 0 ? 'Checkout Orders' : ''}
+              {cart.addedItems.length > 0 ? 'Checkout Orders' : ''}
             </Text>
           }
         />
       </View>
-      {cartData.length > 0 ? (
+      {cart.addedItems.length > 0 ? (
         <ScrollView
           style={{flex: 1}}
           contentContainerStyle={{
             flexGrow: 1,
-            paddingTop: 20,
-            paddingBottom: 15,
+            paddingVertical: 20,
           }}
           keyboardShouldPersistTaps="handled">
-          <FlatList
-            data={OrderTypeData}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingHorizontal: Window.fixPadding * 2,
-            }}
-            initialNumToRender={5}
-            scrollEnabled={false}
-            renderItem={({item}) => (
-              <OrderType
-                setActiveBg={setActiveBg}
-                activeBg={activeBg}
-                cart={cart}
-                item={item}
-                setBranchId={setBranchId}
-                setSelectedBranch={setSelectedBranch}
-              />
-            )}
-            columnWrapperStyle={{justifyContent: 'space-between'}}
-            keyExtractor={(item, index) => index.toString()}
-            numColumns={2}
+          <OrderType
+            setActiveBg={setActiveBg}
+            activeBg={activeBg}
+            setBranchId={setBranchId}
+            setSelectedBranch={setSelectedBranch}
           />
           {cart.orderType === 'delivery' ? (
-            <View
-              style={{
-                backgroundColor: Color.light,
-                padding: 15,
-                marginTop: 20,
-                borderRadius: BorderRadius,
-                marginHorizontal: Window.fixPadding * 2,
-              }}>
-              <Text style={styles.DeliveryStyle}>Deliver to</Text>
-              <View style={GlobalStyle.TopBorderStyle}></View>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Delivery', {
-                    openPopupParam: false,
-                    placeName: '',
-                    coords: {},
-                    fromProfile: false,
-                  })
-                }
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
-                {auth.user.default_address ? (
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <View
-                      style={{
-                        backgroundColor: Color.primary,
-                        padding: 15,
-                        borderRadius: 50,
-                      }}>
-                      <Icon
-                        iconFamily={'Ionicons'}
-                        color={Color.light}
-                        name="ios-location-sharp"
-                        size={20}
-                      />
-                    </View>
-                    <View style={{flexDirection: 'column', marginLeft: 15}}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginBottom: 1,
-                        }}>
-                        <Text style={styles.Heading}>{addressType}</Text>
-                        <Text
-                          style={{
-                            lineHeight: 12,
-                            fontSize: 10,
-                            backgroundColor: Color.primary,
-                            color: Color.light,
-                            padding: 8,
-                            marginLeft: 10,
-                            fontFamily: Font.Urbanist_SemiBold,
-                            borderRadius: BorderRadius,
-                          }}>
-                          Default
-                        </Text>
-                      </View>
-                      <Text
-                        style={{
-                          marginTop: 10,
-                          fontSize: 14,
-                          color: Color.greyscale,
-                          fontFamily: Font.Urbanist_Medium,
-                          width: Window.width / 1.8,
-                        }}>
-                        {address}
-                      </Text>
-                    </View>
-                  </View>
-                ) : (
-                  <Text style={[styles.Heading, {fontSize: 12}]}>
-                    Add New Delivery Address
-                  </Text>
-                )}
-                <Icon
-                  iconFamily={'Entypo'}
-                  name="chevron-small-right"
-                  size={25}
-                  color={Color.primary}
-                />
-              </TouchableOpacity>
-            </View>
+            <CheckoutDeliverTo />
           ) : (
-            <View style={styles.BoxContainerStyle}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={styles.DeliveryStyle}>Select Branch</Text>
-                {branchId === '' && (
-                  <Icon
-                    iconFamily={'Ionicons'}
-                    color={Color.primary}
-                    name="warning"
-                    size={22}
-                  />
-                )}
-              </View>
-              <View style={GlobalStyle.TopBorderStyle} />
-              {branch[0].map((item, index) => (
-                <DeliveryDetails
-                  branchId={branchId}
-                  setBranchId={setBranchId}
-                  setSelectedBranch={setSelectedBranch}
-                  item={item}
-                  key={index}
-                />
-              ))}
-            </View>
-          )}
-          <View style={styles.BoxContainerStyle}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={styles.DeliveryStyle}>Select When</Text>
-            </View>
-            <View style={GlobalStyle.TopBorderStyle} />
-            {TimeData.map((item, index) => (
-              <TimeDetails
-                setDeliveryTime={setDeliveryTime}
-                deliveryTime={deliveryTime}
-                deliveryTimeObject={deliveryTimeObject}
-                setDeliveryTimeObject={setDeliveryTimeObject}
-                setOpen={setOpen}
-                item={item}
-                key={index}
-              />
-            ))}
-          </View>
-          <View style={styles.BoxContainerStyle}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={styles.DeliveryStyle}>Order Summary</Text>
-            </View>
-            <View style={GlobalStyle.TopBorderStyle} />
-            {cartData.length > 0 ? (
-              cartData.map((item, index) => (
-                <>
-                  <SummaryDetails
-                    item={item}
-                    visible={visible}
-                    setVisible={setVisible}
-                    setPopupData={setPopupData}
-                    index={index}
-                    setRefresh={setRefresh}
-                    refresh={refresh}
-                    onShowPopup={onShowPopup}
-                    setAddonsPrice={setAddonsPrice}
-                    setVariationsPrice={setVariationsPrice}
-                    setCartItemIndex={setCartItemIndex}
-                    setCartItemAmount={setCartItemAmount}
-                    setCartItemQuantity={setCartItemQuantity}
-                  />
-                  {index + 1 === cartData.length ? null : (
-                    <View style={GlobalStyle.TopBorderStyle} />
-                  )}
-                </>
-              ))
-            ) : (
-              <Text style={[styles.Heading, {fontSize: 12}]}>
-                Your basket is empty
-              </Text>
-            )}
-          </View>
-
-          <View style={styles.BoxContainerStyle}>
-            {CardData.map((item, index) => (
-              <CartDetails
-                setOpenInput={setOpenInput}
-                openInput={openInput}
-                discount={cart.coupon.discount}
-                item={item}
-                key={index}
-                coupon={coupon}
-                setCoupon={setCoupon}
-                cart={cart}
-                removeCoupon={removeCoupon}
-                couponHandler={couponHandler}
-                setPoints={setPoints}
-                points={points}
-                auth={auth}
-                setPaymentMethod={setPaymentMethod}
-                paymentMethod={paymentMethod}
-                setLoading={setLoading}
-                initializePaymentSheet={initializePaymentSheet}
-                setPointsDiscount={setPointsDiscount}
-                pointsDiscount={pointsDiscount}
-                setTip={setTip}
-                tip={tip}
-                subTotal={subTotal}
-              />
-            ))}
-          </View>
-
-          <View style={styles.BoxContainerStyle}>
-            <PaymentDetails
-              subTotal={subTotal}
-              deliveryFee={deliveryFee}
-              discount={cart.coupon.discount}
-              pointsDiscount={pointsDiscount}
-              tip={tip}
+            <CheckOutSelectBranch
+              branchId={branchId}
+              setBranchId={setBranchId}
+              setSelectedBranch={setSelectedBranch}
             />
-          </View>
+          )}
+          <CheckoutSelectWhen
+            setDeliveryTime={setDeliveryTime}
+            deliveryTime={deliveryTime}
+            deliveryTimeObject={deliveryTimeObject}
+            setDeliveryTimeObject={setDeliveryTimeObject}
+            setOpen={setOpen}
+          />
+          <CheckoutSummaryDetails
+            visible={visible}
+            setVisible={setVisible}
+            setPopupData={setPopupData}
+            setRefresh={setRefresh}
+            refresh={refresh}
+            onShowPopup={onShowPopup}
+            setAddonsPrice={setAddonsPrice}
+            setVariationsPrice={setVariationsPrice}
+            setCartItemIndex={setCartItemIndex}
+            setCartItemAmount={setCartItemAmount}
+            setCartItemQuantity={setCartItemQuantity}
+          />
+
+          <CheckoutOptions
+            setOpenInput={setOpenInput}
+            openInput={openInput}
+            coupon={coupon}
+            setCoupon={setCoupon}
+            cart={cart}
+            removeCoupon={removeCoupon}
+            couponHandler={couponHandler}
+            setPoints={setPoints}
+            points={points}
+            setPaymentMethod={setPaymentMethod}
+            paymentMethod={paymentMethod}
+            setLoading={setLoading}
+            initializePaymentSheet={initializePaymentSheet}
+            setPointsDiscount={setPointsDiscount}
+            pointsDiscount={pointsDiscount}
+            setTip={setTip}
+            tip={tip}
+            subTotal={subTotal}
+          />
+          <CheckoutPaymentDetails
+            subTotal={subTotal}
+            deliveryFee={deliveryFee}
+            discount={cart.coupon.discount}
+            pointsDiscount={pointsDiscount}
+            tip={tip}
+          />
         </ScrollView>
       ) : (
         <View
@@ -1500,7 +497,7 @@ const CheckOut = ({route, item}) => {
         <Button
           disabled={cart.orderType === 'delivery' ? false : btnDisabled}
           text={
-            cartData.length > 0
+            cart.addedItems.length > 0
               ? `Place Order - $${
                   subTotal -
                   (subTotal / 100) * cart.coupon.discount -
@@ -1514,7 +511,7 @@ const CheckOut = ({route, item}) => {
           isIcon={false}
           theme="primary"
           onPressFunc={
-            cartData.length > 0
+            cart.addedItems.length > 0
               ? () => {
                   if (paymentMethod === 1) {
                     submitHandler();
@@ -1538,7 +535,6 @@ const CheckOut = ({route, item}) => {
           }
         />
       </View>
-
       {popupData && (
         <Popup
           // item={item}
@@ -1547,15 +543,12 @@ const CheckOut = ({route, item}) => {
           item={popupData}
         />
       )}
-
       <BranchPopup
         // item={item}
         visible={visibleBranch}
         setVisible={setVisibleBranch}
       />
-
       {loading && <Loader />}
-
       <BottomPopupRemoveFromCart
         ref={target => (popupRef = target)}
         onTouchOutside={onClosePopup}
@@ -1786,69 +779,5 @@ const BranchPopup = ({visible, setVisible}) => {
     </Modal>
   );
 };
-const OrderType = ({item, cart, setBranchId, setSelectedBranch}) => {
-  const dispatch = useDispatch();
 
-  const updateOrderType = type => {
-    dispatch({
-      type: 'UPDATE_ORDER_TYPE',
-      payload: type,
-    });
-  };
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        if (item.id === 2) {
-          setBranchId('');
-          setSelectedBranch({});
-        }
-        updateOrderType(item.value);
-      }}
-      style={{
-        flex: 1,
-        height: 75,
-        borderRadius: BorderRadius,
-        backgroundColor:
-          cart.orderType === item.value ? Color.secondary : Color.light,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: item.id === 1 ? 10 : 0,
-        marginLeft: item.id === 2 ? 10 : 0,
-        paddingHorizontal: 10,
-        flexDirection: 'row',
-      }}>
-      {item.id === 1 ? (
-        <PickupSvgs
-          color={cart.orderType === item.value ? Color.light : '#2A3B56'}
-        />
-      ) : item.id === 2 ? (
-        <DeliverySvgs
-          color={cart.orderType === item.value ? Color.light : '#2A3B56'}
-        />
-      ) : null}
-      <View style={{marginLeft: 8, width: 85}}>
-        <Text
-          style={{
-            color:
-              cart.orderType === item.value ? Color.light : Color.headingSm,
-            fontSize: 15,
-            fontFamily: Font.Urbanist_Bold,
-          }}>
-          {item.name}
-        </Text>
-        <Text
-          numberOfLines={2}
-          style={{
-            paddingTop: 0.5,
-            color:
-              cart.orderType === item.value ? Color.tertiary : Color.greyscale,
-            fontSize: 11,
-            fontFamily: Font.Urbanist_Medium,
-          }}>
-          {item.discount}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
 export default CheckOut;
