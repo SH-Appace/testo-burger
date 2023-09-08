@@ -25,24 +25,25 @@ import {useSelector} from 'react-redux';
 import {BookSvg, LoyaltySvg, ReferSvg} from '../../../assets/svgs/HomePage';
 import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {HorizontalFlatList} from '@idiosync/horizontal-flatlist';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import SearchComponent from '../../../components/SearchComponent';
-import Swiper from 'react-native-swiper';
 import {updateFCMToken} from '../../../apis/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DeviceInfo from 'react-native-device-info';
 import OrderType from '../../../components/OrderType';
 import FeaturedCard from '../../../components/FeaturedCard';
 import SearchBar from '../../../components/SearchBar';
+import useAnimated from './useAnimated';
+import HomeBanners from '../../../components/HomeBanners';
+import HomeSectionRow from '../../../components/HomeSectionRow';
+import HomeHeader from '../../../components/HomeHeader';
+import ReferCard from '../../../components/ReferCard';
+import LoyaltyCard from '../../../components/LoyaltyCard';
+import BookATableCard from '../../../components/BookATableCard';
 
 const Home = ({navigation}) => {
   const [activeBg, setActiveBg] = useState(1);
   const [catState, setCatState] = useState(false);
-  const [bannerImg, setBannerImg] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
   let hasNotch = DeviceInfo.hasNotch();
 
@@ -50,6 +51,11 @@ const Home = ({navigation}) => {
     state => ({
       ...state,
     }),
+  );
+  /// Animated
+  const [reanimatedStyle, reanimatedStyle2, reanimatedStyle3] = useAnimated(
+    catState,
+    categories,
   );
   const renderItemCategories = ({item}) => (
     <TouchableOpacity
@@ -105,47 +111,8 @@ const Home = ({navigation}) => {
       </Text>
     </TouchableOpacity>
   );
-  useEffect(() => {
-    banners[0].map(x => setBannerImg(prev => [x.image, ...prev]));
-  }, []);
-  /// Animated
-  const progress = useSharedValue(0);
-  const progress2 = useSharedValue(1);
-  const progress3 = useSharedValue(235);
-  const reanimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: progress.value,
-    };
-  }, []);
-  const reanimatedStyle2 = useAnimatedStyle(() => {
-    return {
-      opacity: progress2.value,
-    };
-  }, []);
-  const reanimatedStyle3 = useAnimatedStyle(() => {
-    return {
-      height: progress3.value,
-    };
-  }, []);
 
-  useEffect(() => {
-    if (catState) {
-      progress.value = withSpring(1);
-    } else {
-      progress.value = withSpring(0);
-    }
-    if (catState) {
-      progress2.value = withSpring(0);
-    } else {
-      progress2.value = withSpring(1);
-    }
-    if (catState) {
-      progress3.value = withSpring((categories[0].length / 4) * 110);
-    } else {
-      progress3.value = withSpring(180);
-    }
-  }, [catState]);
-
+  //Push notifications
   useEffect(async () => {
     let fcmtoken = await AsyncStorage.getItem('fcmtoken');
     updateFCMToken(
@@ -186,82 +153,23 @@ const Home = ({navigation}) => {
           style={{
             paddingHorizontal: Window.fixPadding * 2,
           }}>
-          <Header navigation={navigation} cart={cart} wishlist={wishlist} />
+          <HomeHeader />
           <SearchBar setOpenSearch={setOpenSearch} />
         </View>
-        <SectionRow
+        <HomeSectionRow
           title="Special Offers"
           altTitle="See All"
           onPress={() => navigation.navigate('SpecialOffer')}
         />
-        <Swiper
-          autoplay
-          style={{height: 180}}
-          activeDot={
-            <View
-              style={{
-                width: 16,
-                height: 4,
-                borderRadius: 100,
-                marginHorizontal: 5,
-                backgroundColor: '#FFFFFF',
-              }}
-            />
-          }
-          dot={
-            <View
-              style={{
-                width: 16,
-                height: 4,
-                borderRadius: 100,
-                marginHorizontal: 5,
-                backgroundColor: '#E0E0E0',
-                opacity: 0.7,
-              }}
-            />
-          }>
-          {bannerImg.map(x => (
-            <Image
-              source={{uri: x}}
-              style={{
-                height: 180,
-                borderRadius: BorderRadius,
-                width: '90%',
-                alignSelf: 'center',
-              }}
-              resizeMethod={'resize'}
-              resizeMode={'cover'}
-            />
-          ))}
-        </Swiper>
-
-        <View style={[styles.headingRow]}>
-          <Text style={styles.Heading}>Order Type</Text>
-          <Text
-            style={{
-              fontSize: 14,
-              color: Color.primary,
-              fontFamily: Font.Urbanist_Bold,
-              lineHeight: 22,
-            }}>
-            Select any 1 Option
-          </Text>
-        </View>
+        <HomeBanners banners={banners} />
+        <HomeSectionRow title="Order Type" altTitle="Select any 1 Option" />
 
         <OrderType setActiveBg={setActiveBg} activeBg={activeBg} />
-
-        <View style={styles.headingRow}>
-          <Text style={styles.Heading}>Discount Guaranteed! 👌</Text>
-          <Text
-            onPress={() => navigation.navigate('Menu')}
-            style={{
-              fontSize: 16,
-              fontFamily: Font.Urbanist_Bold,
-              color: Color.primary,
-            }}>
-            See All
-          </Text>
-        </View>
+        <HomeSectionRow
+          title="Discount Guaranteed! 👌"
+          altTitle="See All"
+          onPress={() => navigation.navigate('Menu')}
+        />
 
         <ScrollView
           horizontal
@@ -275,31 +183,22 @@ const Home = ({navigation}) => {
               <FeaturedCard item={item} key={index} index={index} />
             ))}
         </ScrollView>
-        <View style={styles.headingRow}>
-          <Text style={styles.Heading}>Food Categories! 👌</Text>
-          {catState ? (
-            <TouchableOpacity onPress={() => setCatState(false)}>
+        <HomeSectionRow
+          title="Food Categories! 👌"
+          altTitle={
+            catState ? (
               <Icon
                 iconFamily={'AntDesign'}
                 name="close"
                 size={20}
                 color={Color.secondary}
               />
-            </TouchableOpacity>
-          ) : (
-            <Text
-              onPress={() => {
-                setCatState(true);
-              }}
-              style={{
-                fontSize: 16,
-                fontFamily: Font.Urbanist_Bold,
-                color: Color.primary,
-              }}>
-              See All
-            </Text>
-          )}
-        </View>
+            ) : (
+              'See All'
+            )
+          }
+          onPress={() => (catState ? setCatState(false) : setCatState(true))}
+        />
         {categories && (
           <Animated.View style={reanimatedStyle3}>
             <Animated.View style={[reanimatedStyle, {paddingHorizontal: 20}]}>
@@ -328,380 +227,13 @@ const Home = ({navigation}) => {
             </Animated.View>
           </Animated.View>
         )}
-        <ReferCard navigation={navigation} />
-        <LoyaltyCard navigation={navigation} />
-        <BookCard navigation={navigation} />
+        <ReferCard />
+        <LoyaltyCard />
+        <BookATableCard />
       </ScrollView>
-
       <SearchComponent open={openSearch} setOpen={setOpenSearch} />
     </SafeAreaView>
   );
 };
 
-const LoyaltyCard = ({navigation}) => {
-  return (
-    <TouchableOpacity
-      style={{
-        borderRadius: BorderRadius,
-        marginHorizontal: Window.fixPadding * 2,
-        height: 113,
-        marginVertical: 15,
-        shadowColor: 'rgba(0,0,0,0.4)',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 22,
-      }}
-      onPress={() =>
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'BottomTabScreen',
-              state: {
-                routes: [
-                  {
-                    name: 'ProfileStack',
-                    state: {
-                      routes: [
-                        {
-                          name: 'Loyalty',
-                          params: {
-                            fromHome: true,
-                          },
-                        },
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        })
-      }>
-      <ImageBackground
-        imageStyle={{
-          resizeMode: 'cover',
-          borderRadius: BorderRadius,
-        }}
-        style={{
-          width: '100%',
-          height: '100%',
-          borderRadius: BorderRadius,
-
-          justifyContent: 'center',
-        }}
-        source={require('../../../assets/images/pics/loyaltyBg.jpg')}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontFamily: Font.Urbanist_Black,
-            color: Color.light,
-            width: Window.width / 2.2,
-            marginLeft: 25,
-          }}>
-          Collect Points For Every Order
-        </Text>
-        <Text
-          style={{
-            fontSize: 14,
-            fontFamily: Font.Urbanist_Regular,
-            color: Color.light,
-            marginLeft: 25,
-          }}>
-          earn points & get discounts
-        </Text>
-        <View
-          style={{
-            width: Window.width / 2.2,
-            height: Window.width / 2.2,
-            position: 'absolute',
-            right: -40,
-            top: -40,
-          }}>
-          <LoyaltySvg width={Window.width / 3} height={Window.width / 2} />
-        </View>
-      </ImageBackground>
-    </TouchableOpacity>
-  );
-};
-const ReferCard = ({navigation}) => {
-  return (
-    <TouchableOpacity
-      style={{
-        borderRadius: BorderRadius,
-        // overflow: 'hidden',
-        marginHorizontal: Window.fixPadding * 2,
-        height: 113,
-        marginVertical: 15,
-        marginTop: 30,
-        shadowColor: 'rgba(0,0,0,0.4)',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 22,
-      }}
-      onPress={() =>
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'BottomTabScreen',
-              state: {
-                routes: [
-                  {
-                    name: 'ProfileStack',
-                    state: {
-                      routes: [
-                        {
-                          name: 'Referral',
-                          params: {
-                            fromHome: true,
-                          },
-                        },
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        })
-      }>
-      <ImageBackground
-        imageStyle={{
-          resizeMode: 'cover',
-          borderRadius: BorderRadius,
-        }}
-        style={{
-          width: '100%',
-          height: '100%',
-          borderRadius: BorderRadius,
-
-          justifyContent: 'center',
-        }}
-        source={require('../../../assets/images/pics/referBg.jpg')}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontFamily: Font.Urbanist_Black,
-            color: Color.light,
-            marginLeft: 25,
-          }}>
-          Refer a Friend
-        </Text>
-        <Text
-          style={{
-            fontSize: 14,
-            fontFamily: Font.Urbanist_Regular,
-            color: Color.light,
-            marginLeft: 25,
-          }}>
-          and both get a discount!
-        </Text>
-        <View
-          style={{
-            width: Window.width / 2.2,
-            height: Window.width / 2.2,
-            position: 'absolute',
-            right: -20,
-            top: -40,
-          }}>
-          <ReferSvg width={Window.width / 2.35} height={Window.width / 2.2} />
-        </View>
-      </ImageBackground>
-    </TouchableOpacity>
-  );
-};
-const BookCard = ({navigation}) => {
-  return (
-    <TouchableOpacity
-      style={{
-        borderRadius: BorderRadius,
-        overflow: 'hidden',
-        marginHorizontal: Window.fixPadding * 2,
-        height: 113,
-        marginVertical: 15,
-        shadowColor: 'rgba(0,0,0,0.4)',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 22,
-      }}
-      onPress={() => navigation.navigate('BookATable')}>
-      <ImageBackground
-        imageStyle={{
-          resizeMode: 'cover',
-          borderRadius: BorderRadius,
-        }}
-        style={{
-          width: '100%',
-          height: '100%',
-          borderRadius: BorderRadius,
-
-          justifyContent: 'center',
-        }}
-        source={require('../../../assets/images/pics/bookBg.png')}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontFamily: Font.Urbanist_Black,
-            color: Color.light,
-            marginLeft: 25,
-          }}>
-          Book a Table
-        </Text>
-        <Text
-          style={{
-            fontSize: 14,
-            fontFamily: Font.Urbanist_Regular,
-            color: Color.light,
-            marginLeft: 25,
-          }}>
-          earn point & get discount
-        </Text>
-        <View
-          style={{
-            width: Window.width / 2.2,
-            height: Window.width / 2.2,
-            position: 'absolute',
-            right: -20,
-            top: -30,
-          }}>
-          <BookSvg width={Window.width / 2.35} height={Window.width / 2.2} />
-        </View>
-      </ImageBackground>
-    </TouchableOpacity>
-  );
-};
-
-const Header = ({navigation, cart, wishlist}) => {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.toggleDrawer();
-          }}>
-          <ManuIcon />
-        </TouchableOpacity>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-        }}>
-        <View>
-          <TouchableOpacity
-            style={[styles.TopIconStyle, {marginRight: 10}]}
-            onPress={() => navigation.navigate('Wishlist')}>
-            <Icon
-              iconFamily={'Ionicons'}
-              name={'heart-outline'}
-              size={20}
-              color={Color.tertiary}
-            />
-          </TouchableOpacity>
-          {wishlist.addedItems.length > 0 && (
-            <View
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: 6,
-                backgroundColor: '#F75555',
-                position: 'absolute',
-                right: 22,
-                top: 12,
-              }}
-            />
-          )}
-        </View>
-        <TouchableOpacity
-          style={[styles.TopIconStyle, {marginRight: 10}]}
-          onPress={() => navigation.navigate('QRCode')}>
-          <Icon
-            iconFamily={'Ionicons'}
-            name={'scan'}
-            size={20}
-            color={Color.tertiary}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.TopIconStyle, {marginRight: 10}]}
-          onPress={() => navigation.navigate('Notification')}>
-          <Icon
-            iconFamily={'Ionicons'}
-            name={'notifications-outline'}
-            size={20}
-            color={Color.tertiary}
-          />
-        </TouchableOpacity>
-        <View>
-          <TouchableOpacity
-            style={styles.TopIconStyle}
-            onPress={() =>
-              navigation.navigate('CheckOut', {
-                reorder: false,
-              })
-            }>
-            <Icon
-              iconFamily={'Feather'}
-              name={'shopping-bag'}
-              size={20}
-              color={Color.tertiary}
-            />
-          </TouchableOpacity>
-          {cart.addedItems.length > 0 && (
-            <View
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: 6,
-                backgroundColor: '#F75555',
-                position: 'absolute',
-                right: 12,
-                top: 12,
-              }}
-            />
-          )}
-        </View>
-      </View>
-    </View>
-  );
-};
-const SectionRow = ({title, altTitle, onPress}) => {
-  return (
-    <View style={styles.headingRow}>
-      <Text style={styles.Heading}>{title}</Text>
-      <TouchableOpacity onPress={onPress}>
-        <Text
-          style={{
-            ...GlobalStyle.Heading,
-            color: Color.primary,
-            fontSize: 16,
-          }}>
-          {altTitle}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
 export default Home;
