@@ -25,11 +25,11 @@ export async function addNewAddress(
     }
   } catch (err) {
     setLoading(false);
-    // showMessage({
-    //   message: err.response.data.errors[0].message,
-    //   type: 'danger',
-    // });
-    console.log('error', err.response.data);
+    showMessage({
+      message: err.response.data.errors[0].message,
+      type: 'danger',
+    });
+    // console.log('error', err.response.data);
   }
 }
 export async function editAddress(body, token, id, setLoading, navigation) {
@@ -47,11 +47,11 @@ export async function editAddress(body, token, id, setLoading, navigation) {
     }
   } catch (err) {
     setLoading(false);
-    // showMessage({
-    //   message: err.response.data.errors[0].message,
-    //   type: 'danger',
-    // });
-    console.log('error', err.response.data);
+    showMessage({
+      message: err.response.data.errors[0].message,
+      type: 'danger',
+    });
+    // console.log('error', err.response.data);
   }
 }
 export async function getAddress(token, setLoading, setDeliveryData) {
@@ -97,9 +97,9 @@ export async function delAddress(
     }
   } catch (err) {
     setLoading(false);
-    // showMessage({
-    //   message: err.response.data.errors[0].message,
-    //   type: 'danger',
-    // });
+    showMessage({
+      message: err.response.data.errors[0].message,
+      type: 'danger',
+    });
   }
 }

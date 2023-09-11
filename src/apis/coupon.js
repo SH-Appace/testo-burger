@@ -41,15 +41,14 @@ export async function couponApply(
       },
     });
     if (data) {
-      console.log(data, 'dekh le 321323');
-      // dispatch({
-      //   type: 'ADD_COUPON',
-      //   payload: {
-      //     code: body.code,
-      //     discount: data.discount,
-      //   },
-      // });
-      // showModal();
+      dispatch({
+        type: 'ADD_COUPON',
+        payload: {
+          code: body.code,
+          discount: data.discount,
+        },
+      });
+      showModal();
       setLoading(false);
     }
   } catch (err) {

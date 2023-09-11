@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://demoappprojects.com/food-ordering/api/v1/',
+  baseURL: 'https://demo.tangyapps.com/api/v1/',
   //localhost ip
   // baseURL: 'http://10.168.168.84:8080/api/v1/',
   //aws ip

@@ -11,7 +11,13 @@ import {
 } from 'react-native';
 import AppBar from '../../../components/AppBar';
 import Button from '../../../components/Button';
-import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
+import {
+  BorderRadius,
+  Color,
+  Font,
+  GlobalStyle,
+  Window,
+} from '../../../globalStyle/Theme';
 import TextField from '../../../components/TextFeild';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -24,6 +30,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from '../../../core/Icon';
 import {useBackButton} from '../../../hooks';
 import Loader from '../../../components/Loader';
+import {WarningSvgBig} from '../../../assets/svgs/ProfileSvgs';
 
 const EditProfile = ({navigation, route}) => {
   const [email, setEmail] = useState('');
@@ -160,6 +167,26 @@ const EditProfile = ({navigation, route}) => {
         }
         right={<Text style={{color: Color.black}}></Text>}
       />
+      <View
+        style={{
+          backgroundColor: 'rgba(246, 181, 29, 0.2)',
+          borderRadius: BorderRadius,
+          padding: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginVertical: 15,
+        }}>
+        <WarningSvgBig />
+        <Text
+          style={{
+            color: Color.secondary,
+            fontSize: 14,
+            fontFamily: Font.Urbanist_Medium,
+            marginLeft: 10,
+          }}>
+          Complete Your Profile
+        </Text>
+      </View>
       <ScrollView
         contentContainerStyle={{flexGrow: 1, paddingTop: 25}}
         keyboardShouldPersistTaps="handled">
@@ -187,6 +214,7 @@ const EditProfile = ({navigation, route}) => {
             onChanged={setName}
             icon="account"
             value={name}
+            borderColor={name === null ? Color.primary : 'transparent'}
           />
           <View style={{marginVertical: 10}} />
           <TextField
@@ -195,6 +223,7 @@ const EditProfile = ({navigation, route}) => {
             onChanged={setEmail}
             icon="email"
             keyboardType="email-address"
+            borderColor={email === null ? Color.primary : 'transparent'}
           />
           <View style={{marginVertical: 10}} />
           <View

@@ -35,6 +35,7 @@ const TextField = ({
   prefix,
   tipPercent,
   handleCustomTipChange,
+  borderColor = 'transparent',
   onChanged = val => console.log('No Onchange Event', val),
 }) => {
   const [focused, setFocused] = useState(false);
@@ -84,8 +85,8 @@ const TextField = ({
         Style.TextInputContainer,
         {
           backgroundColor: focused ? 'rgba(246, 181, 29, 0.10)' : '#F9F9F9',
-          borderWidth: focused ? 1 : 0,
-          borderColor: Color.secondary,
+          borderWidth: 1,
+          borderColor: focused ? Color.secondary : borderColor,
           height: multiline ? 100 : height,
         },
       ]}>

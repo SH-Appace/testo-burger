@@ -1,5 +1,14 @@
 import React, {useState} from 'react';
-import {Text, ScrollView, View, Image, TouchableOpacity, Modal, StyleSheet, ActivityIndicator} from 'react-native';
+import {
+  Text,
+  ScrollView,
+  View,
+  Image,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import AppBar from '../../../components/AppBar';
@@ -10,28 +19,29 @@ import {useDispatch, useSelector} from 'react-redux';
 import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {useBackButton} from '../../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { deleteAccount } from '../../../apis/auth';
+import {deleteAccount} from '../../../apis/auth';
 import Button from '../../../components/Button';
-import { SkypeIndicator } from 'react-native-indicators';
+import {SkypeIndicator} from 'react-native-indicators';
+import {WarningSvg, WarningSvgBig} from '../../../assets/svgs/ProfileSvgs';
 
-const ProfileData = ({item, logoutHandler,setLoading,setModalVisible}) => {
+const ProfileData = ({item, logoutHandler, setLoading, setModalVisible}) => {
   let navigation = useNavigation();
+  const {auth} = useSelector(state => ({...state}));
+
   return (
     <TouchableOpacity
-      onPress={async() =>{
-        if(item.name === 'Logout'){
-          logoutHandler()
-        }else if(item.name === 'Delete Account'){
-     
-          setModalVisible(true)
-        }else{
-
+      onPress={async () => {
+        if (item.name === 'Logout') {
+          logoutHandler();
+        } else if (item.name === 'Delete Account') {
+          setModalVisible(true);
+        } else {
           navigation.navigate(item.link, {
             fromOTPcode: item.id === 3 && false,
             fromProfile: item.id === 4 && false,
-          })}
+          });
         }
-      }
+      }}
       style={{
         flexDirection: 'row',
         paddingBottom: 23,
@@ -42,16 +52,22 @@ const ProfileData = ({item, logoutHandler,setLoading,setModalVisible}) => {
         {item.icon}
 
         <Text
-          style={[{
-            fontSize: 18,
-            fontFamily: Font.Urbanist_SemiBold,
-            lineHeight: 25.2,
-            color: Color.tertiary,
-            marginLeft: 15,
-            
-          }, item.name === 'Delete Account' && {color: Color.primary}]}>
+          style={[
+            {
+              fontSize: 18,
+              fontFamily: Font.Urbanist_SemiBold,
+              lineHeight: 25.2,
+              color: Color.tertiary,
+              marginLeft: 15,
+              marginRight: item.name === 'Profile' ? 10 : 0,
+            },
+            item.name === 'Delete Account' && {color: Color.primary},
+          ]}>
           {item.name}
         </Text>
+        {item.name === 'Profile' && auth.user.name === null && (
+          <WarningSvgBig />
+        )}
       </View>
       <View>
         <Icon
@@ -67,7 +83,7 @@ const ProfileData = ({item, logoutHandler,setLoading,setModalVisible}) => {
 
 const Profile = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const {auth} = useSelector(state => ({...state}));
   const onBackPress = () => {
@@ -142,7 +158,12 @@ const Profile = ({navigation}) => {
         <View style={GlobalStyle.TopBorderStyle}></View>
         <View style={{flexDirection: 'column'}}>
           {Data.map((item, index) => (
-            <ProfileData item={item} key={index} setModalVisible={setModalVisible} logoutHandler={logoutHandler}  />
+            <ProfileData
+              item={item}
+              key={index}
+              setModalVisible={setModalVisible}
+              logoutHandler={logoutHandler}
+            />
           ))}
         </View>
       </ScrollView>
@@ -152,15 +173,20 @@ const Profile = ({navigation}) => {
         navigation={navigation}
         logoutHandler={logoutHandler}
         token={auth.token}
-
       />
     </SafeAreaView>
   );
 };
 
 export default Profile;
-const ModalPopup = ({ token,modalVisible, setModalVisible, logoutHandler, navigation }) => {
-  const [loading, setLoading] = useState(false)
+const ModalPopup = ({
+  token,
+  modalVisible,
+  setModalVisible,
+  logoutHandler,
+  navigation,
+}) => {
+  const [loading, setLoading] = useState(false);
   return (
     <Modal
       animationType="fade"
@@ -177,7 +203,7 @@ const ModalPopup = ({ token,modalVisible, setModalVisible, logoutHandler, naviga
         }}>
         <View style={style.modalView}>
           {loading ? (
-                <SkypeIndicator size={50} color={Color.secondary} />
+            <SkypeIndicator size={50} color={Color.secondary} />
           ) : (
             <>
               <Text style={style.modalTextHeading}>
@@ -192,8 +218,8 @@ const ModalPopup = ({ token,modalVisible, setModalVisible, logoutHandler, naviga
               <Text style={style.modalText}>
                 Are you sure you want to delete your account?
               </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1, margin: 5 }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{flex: 1, margin: 5}}>
                   <Button
                     text={'Cancel'}
                     theme="alternate"
@@ -202,16 +228,20 @@ const ModalPopup = ({ token,modalVisible, setModalVisible, logoutHandler, naviga
                     }}
                   />
                 </View>
-                <View style={{ flex: 1, margin: 5 }}>
+                <View style={{flex: 1, margin: 5}}>
                   <Button
                     text={'Delete'}
                     theme="primary"
                     onPressFunc={() => {
-                      deleteAccount(setLoading, () => {
-                        setModalVisible(false);
-                        logoutHandler()
-                      },token,setModalVisible)
-
+                      deleteAccount(
+                        setLoading,
+                        () => {
+                          setModalVisible(false);
+                          logoutHandler();
+                        },
+                        token,
+                        setModalVisible,
+                      );
                     }}
                   />
                 </View>
@@ -250,4 +280,4 @@ const style = StyleSheet.create({
     fontSize: 14,
     fontFamily: Font.Urbanist_Regular,
   },
-})
+});

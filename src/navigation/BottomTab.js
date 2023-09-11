@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Color} from '../globalStyle/Theme';
+import {Color, Window} from '../globalStyle/Theme';
 import {
   HomeIcon,
   HomeIconActive,
@@ -17,15 +17,19 @@ import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import DeviceInfo from 'react-native-device-info';
 import Menu from '../screens/main/menu/Menu';
 import HomeStack from './HomeStack';
-import {ImageBackground, StyleSheet} from 'react-native';
+import {ImageBackground, StyleSheet, View} from 'react-native';
 import Animated from 'react-native-reanimated';
 import DrawerSceneWrapper from '../components/DrawerSceneWrapper';
 import {useDrawerStatus} from '@react-navigation/drawer';
+import {WarningSvg} from '../assets/svgs/ProfileSvgs';
+import {useSelector} from 'react-redux';
 
 let hasNotch = DeviceInfo.hasNotch();
 const BottomTabScreen = ({navigation, style}) => {
   const Tab = createBottomTabNavigator();
   const isDrawerOpen = useDrawerStatus();
+  const {auth} = useSelector(state => ({...state}));
+  console.log(auth.user);
   useEffect(() => {
     // getBanner();
     if (isDrawerOpen === 'open') {
@@ -134,7 +138,35 @@ const BottomTabScreen = ({navigation, style}) => {
                   tabBarLabelStyle: tabBarLabelStyles,
                   tabBarItemStyle: tabBarItemStyles,
                   tabBarIcon: ({focused}) =>
-                    focused ? <ProfileIconActive /> : <ProfileIcon />,
+                    focused ? (
+                      <>
+                        <ProfileIconActive />
+                        {auth.user.name === null && (
+                          <View
+                            style={{
+                              position: 'absolute',
+                              right: Window.width / 15,
+                              top: 5,
+                            }}>
+                            <WarningSvg />
+                          </View>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <ProfileIcon />
+                        {auth.user.name === null && (
+                          <View
+                            style={{
+                              position: 'absolute',
+                              right: Window.width / 15,
+                              top: 5,
+                            }}>
+                            <WarningSvg />
+                          </View>
+                        )}
+                      </>
+                    ),
                 };
               }}
             />

@@ -182,7 +182,7 @@ const CustomDrawerContent = props => {
                   fontSize: 16,
                   fontFamily: Font.Urbanist_Medium,
                   color: Color.light,
-                  marginLeft: 20,
+                  marginLeft: 10,
                 }}>
                 {item.screen}
               </Text>
