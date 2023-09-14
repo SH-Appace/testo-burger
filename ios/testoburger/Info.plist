@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<string>Background mode is only enabled for push notifications</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -52,9 +54,6 @@
 	<string>Provide location for food delivery address. The address is used to track food order deliveries</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Provide photo library permission for profile picture. The profile picture is the users symbol of recognition if they can set their own or just go with the default placeholder image</string>
-  <key>BGTaskSchedulerPermittedIdentifiers</key>
-  <string>Background mode is only enabled for push notifications</string>
-  
 	<key>UIAppFonts</key>
 	<array>
 		<string>Urbanist-Bold.ttf</string>
@@ -96,9 +95,10 @@
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
