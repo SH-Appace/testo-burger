@@ -31,32 +31,37 @@ const CheckoutOptions = ({
 
   return (
     <View style={styles.container}>
-      {CardData.map((item, index) => (
-        <CartDetails
-          setOpenInput={setOpenInput}
-          openInput={openInput}
-          discount={cart.coupon.discount}
-          item={item}
-          key={index}
-          coupon={coupon}
-          setCoupon={setCoupon}
-          cart={cart}
-          removeCoupon={removeCoupon}
-          couponHandler={couponHandler}
-          setPoints={setPoints}
-          points={points}
-          auth={auth}
-          setPaymentMethod={setPaymentMethod}
-          paymentMethod={paymentMethod}
-          setLoading={setLoading}
-          initializePaymentSheet={initializePaymentSheet}
-          setPointsDiscount={setPointsDiscount}
-          pointsDiscount={pointsDiscount}
-          setTip={setTip}
-          tip={tip}
-          subTotal={subTotal}
-        />
-      ))}
+      {CardData.map((item, index) => {
+        if(item.id == 2 & !auth.user)
+          return;
+
+        return(
+          <CartDetails
+            setOpenInput={setOpenInput}
+            openInput={openInput}
+            discount={cart.coupon.discount}
+            item={item}
+            key={index}
+            coupon={coupon}
+            setCoupon={setCoupon}
+            cart={cart}
+            removeCoupon={removeCoupon}
+            couponHandler={couponHandler}
+            setPoints={setPoints}
+            points={points}
+            auth={auth}
+            setPaymentMethod={setPaymentMethod}
+            paymentMethod={paymentMethod}
+            setLoading={setLoading}
+            initializePaymentSheet={initializePaymentSheet}
+            setPointsDiscount={setPointsDiscount}
+            pointsDiscount={pointsDiscount}
+            setTip={setTip}
+            tip={tip}
+            subTotal={subTotal}
+          />
+        )
+      })}
     </View>
   );
 };
@@ -302,7 +307,9 @@ const CartDetails = ({
                   COD
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity
+              {
+                auth.user && 
+                <TouchableOpacity
                 onPress={() => {
                   initializePaymentSheet();
                   setPaymentMethod(2);
@@ -327,6 +334,7 @@ const CartDetails = ({
                   Credit Card
                 </Text>
               </TouchableOpacity>
+              }
             </View>
           ) : item.id === 2 ? (
             <>
@@ -367,7 +375,7 @@ const CartDetails = ({
                       setPointsDiscount(0);
                       setPoints(0);
                     }}
-                    loyaltyPoints={parseFloat(auth.user.loyalty_point)}
+                    loyaltyPoints={parseFloat(auth.user?.loyalty_point)}
                   />
                 </View>
                 <View style={{flex: 0.3, marginLeft: 10}}>
