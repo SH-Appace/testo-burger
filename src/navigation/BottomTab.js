@@ -29,7 +29,7 @@ const BottomTabScreen = ({navigation, style}) => {
   const Tab = createBottomTabNavigator();
   const isDrawerOpen = useDrawerStatus();
   const {auth} = useSelector(state => ({...state}));
-  console.log(auth.user);
+  // console.log(auth.user);
   useEffect(() => {
     // getBanner();
     if (isDrawerOpen === 'open') {
@@ -141,7 +141,7 @@ const BottomTabScreen = ({navigation, style}) => {
                     focused ? (
                       <>
                         <ProfileIconActive />
-                        {auth.user.name === null && (
+                        {auth.user?.name === null && (
                           <View
                             style={{
                               position: 'absolute',
@@ -155,7 +155,7 @@ const BottomTabScreen = ({navigation, style}) => {
                     ) : (
                       <>
                         <ProfileIcon />
-                        {auth.user.name === null && (
+                        {auth.user?.name === null && (
                           <View
                             style={{
                               position: 'absolute',

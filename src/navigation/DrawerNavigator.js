@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {createDrawerNavigator, useDrawerStatus} from '@react-navigation/drawer';
+import React, { useState } from 'react';
+import { createDrawerNavigator, useDrawerStatus } from '@react-navigation/drawer';
 import {
   FlatList,
   Image,
@@ -10,10 +10,10 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Color, Font, GlobalStyle} from '../globalStyle/Theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Color, Font, GlobalStyle } from '../globalStyle/Theme';
 
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BottomTabScreen from './BottomTab';
 import {
   AddressSvg,
@@ -27,8 +27,8 @@ import {
   VoucherSvg,
 } from '../assets/svgs/DrawerSvgs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Avatar} from 'react-native-paper';
-import {StatusBar} from 'react-native';
+import { Avatar } from 'react-native-paper';
+import { StatusBar } from 'react-native';
 const DrawerNavigator = () => {
   const Drawer = createDrawerNavigator();
   return (
@@ -64,7 +64,7 @@ const Colors = {
 };
 const CustomDrawerContent = props => {
   const [activeButton, setActiveButton] = useState(0);
-  const {auth} = useSelector(state => ({...state}));
+  const { auth } = useSelector(state => ({ ...state }));
   const IsOpen = useDrawerStatus() === 'open';
   const dispatch = useDispatch();
 
@@ -90,8 +90,8 @@ const CustomDrawerContent = props => {
           }}>
           <Avatar.Image
             size={50}
-            style={{backgroundColor: '#F0F0F0'}}
-            source={{uri: auth.user.image}}
+            style={{ backgroundColor: '#F0F0F0' }}
+            source={{ uri: auth.user?.image }}
           />
           <View
             style={{
@@ -99,26 +99,55 @@ const CustomDrawerContent = props => {
               marginLeft: 10,
               justifyContent: 'center',
             }}>
-            <Text
-              style={{
-                ...GlobalStyle.BasicTextStyle,
-                marginBottom: 5,
-                color: Color.light,
-              }}>
-              Deliver to
-            </Text>
-            <Text
-              style={[
-                GlobalStyle.Heading,
-                {
-                  fontSize: auth.user.default_address !== null ? 20 : 16,
-                  color: Color.light,
-                },
-              ]}>
-              {auth.user.default_address !== null
-                ? auth.user.default_address.address_type
-                : 'Delivery address not available'}
-            </Text>
+              {
+                !auth.user ? 
+                <>
+                  <Text
+                    style={{
+                      ...GlobalStyle.BasicTextStyle,
+                      marginBottom: 5,
+                      color: Color.light,
+                    }}>
+                    You're not login
+                  </Text>
+                  <Text
+                  onPress={() => props.navigation.navigate('SignIn')}
+                    style={[
+                      GlobalStyle.Heading,
+                      {
+                        fontSize: 16,
+                        color: Color.secondary,
+                      },
+                    ]}>
+                    Go to Login
+                  </Text>
+                </>
+                :
+                <>
+                  <Text
+                    style={{
+                      ...GlobalStyle.BasicTextStyle,
+                      marginBottom: 5,
+                      color: Color.light,
+                    }}>
+                    Deliver to
+                  </Text>
+                  <Text
+                    style={[
+                      GlobalStyle.Heading,
+                      {
+                        fontSize: auth.user?.default_address !== null ? 20 : 16,
+                        color: Color.light,
+                      },
+                    ]}>
+                    {auth.user?.default_address !== null
+                      ? auth.user?.default_address.address_type
+                      : 'Delivery address not available'}
+                  </Text>
+                </>
+
+              } 
+
           </View>
         </View>
         <FlatList
@@ -127,67 +156,72 @@ const CustomDrawerContent = props => {
             paddingHorizontal: 25,
             paddingTop: 40,
           }}
-          ItemSeparatorComponent={() => <View style={{marginVertical: 10}} />}
+          ItemSeparatorComponent={() => <View style={{ marginVertical: 10 }} />}
           data={sidebarData}
           scrollEnabled={false}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({item, index}) => (
-            <TouchableOpacity
-              onPress={async () => {
-                if (item.id === 8) {
-                  await AsyncStorage.removeItem('credentials');
-                  await AsyncStorage.removeItem('auth');
-                  props.navigation.replace('SignIn');
-                  dispatch({
-                    type: 'LOGOUT',
-                    payload: null,
-                  });
-                } else if (item.id === 6) {
-                  props.navigation.closeDrawer();
-                  props.navigation.reset({
-                    routes: [
-                      {
-                        name: 'BottomTabScreen',
-                        state: {
-                          routes: [
-                            {
-                              name: 'ProfileStack',
-                              state: {
-                                routes: [
-                                  {
-                                    name: 'Faq',
-                                    params: {
-                                      fromBurger: true,
+          renderItem={({ item, index }) => {
+            if ((!auth.user && item.id == 8) || (!auth.user && item.id == 7) || (!auth.user && item.id == 1)) {
+              return;
+            }
+            return (
+              <TouchableOpacity
+                onPress={async () => {
+                  if (item.id === 8) {
+                    await AsyncStorage.removeItem('credentials');
+                    await AsyncStorage.removeItem('auth');
+                    props.navigation.replace('SignIn');
+                    dispatch({
+                      type: 'LOGOUT',
+                      payload: null,
+                    });
+                  } else if (item.id === 6) {
+                    props.navigation.closeDrawer();
+                    props.navigation.reset({
+                      routes: [
+                        {
+                          name: 'BottomTabScreen',
+                          state: {
+                            routes: [
+                              {
+                                name: 'ProfileStack',
+                                state: {
+                                  routes: [
+                                    {
+                                      name: 'Faq',
+                                      params: {
+                                        fromBurger: true,
+                                      },
                                     },
-                                  },
-                                ],
+                                  ],
+                                },
                               },
-                            },
-                          ],
+                            ],
+                          },
                         },
-                      },
-                    ],
-                  });
-                } else {
-                  props.navigation.closeDrawer();
-                  props.navigation.navigate(item.navLink, {
-                    fromOTPcode: item.id === 7 && false,
-                  });
-                }
-              }}
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              {item.icon}
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: Font.Urbanist_Medium,
-                  color: Color.light,
-                  marginLeft: 10,
-                }}>
-                {item.screen}
-              </Text>
-            </TouchableOpacity>
-          )}
+                      ],
+                    });
+                  } else {
+                    props.navigation.closeDrawer();
+                    props.navigation.navigate(item.navLink, {
+                      fromOTPcode: item.id === 7 && false,
+                    });
+                  }
+                }}
+                style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {item.icon}
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: Font.Urbanist_Medium,
+                    color: Color.light,
+                    marginLeft: 10,
+                  }}>
+                  {item.screen}
+                </Text>
+              </TouchableOpacity>
+            )
+          }}
         />
       </SafeAreaView>
     </ImageBackground>
@@ -198,7 +232,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  image: {flex: 1},
+  image: { flex: 1 },
 });
 
 const sidebarData = [

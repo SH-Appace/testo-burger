@@ -26,21 +26,29 @@ import {showMessage} from 'react-native-flash-message';
 import {useBackButton} from '../../../hooks';
 import {StatusBar} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import NotLoginPopup from '../../../components/NotLoginPopup';
 
 const QRCode = ({navigation}) => {
   const [coupon, setCoupon] = useState('');
   const [visiblePlaced, setVisiblePlaced] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [visibleNotLoginPopup, setVisibleNotLoginPopup] = useState(false);
 
   const {auth} = useSelector(state => ({...state}));
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
 
   const onSuccess = e => {
+    
     if (coupon !== '') {
       return;
     }
+
     if (JSON.parse(e.data).key === 'foodu-001') {
+      if (!auth.user) {
+        setVisibleNotLoginPopup(true);
+        return;
+      }
       setCoupon(JSON.parse(e.data).code);
       couponApply(
         {code: JSON.parse(e.data).code},
@@ -64,6 +72,11 @@ const QRCode = ({navigation}) => {
         type: 'danger',
       });
     }
+    if (!auth.user) {
+      setVisibleNotLoginPopup(true);
+      return;
+    }
+
     couponApply({code: coupon}, auth.token, setLoading, dispatch, showModal);
   };
   const hideModal = () => {
@@ -219,6 +232,11 @@ const QRCode = ({navigation}) => {
         visible={visiblePlaced}
         hideModal={hideModal}
         navigation={navigation}
+      />
+      <NotLoginPopup
+        visible={visibleNotLoginPopup}
+        setVisible={setVisibleNotLoginPopup}
+        message='Please login to use coupon Code'
       />
       {loading && (
         <View

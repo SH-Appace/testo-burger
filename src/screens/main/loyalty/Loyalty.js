@@ -141,7 +141,7 @@ const Loyalty = ({route, navigation}) => {
                 fontSize: 24,
                 fontFamily: Font.Urbanist_Bold,
               }}>
-              {parseFloat(auth.user.loyalty_point)}
+              {parseFloat(auth.user?.loyalty_point)}
             </Text>
           </View>
           <Text

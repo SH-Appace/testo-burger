@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, Image, ScrollView, Keyboard, StatusBar} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, ScrollView, Keyboard, StatusBar } from 'react-native';
 import AppBar from '../../../components/AppBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   BorderRadius,
   Color,
@@ -9,19 +9,19 @@ import {
   GlobalStyle,
   Window,
 } from '../../../globalStyle/Theme';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Button from '../../../components/Button';
-import {useDispatch, useSelector} from 'react-redux';
-import {placeOrder} from '../../../apis/order';
-import {Modal} from 'react-native-paper';
-import {showMessage} from 'react-native-flash-message';
+import { useDispatch, useSelector } from 'react-redux';
+import { placeOrder } from '../../../apis/order';
+import { Modal } from 'react-native-paper';
+import { showMessage } from 'react-native-flash-message';
 import BottomPopupRemoveFromCart from '../../../components/BottomPopupRemoveFromCart';
-import {couponApply} from '../../../apis/coupon';
-import {CartEmptySvg} from '../../../assets/svgs/CheckoutSvg';
-import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
-import {useBackButton} from '../../../hooks';
-import {PaymentSheet, useStripe} from '@stripe/stripe-react-native';
-import {stripePost} from '../../../apis/stripe';
+import { couponApply } from '../../../apis/coupon';
+import { CartEmptySvg } from '../../../assets/svgs/CheckoutSvg';
+import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
+import { useBackButton } from '../../../hooks';
+import { PaymentSheet, useStripe } from '@stripe/stripe-react-native';
+import { stripePost } from '../../../apis/stripe';
 import Loader from '../../../components/Loader';
 import OrderType from '../../../components/OrderType';
 import CheckoutDeliverTo from '../../../components/CheckoutDeliverTo';
@@ -30,12 +30,14 @@ import CheckoutSelectWhen from '../../../components/CheckoutSelectWhen';
 import CheckoutSummaryDetails from '../../../components/CheckoutSummaryDetails';
 import CheckoutOptions from '../../../components/CheckoutOptions';
 import CheckoutPaymentDetails from '../../../components/CheckoutPaymentDetails';
+import NotLoginPopup from '../../../components/NotLoginPopup';
 
-const CheckOut = ({route, item}) => {
+const CheckOut = ({ route, item }) => {
   let navigation = useNavigation();
   const [subTotal, setSubTotal] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [visibleNotLoginPopup, setVisibleNotLoginPopup] = useState(false);
   const [visibleBranch, setVisibleBranch] = useState(false);
   const [popupRemoveFromCart, setPopupRemoveFromCart] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -63,9 +65,9 @@ const CheckOut = ({route, item}) => {
   const [tip, setTip] = useState(0);
   const dispatch = useDispatch();
 
-  const {cart, auth} = useSelector(state => ({...state}));
+  const { cart, auth } = useSelector(state => ({ ...state }));
   //STRIPE
-  const {initPaymentSheet, presentPaymentSheet} = useStripe();
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
   useEffect(() => {
     if (
       cart.coupon.discount !== 0 &&
@@ -85,7 +87,7 @@ const CheckOut = ({route, item}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart.coupon.discount, pointsDiscount]);
   const initializePaymentSheet = async () => {
-    const {paymentIntent, ephemeralKey, customer, publishableKey} =
+    const { paymentIntent, ephemeralKey, customer, publishableKey } =
       await stripePost(
         {
           order_amount:
@@ -99,7 +101,7 @@ const CheckOut = ({route, item}) => {
         setLoading,
       );
 
-    const {error} = await initPaymentSheet({
+    const { error } = await initPaymentSheet({
       merchantDisplayName: 'Testo Burger',
       customerId: customer,
       customerEphemeralKeySecret: ephemeralKey,
@@ -114,8 +116,8 @@ const CheckOut = ({route, item}) => {
       appearance: {
         primaryButton: {
           colors: {
-            light: {background: Color.primary},
-            dark: {background: Color.primary},
+            light: { background: Color.primary },
+            dark: { background: Color.primary },
           },
         },
       },
@@ -129,7 +131,7 @@ const CheckOut = ({route, item}) => {
 
   const openPaymentSheet = async () => {
     setStripeOpen(true);
-    const {error} = await presentPaymentSheet();
+    const { error } = await presentPaymentSheet();
 
     if (error) {
       setStripeOpen(false);
@@ -200,6 +202,15 @@ const CheckOut = ({route, item}) => {
   const submitHandler = () => {
     Keyboard.dismiss();
 
+    if (!auth.user) {
+      setVisibleNotLoginPopup(true);
+      return;
+      // return showMessage({
+      //   message: 'Please login to continue!',
+      //   type: 'danger',
+      // });
+    }
+
     if (cart.addedItems.length === 0) {
       return showMessage({
         message: 'Your basket is empty!',
@@ -218,7 +229,7 @@ const CheckOut = ({route, item}) => {
       item.selectedVariations.map(x => {
         let tempValues = [];
         x.values.map(val => (tempValues = [val.label, ...tempValues]));
-        return (x.values = {label: tempValues});
+        return (x.values = { label: tempValues });
       });
       return item.selectedVariations;
     });
@@ -320,7 +331,7 @@ const CheckOut = ({route, item}) => {
       });
     }
     setOpenInput(false);
-    couponApply({code: coupon}, auth.token, setLoading, dispatch);
+    couponApply({ code: coupon }, auth.token, setLoading, dispatch);
   };
   const removeCoupon = () => {
     dispatch({
@@ -370,7 +381,7 @@ const CheckOut = ({route, item}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#F9F9F9'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F9F9F9' }}>
       <StatusBar
         animated={true}
         backgroundColor={
@@ -379,7 +390,7 @@ const CheckOut = ({route, item}) => {
         barStyle={loading ? 'light-content' : 'dark-content'}
         showHideTransition={'fade'}
       />
-      <View style={{paddingHorizontal: Window.fixPadding * 2}}>
+      <View style={{ paddingHorizontal: Window.fixPadding * 2 }}>
         <AppBar
           center={
             <Text style={GlobalStyle.AppCenterTextStyle}>
@@ -390,7 +401,7 @@ const CheckOut = ({route, item}) => {
       </View>
       {cart.addedItems.length > 0 ? (
         <ScrollView
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           contentContainerStyle={{
             flexGrow: 1,
             paddingVertical: 20,
@@ -492,19 +503,18 @@ const CheckOut = ({route, item}) => {
       <View
         style={[
           GlobalStyle.BottomButtonContainer,
-          {paddingHorizontal: Window.fixPadding * 2},
+          { paddingHorizontal: Window.fixPadding * 2 },
         ]}>
         <Button
           disabled={cart.orderType === 'delivery' ? false : btnDisabled}
           text={
             cart.addedItems.length > 0
-              ? `Place Order - $${
-                  subTotal -
-                  (subTotal / 100) * cart.coupon.discount -
-                  pointsDiscount +
-                  deliveryFee +
-                  tip
-                }`
+              ? `Place Order - $${subTotal -
+              (subTotal / 100) * cart.coupon.discount -
+              pointsDiscount +
+              deliveryFee +
+              tip
+              }`
               : 'Browse Menu'
           }
           icon="mail"
@@ -513,25 +523,25 @@ const CheckOut = ({route, item}) => {
           onPressFunc={
             cart.addedItems.length > 0
               ? () => {
-                  if (paymentMethod === 1) {
-                    submitHandler();
-                  } else {
-                    openPaymentSheet();
-                  }
+                if (paymentMethod === 1) {
+                  submitHandler();
+                } else {
+                  openPaymentSheet();
                 }
+              }
               : () =>
-                  navigation.reset({
-                    index: 0,
+                navigation.reset({
+                  index: 0,
 
-                    routes: [
-                      {
-                        name: 'BottomTabScreen',
-                        state: {
-                          routes: [{name: 'Menu'}],
-                        },
+                  routes: [
+                    {
+                      name: 'BottomTabScreen',
+                      state: {
+                        routes: [{ name: 'Menu' }],
                       },
-                    ],
-                  })
+                    },
+                  ],
+                })
           }
         />
       </View>
@@ -548,6 +558,12 @@ const CheckOut = ({route, item}) => {
         visible={visibleBranch}
         setVisible={setVisibleBranch}
       />
+
+      <NotLoginPopup
+        visible={visibleNotLoginPopup}
+        setVisible={setVisibleNotLoginPopup}
+      />
+
       {loading && <Loader />}
       <BottomPopupRemoveFromCart
         ref={target => (popupRef = target)}
@@ -569,15 +585,14 @@ const CheckOut = ({route, item}) => {
           const month = res.getUTCMonth() + 1; // months are zero-based
           const day = res.getUTCDate();
           setDeliveryTime(
-            `${year}-${month < 10 ? '0' : ''}${month}-${
-              day < 10 ? '0' : ''
+            `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''
             }${day}`,
           );
         }}
         saveLabel={deliveryTime !== '' ? 'Next' : 'Select date to continue'}
         label={' '}
         editIcon={' '}
-        validRange={{startDate: new Date()}}
+        validRange={{ startDate: new Date() }}
       />
       <TimePickerModal
         visible={openTime}
@@ -591,7 +606,7 @@ const CheckOut = ({route, item}) => {
   );
 };
 
-const Popup = ({item, visible, setVisible}) => {
+const Popup = ({ item, visible, setVisible }) => {
   const hideModal = () => {
     setVisible(false);
   };
@@ -628,14 +643,14 @@ const Popup = ({item, visible, setVisible}) => {
           Food Items
         </Text>
 
-        <View style={{flexDirection: 'row', marginBottom: 20}}>
+        <View style={{ flexDirection: 'row', marginBottom: 20 }}>
           <Image
-            style={{width: 80, height: 80, borderRadius: 15}}
+            style={{ width: 80, height: 80, borderRadius: 15 }}
             // source={{uri: item.foodDetails.image}}
             source={require('../../../assets/images/pics/foodBg.png')}
             resizeMode="cover"
           />
-          <View style={{flexDirection: 'column', flex: 1}}>
+          <View style={{ flexDirection: 'column', flex: 1 }}>
             <View
               style={{
                 justifyContent: 'space-between',
@@ -724,7 +739,8 @@ const Popup = ({item, visible, setVisible}) => {
     </Modal>
   );
 };
-const BranchPopup = ({visible, setVisible}) => {
+
+const BranchPopup = ({ visible, setVisible }) => {
   const hideModal = () => {
     setVisible(false);
   };

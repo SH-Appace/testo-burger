@@ -63,7 +63,7 @@ const TextField = ({
           placeholder={placeholder}
           placeholderTextColor="#828282"
           onChangeText={text => onChanged(text)}
-          secureTextEntry={hidePass ? true : false}
+          secureTextEntry={hidePass ? true : false} 
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           value={value}

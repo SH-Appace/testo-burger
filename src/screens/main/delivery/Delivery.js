@@ -29,6 +29,7 @@ import {updateAddress} from '../../../apis/profile';
 import Swipeable from 'react-native-swipeable';
 import {useRef} from 'react';
 import {useBackButton} from '../../../hooks';
+import NotLogin from '../../../components/NotLogin';
 
 const DeliverTo = ({
   item,
@@ -189,11 +190,16 @@ const DeliverTo = ({
 };
 
 const Delivery = ({route, navigation}) => {
+  const {auth} = useSelector(state => ({...state}));
+  if(!auth.user){
+    return(
+      <NotLogin ShowBackButton={true}/>
+    );
+  }
   const [radioCheck, setRadioCheck] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshData, setRefreshData] = useState(false);
   const [deliveryData, setDeliveryData] = useState([]);
-  const {auth} = useSelector(state => ({...state}));
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 

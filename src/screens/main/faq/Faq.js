@@ -93,8 +93,9 @@ const Accordian = ({item}) => {
           color: Color.secondary,
           fontFamily: Font.Urbanist_Bold,
           lineHeight: 21.6,
-          fontSize: 18,
+          fontSize: 16,
         }}
+        titleNumberOfLines={2}
         title={item.itemss}
         expanded={expanded}
         onPress={handlePress}>
@@ -117,7 +118,7 @@ const FaqActive = () => {
   const [active, setActive] = useState(1);
   return (
     <ScrollView>
-      <View style={{marginVertical: 24}}>
+      {/* <View style={{marginVertical: 24}}>
         <FlatList
           data={Data}
           renderItem={({item}) => (
@@ -128,8 +129,8 @@ const FaqActive = () => {
           pagingEnabled
           ItemSeparatorComponent={() => <View style={{width: 15}} />}
         />
-      </View>
-      <TextField placeholder="Search" icon="magnify" />
+      </View>*/}
+      <TextField placeholder="Search" icon="magnify" /> 
 
       <View style={{}}>
         <FlatList
@@ -230,16 +231,16 @@ const Faq = ({route, navigation}) => {
           </TouchableOpacity>
         }
         center={<Text style={GlobalStyle.AppCenterTextStyle}>Help Center</Text>}
-        right={
-          <TouchableOpacity onPress={() => navigation.navigate('ChatOpen')}>
-            <Icon
-              iconFamily={'Ionicons'}
-              name={'ios-ellipsis-horizontal-circle'}
-              color={Color.secondary}
-              size={25}
-            />
-          </TouchableOpacity>
-        }
+        // right={
+        //   <TouchableOpacity onPress={() => navigation.navigate('ChatOpen')}>
+        //     <Icon
+        //       iconFamily={'Ionicons'}
+        //       name={'ios-ellipsis-horizontal-circle'}
+        //       color={Color.secondary}
+        //       size={25}
+        //     />
+        //   </TouchableOpacity>
+        // }
       />
       <TabView
         navigationState={{index, routes}}

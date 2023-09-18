@@ -23,6 +23,7 @@ import {deleteAccount} from '../../../apis/auth';
 import Button from '../../../components/Button';
 import {SkypeIndicator} from 'react-native-indicators';
 import {WarningSvg, WarningSvgBig} from '../../../assets/svgs/ProfileSvgs';
+import NotLogin from '../../../components/NotLogin';
 
 const ProfileData = ({item, logoutHandler, setLoading, setModalVisible}) => {
   let navigation = useNavigation();
@@ -82,10 +83,16 @@ const ProfileData = ({item, logoutHandler, setLoading, setModalVisible}) => {
 };
 
 const Profile = ({navigation}) => {
+  const {auth} = useSelector(state => ({...state}));
+  if(!auth.user){
+    return(
+      <NotLogin/>
+    );
+  }
+
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
 
-  const {auth} = useSelector(state => ({...state}));
   const onBackPress = () => {
     navigation.goBack();
     return true;

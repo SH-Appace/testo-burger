@@ -10,7 +10,7 @@ if (userData) {
   const setData = async () => (userState = await AsyncStorage.getItem('auth'));
   setData();
 } else {
-  userState = null;
+  userState = {user:null};
 }
 
 export const authReducer = (state = userState, action) => {
@@ -18,7 +18,7 @@ export const authReducer = (state = userState, action) => {
     case 'LOGGED_IN_USER':
       return {...state, ...action.payload};
     case 'LOGOUT':
-      return null;
+      return {user:null};
     case 'UPDATE_LOYALTY_POINTS':
       // Update the loyalty points in the user object
       return {

@@ -182,7 +182,8 @@ const Slide = ({item}) => {
             marginBottom: 10,
             color: Color.tertiary,
             fontFamily: Font.Urbanist_Bold,
-            fontSize: 40,
+            fontSize: 30,
+            textAlign:'center'
           }}>
           {item.title}
         </Text>
@@ -327,27 +328,27 @@ const styles = StyleSheet.create({
 const slides = [
   {
     id: 1,
-    title: 'Order for Food',
+    title: 'Welcome to Testo Burger!',
     subtitle:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      "Explore a world of culinary delights, from gourmet burgers to your favorite fast food. Let's get started on your delicious journey!",
     background: (
       <Onboard1 width={Window.width / 1.5} height={Window.height / 1.35} />
     ),
   },
   {
     id: 2,
-    title: 'Easy Payment',
+    title: 'Effortless Ordering',
     subtitle:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      'Ordering is a breeze. Customize your meal, add special instructions, and securely pay right from your smartphone.',
     background: (
       <Onboard2 width={Window.width / 1.5} height={Window.height / 1.35} />
     ),
   },
   {
     id: 3,
-    title: 'Fast Delivery',
+    title: 'Lightning-Fast Delivery',
     subtitle:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      'Track your order in real-time and know exactly when your delicious food will arrive at your doorstep.',
     background: (
       <Onboard3 width={Window.width / 1.5} height={Window.height / 1.35} />
     ),

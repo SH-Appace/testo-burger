@@ -199,6 +199,17 @@ const SignIn = ({navigation}) => {
           }
         />
 
+          
+        <View style={{marginTop:10}}>
+          <Button
+            text={'Continue without login'}
+            icon="mail"
+            isIcon={false}
+            theme="alternate"
+            navLink="DrawerNavigator"
+          />
+        </View>
+
         <View style={{flex: 1}} />
         <View
           style={{

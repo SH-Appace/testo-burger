@@ -31,8 +31,17 @@ import Icon from '../../../core/Icon';
 import {useBackButton} from '../../../hooks';
 import Loader from '../../../components/Loader';
 import {WarningSvgBig} from '../../../assets/svgs/ProfileSvgs';
+import NotLogin from '../../../components/NotLogin';
 
 const EditProfile = ({navigation, route}) => {
+
+  const {auth} = useSelector(state => ({...state}));
+  if(!auth.user){
+    return(
+      <NotLogin ShowBackButton={true}/>
+    );
+  }
+
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState({
@@ -41,11 +50,10 @@ const EditProfile = ({navigation, route}) => {
   });
   const [imageUpload, setImageUpload] = useState(null);
   const [image, setImage] = useState(
-    'https://demoappprojects.com/food-ordering/storage/profile/avatar.png',
+    `https://demo.tangyapps.com/storage/profile/avatar.png`,
   );
   const [loading, setLoading] = useState(true);
   let formData = new FormData();
-  const {auth} = useSelector(state => ({...state}));
 
   const {fromOTPcode} = route.params;
   const dispatch = useDispatch();

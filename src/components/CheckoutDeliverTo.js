@@ -28,7 +28,7 @@ const CheckoutDeliverTo = () => {
           })
         }
         style={[styles.row, {justifyContent: 'space-between'}]}>
-        {auth.user.default_address ? (
+        {auth.user?.default_address ? (
           <View style={styles.row}>
             <View style={styles.iconCircle}>
               <Icon
@@ -41,12 +41,12 @@ const CheckoutDeliverTo = () => {
             <View style={{marginLeft: 15}}>
               <View style={styles.row}>
                 <Text style={styles.headingRow}>
-                  {auth.user.default_address.address_type}
+                  {auth.user?.default_address.address_type}
                 </Text>
                 <Text style={styles.defaultText}>Default</Text>
               </View>
               <Text style={styles.address}>
-                {auth.user.default_address.address}
+                {auth.user?.default_address.address}
               </Text>
             </View>
           </View>

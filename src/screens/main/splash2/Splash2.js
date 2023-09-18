@@ -56,6 +56,7 @@ const Splash2 = ({navigation}) => {
           );
         } else {
           try {
+            // navigation.replace('OnBoarding');
             const check = await AsyncStorage.getItem('onBoardCompleted');
             if (check !== null) {
               navigation.replace('SignIn');

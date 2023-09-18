@@ -28,24 +28,24 @@ const Data = [
 ]
 const AccordianData = [
     {
-        itemss: 'What is Foodu?',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        itemss: 'How does Testo Burger work?',
+        text: 'Testo Burger is a food delivery app that connects you to a variety of local restaurants. You can browse menus, place orders, and have your favorite dishes delivered right to your doorstep.'
     },
     {
-        itemss: 'How I can make a payment?',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        itemss: 'How do I place an order?',
+        text: "It's easy! Open the app, select your items from the menu, customize your order if needed, and proceed to checkout. You can pay securely within the app."
     },
     {
-        itemss: 'How do I can cancel orders?',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        itemss: 'Can I track my order?',
+        text: "Yes, you can! Once your order is confirmed, you can track its status in real-time. You'll know when it's being prepared and when it's on its way to you."
     },
     {
-        itemss: 'How do I can cancel orders?',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        itemss: 'How can I contact customer support?',
+        text: 'If you have questions, concerns, or need assistance, you can reach our customer support team by navigating to the "Contact Us" section within the app.'
     },
     {
-        itemss: 'How do I can cancel orders?',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        itemss: 'Is my personal information secure?',
+        text: 'We take your privacy seriously. We use encryption and security measures to protect your personal information.'
     },
 ]
 const ContactData = [
@@ -56,10 +56,6 @@ const ContactData = [
     {
         icon: 'whatsapp',
         name: 'WhatsApp'
-    },
-    {
-        icon: 'wordpress',
-        name: 'baseball'
     },
     {
         icon: 'facebook',

@@ -40,6 +40,7 @@ import BottomPopupReorder from '../../../components/BottomPopupReorder';
 import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {useBackButton} from '../../../hooks';
 import DeviceInfo from 'react-native-device-info';
+import NotLogin from '../../../components/NotLogin';
 
 const ActiveRoute = ({setVisible, orders, setPopupData}) => {
   let navigation = useNavigation();
@@ -496,6 +497,14 @@ const renderTabBar = props => (
 );
 
 const Order = ({navigation, route}) => {
+  const {auth} = useSelector(state => ({...state}));
+
+  if(!auth.user){
+    return(
+      <NotLogin/>
+    );
+  }
+  
   const [loading, setLoading] = useState(false);
   const [popupData, setPopupData] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -503,7 +512,6 @@ const Order = ({navigation, route}) => {
   const [openPopup, setOpenPopup] = useState(false);
   let hasNotch = DeviceInfo.hasNotch();
   const isFocused = useIsFocused();
-  const {auth} = useSelector(state => ({...state}));
   useEffect(() => {
     setLoading(true);
     Promise.all([
