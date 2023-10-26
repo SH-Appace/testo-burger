@@ -59,11 +59,11 @@ const TextField = ({
         />
 
         <TextInput
-          style={{flex: 9, color: '#807F7E'}}
+          style={{flex: 9, color: Color.tertiary}}
           placeholder={placeholder}
           placeholderTextColor="#828282"
           onChangeText={text => onChanged(text)}
-          secureTextEntry={hidePass ? true : false} 
+          secureTextEntry={hidePass ? true : false}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           value={value}
@@ -138,7 +138,7 @@ const TextField = ({
           flex: 9,
           fontSize: 14,
           fontFamily: Font.Urbanist_SemiBold,
-          color: '#807F7E',
+          color: Color.tertiary,
         }}
         placeholder={placeholder}
         placeholderTextColor="#828282"

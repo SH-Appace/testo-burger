@@ -130,7 +130,7 @@ const FaqActive = () => {
           ItemSeparatorComponent={() => <View style={{width: 15}} />}
         />
       </View>*/}
-      <TextField placeholder="Search" icon="magnify" /> 
+      <TextField placeholder="Search" icon="magnify" />
 
       <View style={{}}>
         <FlatList
@@ -226,7 +226,7 @@ const Faq = ({route, navigation}) => {
               iconFamily={'Octicons'}
               name="arrow-left"
               size={25}
-              color={Color.secondary}
+              color={Color.tertiary}
             />
           </TouchableOpacity>
         }

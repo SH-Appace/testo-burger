@@ -215,6 +215,10 @@ const hiddenTabrBarScreens = [
   'Loyalty',
   'BookATable',
   'Reservation',
+  'Settings',
+  'PrivacyPolicy',
+  'TermsConditions',
+  'About',
 ];
 const styles = StyleSheet.create({
   stack: {

@@ -15,6 +15,7 @@ import Geolocation from 'react-native-geolocation-service';
 import {getGeoInfo} from '../apis/geoInfo';
 import {showMessage} from 'react-native-flash-message';
 import {useSelector} from 'react-redux';
+import {TextMask, TextInputMask} from 'react-native-masked-text';
 
 const PhoneInputComponent = ({
   placeholder,
@@ -159,7 +160,7 @@ const PhoneInputComponent = ({
             marginLeft: -10,
             fontSize: 14,
             fontFamily: Font.Urbanist_SemiBold,
-            color: disabled ? '#bbb' : '#807F7E',
+            color: disabled ? '#bbb' : Color.tertiary,
           }}
           flagButtonStyle={{
             paddingHorizontal: 0,
@@ -171,7 +172,7 @@ const PhoneInputComponent = ({
       ) : (
         <View style={{width: 100}} />
       )}
-      <TextInput
+      {/* <TextInput
         style={{
           flex: 1,
           fontSize: 14,
@@ -188,6 +189,39 @@ const PhoneInputComponent = ({
             ...prevState,
             code: '+' + phoneInputRef.current.getCallingCode(),
             phone: newtext.replace(/\s/g, ''),
+          }));
+        }}
+        value={newNumber}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        keyboardType="phone-pad"
+        editable={disabled ? false : true}
+      /> */}
+      <TextInputMask
+        style={{
+          flex: 1,
+          fontSize: 14,
+          fontFamily: Font.Urbanist_Regular,
+          color: disabled ? '#bbb' : Color.tertiary,
+          marginLeft: -35,
+        }}
+        type={'custom'}
+        options={{
+          mask: '999-999-9999',
+        }}
+        placeholder={'Enter your phone number'}
+        placeholderTextColor={'#807F7E'}
+        onChangeText={text => {
+          const newtext = text
+            .replace(/^0|[^\d\s]/g, '')
+            .replace(/\s+/g, '')
+            .substring(0, 10);
+          // onChangeHandler(newtext, formKey);
+          setNewNumber(newtext);
+          onChanged(prevState => ({
+            ...prevState,
+            code: '+' + phoneInputRef.current.getCallingCode(),
+            phone: newtext,
           }));
         }}
         value={newNumber}

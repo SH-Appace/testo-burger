@@ -5,27 +5,27 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Modal,
   StyleSheet,
-  ActivityIndicator,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import AppBar from '../../../components/AppBar';
-import {GlobalStyle, Font, Color, Window} from '../../../globalStyle/Theme';
+import {
+  GlobalStyle,
+  Font,
+  Color,
+  BorderRadius,
+} from '../../../globalStyle/Theme';
 import Icon from '../../../core/Icon';
-import Data from './ProfileDetails';
+import {Data, DataNotLogin} from './ProfileDetails';
 import {useDispatch, useSelector} from 'react-redux';
 import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {useBackButton} from '../../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {deleteAccount} from '../../../apis/auth';
+import {WarningSvgBig} from '../../../assets/svgs/ProfileSvgs';
 import Button from '../../../components/Button';
-import {SkypeIndicator} from 'react-native-indicators';
-import {WarningSvg, WarningSvgBig} from '../../../assets/svgs/ProfileSvgs';
-import NotLogin from '../../../components/NotLogin';
 
-const ProfileData = ({item, logoutHandler, setLoading, setModalVisible}) => {
+const ProfileData = ({item, logoutHandler}) => {
   let navigation = useNavigation();
   const {auth} = useSelector(state => ({...state}));
 
@@ -34,8 +34,6 @@ const ProfileData = ({item, logoutHandler, setLoading, setModalVisible}) => {
       onPress={async () => {
         if (item.name === 'Logout') {
           logoutHandler();
-        } else if (item.name === 'Delete Account') {
-          setModalVisible(true);
         } else {
           navigation.navigate(item.link, {
             fromOTPcode: item.id === 3 && false,
@@ -45,7 +43,7 @@ const ProfileData = ({item, logoutHandler, setLoading, setModalVisible}) => {
       }}
       style={{
         flexDirection: 'row',
-        paddingBottom: 23,
+        paddingBottom: 15,
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
@@ -84,13 +82,7 @@ const ProfileData = ({item, logoutHandler, setLoading, setModalVisible}) => {
 
 const Profile = ({navigation}) => {
   const {auth} = useSelector(state => ({...state}));
-  if(!auth.user){
-    return(
-      <NotLogin/>
-    );
-  }
 
-  const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
 
   const onBackPress = () => {
@@ -118,173 +110,127 @@ const Profile = ({navigation}) => {
             <ManuIcon />
           </TouchableOpacity>
         }
-        center={<Text style={GlobalStyle.AppCenterTextStyle}>Profile</Text>}
+        center={<Text style={GlobalStyle.AppCenterTextStyle}>Menu</Text>}
       />
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginTop: 20,
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row'}}>
-            <View>
-              <Image
-                style={{width: 80, height: 80, borderRadius: 80}}
-                resizeMode="cover"
-                source={{
-                  uri: auth.user.image
-                    ? auth.user.image
-                    : 'https://demoappprojects.com/food-ordering/storage/profile/avatar.png',
-                }}
-              />
-            </View>
-            <View style={{flexDirection: 'column', marginLeft: 15}}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  lineHeight: 24,
-                  fontFamily: Font.Urbanist_Bold,
-                  color: Color.tertiary,
-                  marginBottom: 12,
-                }}>
-                {auth.user.name}
-              </Text>
-              <Text
-                style={{
-                  color: Color.darkGray,
-                  fontSize: 16,
-                  fontFamily: Font.Urbanist_Medium,
-                }}>
-                {auth.user.phone}
-              </Text>
-            </View>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1, paddingTop: !auth.user ? 0 : 25}}
+        showsVerticalScrollIndicator={false}>
+        {!auth.user ? (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+            }}>
+            <Text
+              style={{
+                color: Color.tertiary,
+                fontFamily: Font.Urbanist_Bold,
+                fontSize: 30,
+                marginTop: 22,
+              }}>
+              Your are not login
+            </Text>
+            <Text
+              style={{
+                color: Color.tertiary,
+                fontFamily: Font.Urbanist_Regular,
+                fontSize: 16,
+                textAlign: 'center',
+                marginVertical: 12,
+              }}>
+              Please login to continue
+            </Text>
+            <Button text={'Go to login'} theme="primary" navLink="SignIn" />
           </View>
-        </View>
-        <View style={GlobalStyle.TopBorderStyle}></View>
-        <View style={{flexDirection: 'column'}}>
-          {Data.map((item, index) => (
-            <ProfileData
-              item={item}
-              key={index}
-              setModalVisible={setModalVisible}
-              logoutHandler={logoutHandler}
-            />
-          ))}
-        </View>
+        ) : (
+          <TopProfileView navigation={navigation} />
+        )}
+        <View style={GlobalStyle.TopBorderStyle} />
+
+        {!auth.user
+          ? DataNotLogin.map((item, index) => (
+              <ProfileData
+                item={item}
+                key={index}
+                logoutHandler={logoutHandler}
+              />
+            ))
+          : Data.map((item, index) => (
+              <ProfileData
+                item={item}
+                key={index}
+                logoutHandler={logoutHandler}
+              />
+            ))}
       </ScrollView>
-      <ModalPopup
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        navigation={navigation}
-        logoutHandler={logoutHandler}
-        token={auth.token}
-      />
     </SafeAreaView>
   );
 };
 
 export default Profile;
-const ModalPopup = ({
-  token,
-  modalVisible,
-  setModalVisible,
-  logoutHandler,
-  navigation,
-}) => {
-  const [loading, setLoading] = useState(false);
-  return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        setModalVisible(false);
-      }}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: '#000000AA',
-          justifyContent: 'center',
-        }}>
-        <View style={style.modalView}>
-          {loading ? (
-            <SkypeIndicator size={50} color={Color.secondary} />
-          ) : (
-            <>
-              <Text style={style.modalTextHeading}>
-                WARNING!{' '}
-                <Icon
-                  iconFamily={'Ionicons'}
-                  color={Color.primary}
-                  name="warning"
-                  size={20}
-                />
-              </Text>
-              <Text style={style.modalText}>
-                Are you sure you want to delete your account?
-              </Text>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <View style={{flex: 1, margin: 5}}>
-                  <Button
-                    text={'Cancel'}
-                    theme="alternate"
-                    onPressFunc={() => {
-                      setModalVisible(false);
-                    }}
-                  />
-                </View>
-                <View style={{flex: 1, margin: 5}}>
-                  <Button
-                    text={'Delete'}
-                    theme="primary"
-                    onPressFunc={() => {
-                      deleteAccount(
-                        setLoading,
-                        () => {
-                          setModalVisible(false);
-                          logoutHandler();
-                        },
-                        token,
-                        setModalVisible,
-                      );
-                    }}
-                  />
-                </View>
-              </View>
-            </>
-          )}
-        </View>
-      </View>
-    </Modal>
-  );
-};
 
-const style = StyleSheet.create({
-  modalView: {
-    margin: 25,
-    backgroundColor: Color.light,
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 25,
-    height: Window.height / 3,
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-
-  modalTextHeading: {
-    marginBottom: 25,
-    textAlign: 'center',
-    color: Color.primary,
+  avatar: {width: 80, height: 80, borderRadius: 80},
+  name: {
     fontSize: 20,
-    fontFamily: Font.Urbanist_Black,
+    lineHeight: 24,
+    fontFamily: Font.Urbanist_Bold,
+    color: Color.tertiary,
+    marginTop: 5,
   },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    color: Color.textColor,
-    fontSize: 14,
+  phone: {
+    color: Color.darkGray,
+    fontSize: 16,
+    fontFamily: Font.Urbanist_Medium,
+    letterSpacing: 0.5,
+  },
+  viewBtn: {
+    backgroundColor: Color.primary,
+    alignItems: 'center',
+    padding: 2.5,
+    paddingHorizontal: 10,
+    borderRadius: BorderRadius,
+    alignSelf: 'baseline',
+  },
+  viewText: {
+    color: Color.light,
+    fontSize: 12,
     fontFamily: Font.Urbanist_Regular,
   },
 });
+
+const TopProfileView = ({navigation}) => {
+  const {auth} = useSelector(state => ({...state}));
+
+  return (
+    <View style={styles.row}>
+      <View>
+        <Image
+          style={styles.avatar}
+          resizeMode="cover"
+          source={{
+            uri: auth.user.image
+              ? auth.user.image
+              : 'https://demoappprojects.com/food-ordering/storage/profile/avatar.png',
+          }}
+        />
+      </View>
+      <View style={{flexDirection: 'column', marginLeft: 15}}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('ViewProfile');
+          }}
+          style={styles.viewBtn}>
+          <Text style={styles.viewText}>View Profile</Text>
+        </TouchableOpacity>
+        <Text style={styles.name}>{auth.user.name}</Text>
+        <Text style={styles.phone}>{auth.user.phone}</Text>
+      </View>
+    </View>
+  );
+};

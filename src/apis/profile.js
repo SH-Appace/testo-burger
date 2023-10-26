@@ -40,7 +40,7 @@ export async function updateProfile(
       message: err.response.data.errors[0].message,
       type: 'danger',
     });
-    console.log('error', err);
+    console.log('error', err.response);
   }
 }
 export async function updateLocation(

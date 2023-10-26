@@ -34,12 +34,9 @@ import {WarningSvgBig} from '../../../assets/svgs/ProfileSvgs';
 import NotLogin from '../../../components/NotLogin';
 
 const EditProfile = ({navigation, route}) => {
-
   const {auth} = useSelector(state => ({...state}));
-  if(!auth.user){
-    return(
-      <NotLogin ShowBackButton={true}/>
-    );
+  if (!auth.user) {
+    return <NotLogin ShowBackButton={true} />;
   }
 
   const [email, setEmail] = useState('');
@@ -114,10 +111,15 @@ const EditProfile = ({navigation, route}) => {
   };
   const pickImage = () => {
     let options = {
+      title: 'Select Picture',
+
       storageOptions: {
         skipBackup: true,
         path: 'images',
       },
+      maxWidth: 500,
+      maxHeight: 500,
+      quality: 0.5,
     };
     launchImageLibrary(options, response => {
       if (response.didCancel) {
@@ -175,26 +177,29 @@ const EditProfile = ({navigation, route}) => {
         }
         right={<Text style={{color: Color.black}}></Text>}
       />
-      <View
-        style={{
-          backgroundColor: 'rgba(246, 181, 29, 0.2)',
-          borderRadius: BorderRadius,
-          padding: 10,
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginVertical: 15,
-        }}>
-        <WarningSvgBig />
-        <Text
-          style={{
-            color: Color.secondary,
-            fontSize: 14,
-            fontFamily: Font.Urbanist_Medium,
-            marginLeft: 10,
-          }}>
-          Complete Your Profile
-        </Text>
-      </View>
+      {name === null ||
+        (email === null && (
+          <View
+            style={{
+              backgroundColor: 'rgba(246, 181, 29, 0.2)',
+              borderRadius: BorderRadius,
+              padding: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: 15,
+            }}>
+            <WarningSvgBig />
+            <Text
+              style={{
+                color: Color.secondary,
+                fontSize: 14,
+                fontFamily: Font.Urbanist_Medium,
+                marginLeft: 10,
+              }}>
+              Complete Your Profile
+            </Text>
+          </View>
+        ))}
       <ScrollView
         contentContainerStyle={{flexGrow: 1, paddingTop: 25}}
         keyboardShouldPersistTaps="handled">

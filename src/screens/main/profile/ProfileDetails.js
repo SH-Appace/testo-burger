@@ -9,8 +9,10 @@ import {
   ReferIcon,
   LoyaltyIcon,
   DeleteAccountSvg,
+  SettingsSvg,
+  AboutSvg,
 } from '../../../assets/svgs/ProfileSvgs';
-import { LogoutSvg, LogoutSvgPrimary } from '../../../assets/svgs/DrawerSvgs';
+import {LogoutSvg, LogoutSvgPrimary} from '../../../assets/svgs/DrawerSvgs';
 
 const Data = [
   {
@@ -22,51 +24,83 @@ const Data = [
   },
 
   {
-    id: 3,
-    icon: <ProfileIcon />,
-    name: 'Profile',
-    chevron: 'chevron-right',
-    link: 'EditProfile',
-  },
-
-  {
-    id: 4,
-    icon: <NotificationIcon />,
-    name: 'Notification',
-    chevron: 'chevron-right',
-    link: 'Notification',
-  },
-  {
-    id: 5,
+    id: 2,
     icon: <ReferIcon />,
     name: 'Refer a Friend',
     chevron: 'chevron-right',
     link: 'Referral',
   },
   {
-    id: 6,
+    id: 3,
     icon: <LoyaltyIcon />,
     name: 'Loyalty Points',
     chevron: 'chevron-right',
     link: 'Loyalty',
   },
   {
-    id: 7,
+    id: 4,
     icon: <HelpCenterIcon />,
     name: 'Help Center',
     chevron: 'chevron-right',
     link: 'Faq',
   },
   {
-    id: 8,
-    icon: <LogoutSvgPrimary />,
-    name: 'Logout',
+    id: 5,
+    icon: <SettingsSvg />,
+    name: 'Settings',
+    chevron: 'chevron-right',
+    link: 'Settings',
+  },
+  {
+    id: 6,
+    icon: <AboutSvg />,
+    name: 'About',
+    chevron: 'chevron-right',
+    link: 'About',
   },
   {
     id: 9,
-    icon: <DeleteAccountSvg />,
-    name: 'Delete Account',
-
+    icon: <LogoutSvgPrimary />,
+    name: 'Logout',
   },
 ];
-export default Data;
+const DataNotLogin = [
+  {
+    id: 1,
+    icon: <OfferIcon />,
+    name: 'Special Offers & Promo',
+    chevron: 'chevron-right',
+    link: 'SpecialOffer',
+  },
+
+  {
+    id: 2,
+    icon: <ReferIcon />,
+    name: 'Refer a Friend',
+    chevron: 'chevron-right',
+    link: 'Referral',
+  },
+  {
+    id: 3,
+    icon: <LoyaltyIcon />,
+    name: 'Loyalty Points',
+    chevron: 'chevron-right',
+    link: 'Loyalty',
+  },
+  {
+    id: 4,
+    icon: <HelpCenterIcon />,
+    name: 'Help Center',
+    chevron: 'chevron-right',
+    link: 'Faq',
+  },
+
+  {
+    id: 6,
+    icon: <AboutSvg />,
+    name: 'About',
+    chevron: 'chevron-right',
+    link: 'About',
+  },
+];
+export {Data, DataNotLogin};
