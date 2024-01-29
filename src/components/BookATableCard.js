@@ -20,8 +20,8 @@ const BookATableCard = () => {
         imageStyle={styles.img}
         style={styles.bg}
         source={require('../assets/images/pics/bookBg.png')}>
-        <Text style={styles.title}>Refer a Friend</Text>
-        <Text style={styles.subTitle}>and both get a discount!</Text>
+        <Text style={styles.title}>Book a table</Text>
+        <Text style={styles.subTitle}>want to reserve a table?</Text>
         <View style={styles.svgContainer}>
           <BookSvg width={Window.width / 2.35} height={Window.width / 2.2} />
         </View>

@@ -46,8 +46,8 @@ const LoyaltyCard = () => {
         imageStyle={styles.img}
         style={styles.bg}
         source={require('../assets/images/pics/loyaltyBg.jpg')}>
-        <Text style={styles.title}>Refer a Friend</Text>
-        <Text style={styles.subTitle}>and both get a discount!</Text>
+        <Text style={styles.title}>Loyalty points</Text>
+        <Text style={styles.subTitle}>tap to see points!</Text>
         <View style={styles.svgContainer}>
           <LoyaltySvg width={Window.width / 3} height={Window.width / 2} />
         </View>
