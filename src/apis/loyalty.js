@@ -22,6 +22,8 @@ export async function loyaltyDiscount(
       },
     );
     if (data) {
+      console.log('data', data);
+      setLoading(false);
       setLoyaltyDiscount(data.discount);
       setOpenInput('');
     }
