@@ -1,7 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, Keyboard, StatusBar } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  Keyboard,
+  StatusBar,
+  TextInput,
+} from 'react-native';
 import AppBar from '../../../components/AppBar';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   BorderRadius,
   Color,
@@ -9,19 +17,19 @@ import {
   GlobalStyle,
   Window,
 } from '../../../globalStyle/Theme';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Button from '../../../components/Button';
-import { useDispatch, useSelector } from 'react-redux';
-import { placeOrder } from '../../../apis/order';
-import { Modal } from 'react-native-paper';
-import { showMessage } from 'react-native-flash-message';
+import {useDispatch, useSelector} from 'react-redux';
+import {placeOrder} from '../../../apis/order';
+import {Modal} from 'react-native-paper';
+import {showMessage} from 'react-native-flash-message';
 import BottomPopupRemoveFromCart from '../../../components/BottomPopupRemoveFromCart';
-import { couponApply } from '../../../apis/coupon';
-import { CartEmptySvg } from '../../../assets/svgs/CheckoutSvg';
-import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
-import { useBackButton } from '../../../hooks';
-import { PaymentSheet, useStripe } from '@stripe/stripe-react-native';
-import { stripePost } from '../../../apis/stripe';
+import {couponApply} from '../../../apis/coupon';
+import {CartEmptySvg} from '../../../assets/svgs/CheckoutSvg';
+import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
+import {useBackButton} from '../../../hooks';
+import {PaymentSheet, useStripe} from '@stripe/stripe-react-native';
+import {stripePost} from '../../../apis/stripe';
 import Loader from '../../../components/Loader';
 import OrderType from '../../../components/OrderType';
 import CheckoutDeliverTo from '../../../components/CheckoutDeliverTo';
@@ -32,7 +40,7 @@ import CheckoutOptions from '../../../components/CheckoutOptions';
 import CheckoutPaymentDetails from '../../../components/CheckoutPaymentDetails';
 import NotLoginPopup from '../../../components/NotLoginPopup';
 
-const CheckOut = ({ route, item }) => {
+const CheckOut = ({route, item}) => {
   let navigation = useNavigation();
   const [subTotal, setSubTotal] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(0);
@@ -63,11 +71,12 @@ const CheckOut = ({ route, item }) => {
   const [stripeOpen, setStripeOpen] = useState(false);
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [tip, setTip] = useState(0);
+  const [orderNote, setOrderNote] = useState('');
   const dispatch = useDispatch();
 
-  const { cart, auth } = useSelector(state => ({ ...state }));
+  const {cart, auth} = useSelector(state => ({...state}));
   //STRIPE
-  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const {initPaymentSheet, presentPaymentSheet} = useStripe();
   useEffect(() => {
     if (
       cart.coupon.discount !== 0 &&
@@ -87,7 +96,7 @@ const CheckOut = ({ route, item }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart.coupon.discount, pointsDiscount]);
   const initializePaymentSheet = async () => {
-    const { paymentIntent, ephemeralKey, customer, publishableKey } =
+    const {paymentIntent, ephemeralKey, customer, publishableKey} =
       await stripePost(
         {
           order_amount:
@@ -101,7 +110,7 @@ const CheckOut = ({ route, item }) => {
         setLoading,
       );
 
-    const { error } = await initPaymentSheet({
+    const {error} = await initPaymentSheet({
       merchantDisplayName: 'Testo Burger',
       customerId: customer,
       customerEphemeralKeySecret: ephemeralKey,
@@ -116,8 +125,8 @@ const CheckOut = ({ route, item }) => {
       appearance: {
         primaryButton: {
           colors: {
-            light: { background: Color.primary },
-            dark: { background: Color.primary },
+            light: {background: Color.primary},
+            dark: {background: Color.primary},
           },
         },
       },
@@ -131,7 +140,7 @@ const CheckOut = ({ route, item }) => {
 
   const openPaymentSheet = async () => {
     setStripeOpen(true);
-    const { error } = await presentPaymentSheet();
+    const {error} = await presentPaymentSheet();
 
     if (error) {
       setStripeOpen(false);
@@ -199,129 +208,102 @@ const CheckOut = ({ route, item }) => {
     setRefresh(!refresh);
     onClosePopup();
   };
+
   const submitHandler = () => {
     Keyboard.dismiss();
 
     if (!auth.user) {
       setVisibleNotLoginPopup(true);
       return;
-      // return showMessage({
-      //   message: 'Please login to continue!',
-      //   type: 'danger',
-      // });
     }
 
     if (cart.addedItems.length === 0) {
-      return showMessage({
+      showMessage({
         message: 'Your basket is empty!',
         type: 'danger',
       });
+      return;
     }
+
     if (!auth.user.default_address && cart.orderType === 'delivery') {
-      return showMessage({
+      showMessage({
         message:
-          'Please set a delivery address! Delivery Address is complusory.',
+          'Please set a delivery address! Delivery Address is compulsory.',
         type: 'danger',
       });
+      return;
     }
 
-    const filtered = cart.addedItems.map(item => {
-      item.selectedVariations.map(x => {
-        let tempValues = [];
-        x.values.map(val => (tempValues = [val.label, ...tempValues]));
-        return (x.values = { label: tempValues });
-      });
-      return item.selectedVariations;
-    });
-    if (cart.orderType === 'delivery') {
-      placeOrder(
-        {
-          loyalty_discount: cart.loyaltyPoints.enable
-            ? cart.loyaltyPoints.discount
-            : null,
-          branch_id: branchId !== '' ? branchId : null,
-          schedule_at: deliveryTime === '' ? null : deliveryTime,
-          order_amount:
-            subTotal -
-            (subTotal / 100) * cart.coupon.discount -
-            pointsDiscount +
-            deliveryFee,
-          payment_method: 'cash_on_delivery',
-          order_type: cart.orderType,
-          longitude: auth.user.default_address.longitude,
-          latitude: auth.user.default_address.latitude,
-          dm_tips: tip,
-          coupon_code: coupon,
-          contact_person_name: auth.user.name,
-          contact_person_number: auth.user.phone,
-          address: auth.user.default_address.address,
-          address_type: auth.user.default_address.address_type,
-          floor: auth.user.default_address.floor,
-          road: auth.user.default_address.road,
-          house: auth.user.default_address.house,
-          order_note: 'Bring it Hot!',
-          cart: cart.addedItems.map(item => {
-            return {
-              food_id: item.foodId,
-              item_campaign_id: null,
-              variations: filtered.flat(),
-              quantity: item.quantity,
-              price: item.foodDetails.price,
-              name: item.foodDetails.name,
-              image: item.foodDetails.image,
-              add_on_ids: item.selectedAddOns.map(item => item.id),
-              add_on_qtys: item.selectedAddOns.map(qty => item.quantity),
-            };
-          }),
-        },
-        auth.token,
-        setLoading,
-        dispatch,
-        navigation,
-      );
-    } else {
-      placeOrder(
-        {
-          loyalty_discount: cart.loyaltyPoints.enable
-            ? cart.loyaltyPoints.discount
-            : null,
-          branch_id: branchId !== '' ? branchId : null,
-          schedule_at: deliveryTime === '' ? null : deliveryTime,
-          order_amount:
-            subTotal -
-            (subTotal / 100) * cart.coupon.discount -
-            pointsDiscount +
-            deliveryFee,
-          payment_method: 'cash_on_delivery',
-          order_type: cart.orderType,
+    const filtered = cart.addedItems.map(item => ({
+      ...item,
+      selectedVariations: item.selectedVariations.map(x => ({
+        ...x,
+        values: {label: x.values.map(val => val.label).reverse()},
+      })),
+    }));
 
-          dm_tips: tip,
-          coupon_code: coupon,
-          contact_person_name: auth.user.name,
-          contact_person_number: auth.user.phone,
+    const orderData = {
+      loyalty_discount: pointsDiscount,
+      branch_id: branchId || null,
+      schedule_at: cart.orderType === 'delivery' ? deliveryTime || null : null,
+      order_amount:
+        subTotal -
+        (subTotal / 100) * cart.coupon.discount -
+        pointsDiscount +
+        deliveryFee,
+      payment_method: 'cash_on_delivery',
+      order_type: cart.orderType,
+      longitude:
+        cart.orderType === 'delivery'
+          ? auth.user.default_address.longitude
+          : null,
+      latitude:
+        cart.orderType === 'delivery'
+          ? auth.user.default_address.latitude
+          : null,
+      dm_tips: tip,
+      coupon_code: coupon,
+      contact_person_name: auth.user.name,
+      contact_person_number: auth.user.phone,
+      address:
+        cart.orderType === 'delivery'
+          ? auth.user.default_address.address
+          : null,
+      address_type:
+        cart.orderType === 'delivery'
+          ? auth.user.default_address.address_type
+          : null,
+      floor:
+        cart.orderType === 'delivery' ? auth.user.default_address.floor : null,
+      road:
+        cart.orderType === 'delivery' ? auth.user.default_address.road : null,
+      house:
+        cart.orderType === 'delivery' ? auth.user.default_address.house : null,
+      order_note: orderNote,
+      cart: filtered.map(item => ({
+        food_id: item.foodId,
+        note: item.note,
+        item_campaign_id: null,
+        variations: item.selectedVariations.flat(),
+        quantity: item.quantity,
+        price: item.foodDetails.price,
+        name: item.foodDetails.name,
+        image: item.foodDetails.image,
+        add_on_ids: item.selectedAddOns.map(addOn => addOn.id),
+        add_on_qtys: item.selectedAddOns.map(addOn => item.quantity),
+      })),
+    };
 
-          order_note: 'Bring it Hot!',
-          cart: cart.addedItems.map(item => {
-            return {
-              food_id: item.foodId,
-              item_campaign_id: null,
-              variations: filtered.flat(),
-              quantity: item.quantity,
-              price: item.foodDetails.price,
-              name: item.foodDetails.name,
-              image: item.foodDetails.image,
-              add_on_ids: item.selectedAddOns.map(item => item.id),
-              add_on_qtys: item.selectedAddOns.map(qty => item.quantity),
-            };
-          }),
-        },
-        auth.token,
-        setLoading,
-        dispatch,
-        navigation,
-      );
-    }
+    placeOrder(
+      orderData,
+      auth.token,
+      setLoading,
+      dispatch,
+      navigation,
+      setCoupon,
+    );
   };
+
   const couponHandler = () => {
     Keyboard.dismiss();
     if (coupon === '') {
@@ -331,7 +313,7 @@ const CheckOut = ({ route, item }) => {
       });
     }
     setOpenInput(false);
-    couponApply({ code: coupon }, auth.token, setLoading, dispatch);
+    couponApply({code: coupon}, auth.token, setLoading, dispatch);
   };
   const removeCoupon = () => {
     dispatch({
@@ -381,7 +363,7 @@ const CheckOut = ({ route, item }) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F9F9F9' }}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#F9F9F9'}}>
       <StatusBar
         animated={true}
         backgroundColor={
@@ -390,7 +372,7 @@ const CheckOut = ({ route, item }) => {
         barStyle={loading ? 'light-content' : 'dark-content'}
         showHideTransition={'fade'}
       />
-      <View style={{ paddingHorizontal: Window.fixPadding * 2 }}>
+      <View style={{paddingHorizontal: Window.fixPadding * 2}}>
         <AppBar
           center={
             <Text style={GlobalStyle.AppCenterTextStyle}>
@@ -401,7 +383,7 @@ const CheckOut = ({ route, item }) => {
       </View>
       {cart.addedItems.length > 0 ? (
         <ScrollView
-          style={{ flex: 1 }}
+          style={{flex: 1}}
           contentContainerStyle={{
             flexGrow: 1,
             paddingVertical: 20,
@@ -462,7 +444,10 @@ const CheckOut = ({ route, item }) => {
             setTip={setTip}
             tip={tip}
             subTotal={subTotal}
+            orderNote={orderNote}
+            setOrderNote={setOrderNote}
           />
+
           <CheckoutPaymentDetails
             subTotal={subTotal}
             deliveryFee={deliveryFee}
@@ -503,18 +488,19 @@ const CheckOut = ({ route, item }) => {
       <View
         style={[
           GlobalStyle.BottomButtonContainer,
-          { paddingHorizontal: Window.fixPadding * 2 },
+          {paddingHorizontal: Window.fixPadding * 2},
         ]}>
         <Button
           disabled={cart.orderType === 'delivery' ? false : btnDisabled}
           text={
             cart.addedItems.length > 0
-              ? `Place Order - $${subTotal -
-              (subTotal / 100) * cart.coupon.discount -
-              pointsDiscount +
-              deliveryFee +
-              tip
-              }`
+              ? `Place Order - $${
+                  subTotal -
+                  (subTotal / 100) * cart.coupon.discount -
+                  pointsDiscount +
+                  deliveryFee +
+                  tip
+                }`
               : 'Browse Menu'
           }
           icon="mail"
@@ -523,25 +509,25 @@ const CheckOut = ({ route, item }) => {
           onPressFunc={
             cart.addedItems.length > 0
               ? () => {
-                if (paymentMethod === 1) {
-                  submitHandler();
-                } else {
-                  openPaymentSheet();
+                  if (paymentMethod === 1) {
+                    submitHandler();
+                  } else {
+                    openPaymentSheet();
+                  }
                 }
-              }
               : () =>
-                navigation.reset({
-                  index: 0,
+                  navigation.reset({
+                    index: 0,
 
-                  routes: [
-                    {
-                      name: 'BottomTabScreen',
-                      state: {
-                        routes: [{ name: 'Menu' }],
+                    routes: [
+                      {
+                        name: 'BottomTabScreen',
+                        state: {
+                          routes: [{name: 'Menu'}],
+                        },
                       },
-                    },
-                  ],
-                })
+                    ],
+                  })
           }
         />
       </View>
@@ -585,14 +571,15 @@ const CheckOut = ({ route, item }) => {
           const month = res.getUTCMonth() + 1; // months are zero-based
           const day = res.getUTCDate();
           setDeliveryTime(
-            `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''
+            `${year}-${month < 10 ? '0' : ''}${month}-${
+              day < 10 ? '0' : ''
             }${day}`,
           );
         }}
         saveLabel={deliveryTime !== '' ? 'Next' : 'Select date to continue'}
         label={' '}
         editIcon={' '}
-        validRange={{ startDate: new Date() }}
+        validRange={{startDate: new Date()}}
       />
       <TimePickerModal
         visible={openTime}
@@ -606,7 +593,7 @@ const CheckOut = ({ route, item }) => {
   );
 };
 
-const Popup = ({ item, visible, setVisible }) => {
+const Popup = ({item, visible, setVisible}) => {
   const hideModal = () => {
     setVisible(false);
   };
@@ -643,14 +630,14 @@ const Popup = ({ item, visible, setVisible }) => {
           Food Items
         </Text>
 
-        <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+        <View style={{flexDirection: 'row', marginBottom: 20}}>
           <Image
-            style={{ width: 80, height: 80, borderRadius: 15 }}
+            style={{width: 80, height: 80, borderRadius: 15}}
             // source={{uri: item.foodDetails.image}}
             source={require('../../../assets/images/pics/foodBg.png')}
             resizeMode="cover"
           />
-          <View style={{ flexDirection: 'column', flex: 1 }}>
+          <View style={{flexDirection: 'column', flex: 1}}>
             <View
               style={{
                 justifyContent: 'space-between',
@@ -740,7 +727,7 @@ const Popup = ({ item, visible, setVisible }) => {
   );
 };
 
-const BranchPopup = ({ visible, setVisible }) => {
+const BranchPopup = ({visible, setVisible}) => {
   const hideModal = () => {
     setVisible(false);
   };

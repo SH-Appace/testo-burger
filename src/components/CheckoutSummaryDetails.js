@@ -202,6 +202,7 @@ const SummaryDetails = ({
               selectedVariations: item.selectedVariations,
               index: index,
               totalPrice: item.totalPrice,
+              note: item.note,
             })
           }>
           <Icon

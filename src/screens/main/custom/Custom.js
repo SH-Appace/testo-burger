@@ -6,6 +6,8 @@ import {
   StatusBar,
   ScrollView,
   TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 import AppBar from '../../../components/AppBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -19,7 +21,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Icon from '../../../core/Icon';
 import styles from './CustomStyle';
-import {Checkbox, TouchableRipple,RadioButton} from 'react-native-paper';
+import {Checkbox, TouchableRipple, RadioButton} from 'react-native-paper';
 import Button from '../../../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
@@ -56,8 +58,8 @@ const Cart = ({item, quantity, setQuantity}) => {
           }}>
           <Image
             style={styles.ImgStyle}
-            // source={{uri: item.image}}
-            source={require('../../../assets/images/pics/foodBg.png')}
+            source={{uri: item.image}}
+            // source={require('../../../assets/images/pics/foodBg.png')}
             resizeMode="cover"
           />
         </View>
@@ -353,7 +355,7 @@ const VariationItem = ({
                 justifyContent: 'center',
                 marginHorizontal: 6,
                 overflow: 'hidden',
-                transform: [{scaleX: 1.1}, {scaleY: 1.1},],
+                transform: [{scaleX: 1.1}, {scaleY: 1.1}],
               }}>
               <RadioButton.Android
                 uncheckedColor={Color.primary}
@@ -449,6 +451,7 @@ const Custom = ({route, navigation}) => {
   const [selectedVariations, setSelectedVariations] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [required, setRequired] = useState(false);
+  const [itemNote, setItemNote] = useState('');
   const dispatch = useDispatch();
   const {product, productId} = route.params;
   const {wishlist, auth} = useSelector(state => ({...state}));
@@ -460,6 +463,7 @@ const Custom = ({route, navigation}) => {
       setSelectedVariations(route.params.selectedVariations);
 
       setPriceAmount(route.params.totalPrice / route.params.quantity);
+      setItemNote(route.params.note);
       // const check = route.params.selectedVariations.some(
       //   x => x.required === 'on',
       // );
@@ -583,82 +587,114 @@ const Custom = ({route, navigation}) => {
         }
       />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{marginVertical: 25}}>
-          <Cart
-            setPriceAmount={setPriceAmount}
-            item={product}
-            quantity={quantity}
-            setQuantity={setQuantity}
-          />
-        </View>
-        {product.add_ons.length > 0 && (
-          <>
-              <Text style={{color: '#2A3B56', fontSize: 14, fontFamily:Font.Urbanist_Black}}>
+        <KeyboardAvoidingView behavior="padding">
+          <View style={{marginVertical: 25}}>
+            <Cart
+              setPriceAmount={setPriceAmount}
+              item={product}
+              quantity={quantity}
+              setQuantity={setQuantity}
+            />
+          </View>
+          {product.add_ons.length > 0 && (
+            <>
+              <Text
+                style={{
+                  color: '#2A3B56',
+                  fontSize: 14,
+                  fontFamily: Font.Urbanist_Black,
+                }}>
                 Add Ons
               </Text>
-            <View style={{marginVertical: 10}}>
-              {product.add_ons.map((item, index) => (
-                <AddOns
-                  setPriceAmount={setPriceAmount}
-                  setSelectedAddons={setSelectedAddons}
-                  selectedAddons={selectedAddons}
-                  item={item}
-                  key={index}
-                />
+              <View style={{marginVertical: 10}}>
+                {product.add_ons.map((item, index) => (
+                  <AddOns
+                    setPriceAmount={setPriceAmount}
+                    setSelectedAddons={setSelectedAddons}
+                    selectedAddons={selectedAddons}
+                    item={item}
+                    key={index}
+                  />
+                ))}
+              </View>
+            </>
+          )}
+          {product.variations && (
+            <>
+              {product.variations.map((variation, index) => (
+                <>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text
+                      style={{
+                        color: '#2A3B56',
+                        fontSize: 14,
+                        fontWeight: '800',
+                      }}>
+                      {variation.name}
+                    </Text>
+                    <Text style={{color: Color.secondary, fontSize: 10}}>
+                      {' '}
+                      {variation.required === 'off'
+                        ? '(Optional)'
+                        : '(Required)'}
+                    </Text>
+                  </View>
+                  {variation.type === 'multi' && (
+                    <Text style={{fontSize: 12, color: Color.primary}}>
+                      You need to select minimum {variation.min} and maximum{' '}
+                      {variation.max} options
+                    </Text>
+                  )}
+
+                  <View style={{marginVertical: 10}}>
+                    {variation.values.map((item, index) => (
+                      <VariationItem
+                        item={item}
+                        key={index}
+                        index={index}
+                        type={variation.type === 'single' ? true : false}
+                        radioState={radioState}
+                        setRadioState={setRadioState}
+                        setPriceAmount={setPriceAmount}
+                        setRadioItemPrice={setRadioItemPrice}
+                        radioItemPrice={radioItemPrice}
+                        // priceAmount={priceAmount}
+                        setSelectedVariations={setSelectedVariations}
+                        selectedVariations={selectedVariations}
+                        setRequired={setRequired}
+                        variationObj={variation}
+                      />
+                    ))}
+                  </View>
+                </>
               ))}
-            </View>
-          </>
-        )}
-        {product.variations && (
-          <>
-            {product.variations.map((variation, index) => (
-              <>
-
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      color: '#2A3B56',
-                      fontSize: 14,
-                      fontWeight: '800',
-                    }}>
-                    {variation.name}
-                  </Text>
-                  <Text style={{color: Color.secondary, fontSize: 10}}>
-                    {' '}
-                    {variation.required === 'off' ? '(Optional)' : '(Required)'}
-                  </Text>
-                </View>
-                {variation.type === 'multi' && (
-                  <Text style={{fontSize: 12, color: Color.primary}}>
-                    You need to select minimum {variation.min} and maximum{' '}
-                    {variation.max} options
-                  </Text>
-                )}
-
-                <View style={{marginVertical: 10}}>
-                  {variation.values.map((item, index) => (
-                    <VariationItem
-                      item={item}
-                      key={index}
-                      index={index}
-                      type={variation.type === 'single' ? true : false}
-                      radioState={radioState}
-                      setRadioState={setRadioState}
-                      setPriceAmount={setPriceAmount}
-                      setRadioItemPrice={setRadioItemPrice}
-                      radioItemPrice={radioItemPrice}
-                      // priceAmount={priceAmount}
-                      setSelectedVariations={setSelectedVariations}
-                      selectedVariations={selectedVariations}
-                      setRequired={setRequired}
-                      variationObj={variation}
-                    />
-                  ))}
-                </View>
-              </>
-            ))}
-          </>
-        )}
+            </>
+          )}
+          <Text
+            style={{
+              color: '#2A3B56',
+              fontSize: 14,
+              fontWeight: '800',
+              marginBottom: 10,
+            }}>
+            Note if any
+          </Text>
+          <TextInput
+            style={{
+              backgroundColor: Color.light,
+              height: 90,
+              borderRadius: 16,
+              paddingHorizontal: 10,
+              color: Color.secondary,
+              fontFamily: Font.Urbanist_Light,
+            }}
+            placeholder="Order Notes..."
+            placeholderTextColor={Color.lightGray}
+            multiline
+            value={itemNote}
+            onChangeText={text => setItemNote(text)}
+          />
+        </KeyboardAvoidingView>
       </ScrollView>
 
       <View style={{...GlobalStyle.BottomButtonContainer}}>
@@ -686,6 +722,7 @@ const Custom = ({route, navigation}) => {
                       selectedVariations: selectedVariations,
                       totalPrice: priceAmount * quantity,
                       quantity: quantity,
+                      note: itemNote,
                     },
                     index: route.params.index,
                     oldPrice: route.params.totalPrice,
@@ -704,6 +741,7 @@ const Custom = ({route, navigation}) => {
                     selectedVariations: selectedVariations,
                     totalPrice: priceAmount * quantity,
                     quantity: quantity,
+                    note: itemNote,
                   },
                 });
               }

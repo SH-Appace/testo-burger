@@ -1,4 +1,10 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {BorderRadius, Color, Font, Window} from '../globalStyle/Theme';
 import {Switch} from 'react-native-paper';
@@ -26,16 +32,17 @@ const CheckoutOptions = ({
   setTip,
   tip,
   subTotal,
+  orderNote,
+  setOrderNote,
 }) => {
   const {cart, auth, branch} = useSelector(state => ({...state}));
 
   return (
     <View style={styles.container}>
       {CardData.map((item, index) => {
-        if(item.id == 2 & !auth.user)
-          return;
+        if ((item.id == 2) & !auth.user) return;
 
-        return(
+        return (
           <CartDetails
             setOpenInput={setOpenInput}
             openInput={openInput}
@@ -59,8 +66,10 @@ const CheckoutOptions = ({
             setTip={setTip}
             tip={tip}
             subTotal={subTotal}
+            orderNote={orderNote}
+            setOrderNote={setOrderNote}
           />
-        )
+        );
       })}
     </View>
   );
@@ -166,6 +175,8 @@ const CartDetails = ({
   setTip,
   tip,
   subTotal,
+  orderNote,
+  setOrderNote,
 }) => {
   const [status, setStatus] = useState(false);
   const [tipPercent, setTipPercent] = useState(0);
@@ -307,34 +318,33 @@ const CartDetails = ({
                   COD
                 </Text>
               </TouchableOpacity>
-              {
-                auth.user && 
+              {auth.user && (
                 <TouchableOpacity
-                onPress={() => {
-                  initializePaymentSheet();
-                  setPaymentMethod(2);
-                }}
-                style={[
-                  styles.paymentButton,
-                  {
-                    backgroundColor:
-                      paymentMethod === 2 ? Color.primary : 'transparent',
-                    borderColor:
-                      paymentMethod === 2 ? Color.primary : Color.secondary,
-                  },
-                ]}>
-                <Text
+                  onPress={() => {
+                    initializePaymentSheet();
+                    setPaymentMethod(2);
+                  }}
                   style={[
-                    styles.paymentButtonText,
+                    styles.paymentButton,
                     {
-                      color:
-                        paymentMethod === 2 ? Color.light : Color.secondary,
+                      backgroundColor:
+                        paymentMethod === 2 ? Color.primary : 'transparent',
+                      borderColor:
+                        paymentMethod === 2 ? Color.primary : Color.secondary,
                     },
                   ]}>
-                  Credit Card
-                </Text>
-              </TouchableOpacity>
-              }
+                  <Text
+                    style={[
+                      styles.paymentButtonText,
+                      {
+                        color:
+                          paymentMethod === 2 ? Color.light : Color.secondary,
+                      },
+                    ]}>
+                    Credit Card
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           ) : item.id === 2 ? (
             <>
@@ -406,6 +416,22 @@ const CartDetails = ({
                 </View>
               </View>
             </>
+          ) : item.id === 4 ? (
+            <TextInput
+              style={{
+                backgroundColor: Color.veryLightGray,
+                height: 90,
+                borderRadius: 16,
+                paddingHorizontal: 10,
+                color: Color.secondary,
+                fontFamily: Font.Urbanist_Light,
+              }}
+              placeholder="Order Notes..."
+              placeholderTextColor={Color.lightGray}
+              multiline
+              value={orderNote}
+              onChangeText={text => setOrderNote(text)}
+            />
           ) : (
             <>
               <View style={styles.row}>
@@ -487,6 +513,7 @@ const CartDetails = ({
     </>
   );
 };
+
 const CardData = [
   {
     id: 1,
@@ -504,6 +531,12 @@ const CardData = [
   {
     id: 3,
     payment: 'Add Tips',
+    icon: 'plus',
+    chevron: 'chevron-small-right',
+  },
+  {
+    id: 4,
+    payment: 'Add Order Notes',
     icon: 'plus',
     chevron: 'chevron-small-right',
   },
