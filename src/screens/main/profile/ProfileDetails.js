@@ -72,21 +72,6 @@ const DataNotLogin = [
     chevron: 'chevron-right',
     link: 'SpecialOffer',
   },
-
-  {
-    id: 2,
-    icon: <ReferIcon />,
-    name: 'Refer a Friend',
-    chevron: 'chevron-right',
-    link: 'Referral',
-  },
-  {
-    id: 3,
-    icon: <LoyaltyIcon />,
-    name: 'Loyalty Points',
-    chevron: 'chevron-right',
-    link: 'Loyalty',
-  },
   {
     id: 4,
     icon: <HelpCenterIcon />,

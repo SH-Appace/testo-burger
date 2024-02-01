@@ -227,9 +227,15 @@ const Home = ({navigation}) => {
             </Animated.View>
           </Animated.View>
         )}
-        <ReferCard />
-        <LoyaltyCard />
-        <BookATableCard />
+        {auth?.user ? (
+          <>
+            <ReferCard />
+            <LoyaltyCard />
+            <BookATableCard />
+          </>
+        ) : (
+          <View style={{marginBottom: 20}} />
+        )}
       </ScrollView>
       <SearchComponent open={openSearch} setOpen={setOpenSearch} />
     </SafeAreaView>
