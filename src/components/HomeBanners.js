@@ -1,9 +1,11 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Swiper from 'react-native-swiper';
 import {BorderRadius} from '../globalStyle/Theme';
+import {useNavigation} from '@react-navigation/native';
 
 const HomeBanners = ({banners}) => {
+  const navigation = useNavigation();
   return (
     <Swiper
       autoplay
@@ -11,12 +13,23 @@ const HomeBanners = ({banners}) => {
       activeDot={<View style={styles.activeDot} />}
       dot={<View style={styles.dot} />}>
       {banners[0].map((x, i) => (
-        <Image
-          source={{uri: x.image}}
-          style={styles.image}
-          resizeMethod={'resize'}
-          resizeMode={'cover'}
-        />
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('Custom', {
+              edit: false,
+              productId: x.id,
+              product: x,
+              fromMenu: false,
+              itemCampaign: true,
+            })
+          }>
+          <Image
+            source={{uri: x.image}}
+            style={styles.image}
+            resizeMethod={'resize'}
+            resizeMode={'cover'}
+          />
+        </TouchableOpacity>
       ))}
     </Swiper>
   );

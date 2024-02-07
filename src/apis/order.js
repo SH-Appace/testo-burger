@@ -57,8 +57,9 @@ export async function placeOrder(
   setLoading,
   dispatch,
   navigation,
-  showModal,
+  setCoupon,
 ) {
+  console.log('body', body);
   setLoading(true);
   try {
     const {data} = await axios.post('customer/order/place', body, {
@@ -67,6 +68,8 @@ export async function placeOrder(
       },
     });
     if (data) {
+      // console.log('data', data);
+      // return;
       dispatch({
         type: 'UPDATE_LOYALTY_POINTS',
         payload: data.user.loyalty_point,
@@ -75,6 +78,7 @@ export async function placeOrder(
         type: 'CLEAR_CART',
         payload: [],
       });
+      setCoupon('');
       navigation.replace('RecommendedFoods', {
         points: data.loyalty_points,
       });
@@ -89,6 +93,7 @@ export async function placeOrder(
     console.log('error', err);
   }
 }
+
 export async function cancelAOrder(
   body,
   token,

@@ -283,7 +283,7 @@ const CheckOut = ({route, item}) => {
       cart: filtered.map(item => ({
         food_id: item.foodId,
         note: item.note,
-        item_campaign_id: null,
+        item_campaign_id: item.itemCampaignId,
         variations: item.selectedVariations.flat(),
         quantity: item.quantity,
         price: item.foodDetails.price,
@@ -293,7 +293,8 @@ const CheckOut = ({route, item}) => {
         add_on_qtys: item.selectedAddOns.map(addOn => item.quantity),
       })),
     };
-
+    console.log('orderData', orderData);
+    // return;
     placeOrder(
       orderData,
       auth.token,

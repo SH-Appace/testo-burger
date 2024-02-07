@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function getBanner(dispatch) {
   try {
-    const {data} = await axios.get('banners');
+    const {data} = await axios.get('campaigns/item');
     if (data) {
       dispatch({
         type: 'BANNERS',

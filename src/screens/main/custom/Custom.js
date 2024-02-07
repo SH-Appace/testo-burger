@@ -742,6 +742,10 @@ const Custom = ({route, navigation}) => {
                     totalPrice: priceAmount * quantity,
                     quantity: quantity,
                     note: itemNote,
+                    itemCampaignId: route.params?.itemCampaign
+                      ? product.id
+                      : null,
+                    // route.params
                   },
                 });
               }
