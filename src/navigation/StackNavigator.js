@@ -29,8 +29,8 @@ const StackNavigator = () => {
         animationTypeForReplace: 'push',
         animation: 'slide_from_right',
       }}
-      initialRouteName="Splash">
-      <Stack.Screen name="Splash" component={Splash} />
+      initialRouteName="Splash2">
+      {/* <Stack.Screen name="Splash" component={Splash} /> */}
       <Stack.Screen name="Splash2" component={Splash2} />
       <Stack.Screen name="OnBoarding" component={OnBoarding} />
       {/* <Stack.Screen name="GetStarted" component={GetStarted} /> */}

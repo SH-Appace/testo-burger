@@ -126,28 +126,55 @@ export async function signinReq(
   }
 }
 
-export async function deleteAccount(setLoading,func,token,setModalVisible){
-  try{
-    setLoading(true)
-    const {data} = await axios.delete('customer/remove-account',{
+export async function deleteAccount(setLoading, func, token, setModalVisible) {
+  try {
+    setLoading(true);
+    const {data} = await axios.delete('customer/remove-account', {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
       },
     });
-    if(data){
-      func()
-      setLoading(false)
-      
+    if (data) {
+      func();
+      setLoading(false);
     }
-    
-  }catch(err){
-    setLoading(false)
-    setModalVisible(false)
+  } catch (err) {
+    setLoading(false);
+    setModalVisible(false);
     showMessage({
       message: err.response.data.errors[0].message,
       type: 'danger',
     });
-    console.log(err.response.data.errors[0].message)
+    console.log(err.response.data.errors[0].message);
   }
+}
+
+export async function SplashReq(dispatch) {
+  try {
+    const {data} = await axios.get('splash-screen');
+    if (data) {
+      dispatch({
+        type: 'CATEGORIES',
+        payload: [data.categories],
+      });
+      dispatch({
+        type: 'PRODUCTS',
+        payload: [data.popular_products],
+      });
+      dispatch({
+        type: 'BANNERS',
+        payload: [data.campaigns],
+      });
+      dispatch({
+        type: 'BRANCH',
+        payload: [data.branches],
+      });
+    }
+  } catch (err) {
+    showMessage({
+      message: err.response.data.errors[0].message,
+      type: 'danger',
+    });
   }
+}

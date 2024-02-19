@@ -1,23 +1,13 @@
 import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Color, Font, Window} from '../../../globalStyle/Theme';
-import {
-  BallIndicator,
-  BarIndicator,
-  DotIndicator,
-  MaterialIndicator,
-  PacmanIndicator,
-  PulseIndicator,
-  SkypeIndicator,
-  UIActivityIndicator,
-  WaveIndicator,
-} from 'react-native-indicators';
+
 import {
   categoriesAllProductsReq,
   categoriesReq,
 } from '../../../apis/categories';
 import {useDispatch} from 'react-redux';
-import {signinReq} from '../../../apis/auth';
+import {SplashReq, signinReq} from '../../../apis/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'react-native';
 import {
@@ -29,14 +19,19 @@ import {
   SplashRightBg,
   SplashText,
 } from '../../../assets/svgs/LogoSvg';
+import {
+  NotificationListener,
+  requestUserPermission,
+} from '../../../utils/pushnotification_helper';
 
 const Splash2 = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   var navigateTo = 'BottomTabScreen';
   useEffect(() => {
-    checkUser();
-
+    requestUserPermission();
+    NotificationListener();
+    Promise.all([SplashReq(dispatch), checkUser()]);
     return () => setLoading(false);
   }, []);
 
@@ -141,6 +136,7 @@ const styles = StyleSheet.create({
     bottom: 50,
     // top: 0,
     right: 0,
+    zIndex: -2,
   },
   centerBgContainer: {
     position: 'absolute',
@@ -173,7 +169,7 @@ const styles = StyleSheet.create({
     top: -200,
     right: 0,
     // left: 0,
-    zIndex: 99,
+    zIndex: -1,
   },
   arrrowDown: {
     position: 'absolute',
@@ -183,6 +179,6 @@ const styles = StyleSheet.create({
     // top: 0,
     // right: 0,
     left: 0,
-    zIndex: 99,
+    zIndex: -1,
   },
 });

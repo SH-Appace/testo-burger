@@ -3,10 +3,7 @@ import React, {useEffect} from 'react';
 import {Color, Window} from '../../../globalStyle/Theme';
 import {SkypeIndicator} from 'react-native-indicators';
 import {useDispatch} from 'react-redux';
-import {
-  categoriesAllProductsReq,
-  categoriesReq,
-} from '../../../apis/categories';
+
 import {getBanner} from '../../../apis/banner';
 import {getBranches} from '../../../apis/branches';
 import {WhiteLogo} from '../../../assets/svgs/LogoSvg';
@@ -16,6 +13,8 @@ import {
   NotificationListener,
   requestUserPermission,
 } from '../../../utils/pushnotification_helper';
+import {SplashReq} from '../../../apis/auth';
+
 const Splash = ({navigation}) => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -23,10 +22,11 @@ const Splash = ({navigation}) => {
     requestUserPermission();
     NotificationListener();
     Promise.all([
-      categoriesReq(dispatch),
-      categoriesAllProductsReq(dispatch),
-      getBanner(dispatch),
-      getBranches(dispatch),
+      SplashReq(dispatch),
+      // categoriesReq(dispatch),
+      // categoriesAllProductsReq(dispatch),
+      // getBanner(dispatch),
+      // getBranches(dispatch),
       checkUser(),
     ]);
   }, []);
