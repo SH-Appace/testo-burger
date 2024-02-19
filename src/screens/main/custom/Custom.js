@@ -454,7 +454,9 @@ const Custom = ({route, navigation}) => {
   const [itemNote, setItemNote] = useState('');
   const dispatch = useDispatch();
   const {product, productId} = route.params;
-  const {wishlist, auth} = useSelector(state => ({...state}));
+  console.log('product custom', product);
+  const wishlist = useSelector(state => state.wishlist);
+  const auth = useSelector(state => state.auth);
 
   useEffect(() => {
     if (route.params.edit) {
@@ -498,224 +500,244 @@ const Custom = ({route, navigation}) => {
     return true;
   };
   useBackButton(navigation, onBackPress);
-  return (
-    <SafeAreaView style={GlobalStyle.Container}>
-      <AppBar
-        left={
-          <TouchableOpacity
-            onPress={() =>
-              route.params.fromMenu
-                ? navigation.reset({
-                    index: 0,
-                    routes: [
-                      {
-                        name: 'BottomTabScreen',
-                        state: {
-                          routes: [
-                            {
-                              name: 'Menu',
-                            },
-                          ],
+  if (product) {
+    return (
+      <SafeAreaView style={GlobalStyle.Container}>
+        <AppBar
+          left={
+            <TouchableOpacity
+              onPress={() =>
+                route.params.fromMenu
+                  ? navigation.reset({
+                      index: 0,
+                      routes: [
+                        {
+                          name: 'BottomTabScreen',
+                          state: {
+                            routes: [
+                              {
+                                name: 'Menu',
+                              },
+                            ],
+                          },
                         },
-                      },
-                    ],
-                  })
-                : navigation.goBack()
-            }>
-            <Icon
-              iconFamily={'AntDesign'}
-              name="close"
-              size={20}
-              color={Color.tertiary}
-            />
-          </TouchableOpacity>
-        }
-        center={
-          <Text
-            onPress={() => navigation.navigate('Cartt')}
-            style={GlobalStyle.AppCenterTextStyle}>
-            {product.name}
-          </Text>
-        }
-        right={
-          <TouchableOpacity
-            style={{
-              height: 40,
-              width: 40,
-              borderRadius: 40,
-              backgroundColor: Color.light,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: 0.5,
-              marginTop: 15,
-            }}
-            onPress={() => {
-              if (wishlist.addedItems.some(e => e.id === product.id)) {
-                dispatch({
-                  type: 'REMOVE_SINGLE_FROM_WISHLIST',
-                  payload: product.id,
-                });
-                removeWishlist(product.id, auth.token);
-              } else {
-                dispatch({
-                  type: 'ADD_SINGLE_TO_WISHLIST',
-                  payload: product,
-                });
-                addWishlist(
-                  {
-                    food_id: product.id,
-                  },
-                  auth.token,
-                );
-              }
-            }}>
-            <Icon
-              iconFamily={'AntDesign'}
-              style={styles.heartIcon}
-              color={
-                wishlist.addedItems.some(e => e.id === product.id)
-                  ? Color.black
-                  : Color.light
-              }
-              name={
-                wishlist.addedItems.some(e => e.id === product.id)
-                  ? 'heart'
-                  : 'hearto'
-              }
-            />
-          </TouchableOpacity>
-        }
-      />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <KeyboardAvoidingView behavior="padding">
-          <View style={{marginVertical: 25}}>
-            <Cart
-              setPriceAmount={setPriceAmount}
-              item={product}
-              quantity={quantity}
-              setQuantity={setQuantity}
-            />
-          </View>
-          {product.add_ons.length > 0 && (
-            <>
-              <Text
-                style={{
-                  color: '#2A3B56',
-                  fontSize: 14,
-                  fontFamily: Font.Urbanist_Black,
-                }}>
-                Add Ons
-              </Text>
-              <View style={{marginVertical: 10}}>
-                {product.add_ons.map((item, index) => (
-                  <AddOns
-                    setPriceAmount={setPriceAmount}
-                    setSelectedAddons={setSelectedAddons}
-                    selectedAddons={selectedAddons}
-                    item={item}
-                    key={index}
-                  />
+                      ],
+                    })
+                  : navigation.goBack()
+              }>
+              <Icon
+                iconFamily={'AntDesign'}
+                name="close"
+                size={20}
+                color={Color.tertiary}
+              />
+            </TouchableOpacity>
+          }
+          center={
+            <Text
+              onPress={() => navigation.navigate('Cartt')}
+              style={GlobalStyle.AppCenterTextStyle}>
+              {product.name}
+            </Text>
+          }
+          right={
+            <TouchableOpacity
+              style={{
+                height: 40,
+                width: 40,
+                borderRadius: 40,
+                backgroundColor: Color.light,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: 0.5,
+                marginTop: 15,
+              }}
+              onPress={() => {
+                if (wishlist.addedItems.some(e => e.id === product.id)) {
+                  dispatch({
+                    type: 'REMOVE_SINGLE_FROM_WISHLIST',
+                    payload: product.id,
+                  });
+                  removeWishlist(product.id, auth.token);
+                } else {
+                  dispatch({
+                    type: 'ADD_SINGLE_TO_WISHLIST',
+                    payload: product,
+                  });
+                  addWishlist(
+                    {
+                      food_id: product.id,
+                    },
+                    auth.token,
+                  );
+                }
+              }}>
+              <Icon
+                iconFamily={'AntDesign'}
+                style={styles.heartIcon}
+                color={
+                  wishlist.addedItems.some(e => e.id === product.id)
+                    ? Color.black
+                    : Color.light
+                }
+                name={
+                  wishlist.addedItems.some(e => e.id === product.id)
+                    ? 'heart'
+                    : 'hearto'
+                }
+              />
+            </TouchableOpacity>
+          }
+        />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <KeyboardAvoidingView behavior="padding">
+            <View style={{marginVertical: 25}}>
+              <Cart
+                setPriceAmount={setPriceAmount}
+                item={product}
+                quantity={quantity}
+                setQuantity={setQuantity}
+              />
+            </View>
+            {product.add_ons.length > 0 && (
+              <>
+                <Text
+                  style={{
+                    color: '#2A3B56',
+                    fontSize: 14,
+                    fontFamily: Font.Urbanist_Black,
+                  }}>
+                  Add Ons
+                </Text>
+                <View style={{marginVertical: 10}}>
+                  {product.add_ons.map((item, index) => (
+                    <AddOns
+                      setPriceAmount={setPriceAmount}
+                      setSelectedAddons={setSelectedAddons}
+                      selectedAddons={selectedAddons}
+                      item={item}
+                      key={index}
+                    />
+                  ))}
+                </View>
+              </>
+            )}
+            {product.variations && (
+              <>
+                {product.variations.map((variation, index) => (
+                  <>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text
+                        style={{
+                          color: '#2A3B56',
+                          fontSize: 14,
+                          fontWeight: '800',
+                        }}>
+                        {variation.name}
+                      </Text>
+                      <Text style={{color: Color.secondary, fontSize: 10}}>
+                        {' '}
+                        {variation.required === 'off'
+                          ? '(Optional)'
+                          : '(Required)'}
+                      </Text>
+                    </View>
+                    {variation.type === 'multi' && (
+                      <Text style={{fontSize: 12, color: Color.primary}}>
+                        You need to select minimum {variation.min} and maximum{' '}
+                        {variation.max} options
+                      </Text>
+                    )}
+
+                    <View style={{marginVertical: 10}}>
+                      {variation.values.map((item, index) => (
+                        <VariationItem
+                          item={item}
+                          key={index}
+                          index={index}
+                          type={variation.type === 'single' ? true : false}
+                          radioState={radioState}
+                          setRadioState={setRadioState}
+                          setPriceAmount={setPriceAmount}
+                          setRadioItemPrice={setRadioItemPrice}
+                          radioItemPrice={radioItemPrice}
+                          // priceAmount={priceAmount}
+                          setSelectedVariations={setSelectedVariations}
+                          selectedVariations={selectedVariations}
+                          setRequired={setRequired}
+                          variationObj={variation}
+                        />
+                      ))}
+                    </View>
+                  </>
                 ))}
-              </View>
-            </>
-          )}
-          {product.variations && (
-            <>
-              {product.variations.map((variation, index) => (
-                <>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text
-                      style={{
-                        color: '#2A3B56',
-                        fontSize: 14,
-                        fontWeight: '800',
-                      }}>
-                      {variation.name}
-                    </Text>
-                    <Text style={{color: Color.secondary, fontSize: 10}}>
-                      {' '}
-                      {variation.required === 'off'
-                        ? '(Optional)'
-                        : '(Required)'}
-                    </Text>
-                  </View>
-                  {variation.type === 'multi' && (
-                    <Text style={{fontSize: 12, color: Color.primary}}>
-                      You need to select minimum {variation.min} and maximum{' '}
-                      {variation.max} options
-                    </Text>
-                  )}
+              </>
+            )}
+            <Text
+              style={{
+                color: '#2A3B56',
+                fontSize: 14,
+                fontWeight: '800',
+                marginBottom: 10,
+              }}>
+              Note if any
+            </Text>
+            <TextInput
+              style={{
+                backgroundColor: Color.light,
+                height: 90,
+                borderRadius: 16,
+                paddingHorizontal: 10,
+                color: Color.secondary,
+                fontFamily: Font.Urbanist_Light,
+              }}
+              placeholder="Order Notes..."
+              placeholderTextColor={Color.lightGray}
+              multiline
+              value={itemNote}
+              onChangeText={text => setItemNote(text)}
+            />
+          </KeyboardAvoidingView>
+        </ScrollView>
 
-                  <View style={{marginVertical: 10}}>
-                    {variation.values.map((item, index) => (
-                      <VariationItem
-                        item={item}
-                        key={index}
-                        index={index}
-                        type={variation.type === 'single' ? true : false}
-                        radioState={radioState}
-                        setRadioState={setRadioState}
-                        setPriceAmount={setPriceAmount}
-                        setRadioItemPrice={setRadioItemPrice}
-                        radioItemPrice={radioItemPrice}
-                        // priceAmount={priceAmount}
-                        setSelectedVariations={setSelectedVariations}
-                        selectedVariations={selectedVariations}
-                        setRequired={setRequired}
-                        variationObj={variation}
-                      />
-                    ))}
-                  </View>
-                </>
-              ))}
-            </>
-          )}
-          <Text
-            style={{
-              color: '#2A3B56',
-              fontSize: 14,
-              fontWeight: '800',
-              marginBottom: 10,
-            }}>
-            Note if any
-          </Text>
-          <TextInput
-            style={{
-              backgroundColor: Color.light,
-              height: 90,
-              borderRadius: 16,
-              paddingHorizontal: 10,
-              color: Color.secondary,
-              fontFamily: Font.Urbanist_Light,
-            }}
-            placeholder="Order Notes..."
-            placeholderTextColor={Color.lightGray}
-            multiline
-            value={itemNote}
-            onChangeText={text => setItemNote(text)}
-          />
-        </KeyboardAvoidingView>
-      </ScrollView>
-
-      <View style={{...GlobalStyle.BottomButtonContainer}}>
-        <Button
-          text={`${route.params.edit ? 'Update' : 'Add to'} Basket - $${
-            priceAmount * quantity
-          }`}
-          theme="primary"
-          onPressFunc={async () => {
-            if (required) {
-              showMessage({
-                message: 'You need to select at least 1 required option',
-                type: 'danger',
-              });
-              return;
-            } else {
-              if (route.params.edit) {
-                dispatch({
-                  type: 'UPDATE_CART',
-                  payload: {
-                    foodItem: {
+        <View style={{...GlobalStyle.BottomButtonContainer}}>
+          <Button
+            text={`${route.params.edit ? 'Update' : 'Add to'} Basket - $${
+              priceAmount * quantity
+            }`}
+            theme="primary"
+            onPressFunc={async () => {
+              if (required) {
+                showMessage({
+                  message: 'You need to select at least 1 required option',
+                  type: 'danger',
+                });
+                return;
+              } else {
+                if (route.params.edit) {
+                  dispatch({
+                    type: 'UPDATE_CART',
+                    payload: {
+                      foodItem: {
+                        foodId: product.id,
+                        foodDetails: product,
+                        selectedAddOns: selectedAddons,
+                        selectedVariations: selectedVariations,
+                        totalPrice: priceAmount * quantity,
+                        quantity: quantity,
+                        note: itemNote,
+                      },
+                      index: route.params.index,
+                      oldPrice: route.params.totalPrice,
+                      priceDifference: Math.abs(
+                        priceAmount * quantity - route.params.totalPrice,
+                      ),
+                    },
+                  });
+                } else {
+                  dispatch({
+                    type: 'ADD_TO_CART',
+                    payload: {
                       foodId: product.id,
                       foodDetails: product,
                       selectedAddOns: selectedAddons,
@@ -723,39 +745,21 @@ const Custom = ({route, navigation}) => {
                       totalPrice: priceAmount * quantity,
                       quantity: quantity,
                       note: itemNote,
+                      itemCampaignId: route.params?.itemCampaign
+                        ? product.id
+                        : null,
+                      // route.params
                     },
-                    index: route.params.index,
-                    oldPrice: route.params.totalPrice,
-                    priceDifference: Math.abs(
-                      priceAmount * quantity - route.params.totalPrice,
-                    ),
-                  },
-                });
-              } else {
-                dispatch({
-                  type: 'ADD_TO_CART',
-                  payload: {
-                    foodId: product.id,
-                    foodDetails: product,
-                    selectedAddOns: selectedAddons,
-                    selectedVariations: selectedVariations,
-                    totalPrice: priceAmount * quantity,
-                    quantity: quantity,
-                    note: itemNote,
-                    itemCampaignId: route.params?.itemCampaign
-                      ? product.id
-                      : null,
-                    // route.params
-                  },
-                });
+                  });
+                }
               }
-            }
-            navigation.replace('CheckOut');
-          }}
-        />
-      </View>
-    </SafeAreaView>
-  );
+              navigation.replace('CheckOut');
+            }}
+          />
+        </View>
+      </SafeAreaView>
+    );
+  }
 };
 
 export default Custom;

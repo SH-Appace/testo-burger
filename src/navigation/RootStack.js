@@ -1,7 +1,8 @@
 import React from 'react';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import StackNavigator from './StackNavigator';
-import { Color } from '../globalStyle/Theme';
+import {Color} from '../globalStyle/Theme';
+import {navigationRef} from '../utils/NavigationService';
 
 const RootStack = () => {
   const MyTheme = {
@@ -12,7 +13,7 @@ const RootStack = () => {
     },
   };
   return (
-    <NavigationContainer theme={MyTheme}>
+    <NavigationContainer theme={MyTheme} ref={navigationRef}>
       <StackNavigator />
     </NavigationContainer>
   );

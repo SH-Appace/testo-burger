@@ -26,6 +26,7 @@ import {LogBox} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {enableScreens} from 'react-native-screens';
 import {theme} from './src/utils/paperTheme';
+import {useNavigation} from '@react-navigation/native';
 
 // Ignore log notification by message
 LogBox.ignoreLogs(['Warning: ...']);
@@ -34,10 +35,10 @@ LogBox.ignoreLogs(['Warning: ...']);
 // LogBox.ignoreAllLogs();
 
 const App = () => {
-  useEffect(() => {
-    requestUserPermission();
-    NotificationListener();
-  }, []);
+  // useEffect(() => {
+  //   requestUserPermission();
+  //   NotificationListener();
+  // }, []);
   useEffect(() => {
     if (Platform.OS === 'ios') {
       enableScreens(false);

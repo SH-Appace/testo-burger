@@ -16,6 +16,8 @@ import Delivery from '../screens/main/delivery/Delivery';
 import DrawerNavigator from './DrawerNavigator';
 import ForgotPassword from '../screens/auth/forgotPassword/ForgotPassword';
 import ResetPassword from '../screens/auth/resetPassword/ResetPassword';
+import NotificationDetails from '../screens/main/notifications/NotificationDetails';
+
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -40,6 +42,10 @@ const StackNavigator = () => {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Delivery" component={Delivery} />
       <Stack.Screen name="SetLocation" component={SetLocation} />
+      <Stack.Screen
+        name="NotificationDetails"
+        component={NotificationDetails}
+      />
       <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
     </Stack.Navigator>
   );

@@ -11,12 +11,17 @@ import {getBanner} from '../../../apis/banner';
 import {getBranches} from '../../../apis/branches';
 import {WhiteLogo} from '../../../assets/svgs/LogoSvg';
 import {StatusBar} from 'react-native';
+import {openedFromNotification} from '../../../utils/NavigationService';
+import {
+  NotificationListener,
+  requestUserPermission,
+} from '../../../utils/pushnotification_helper';
 const Splash = ({navigation}) => {
   const dispatch = useDispatch();
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
+    // NavigationService.navigate('NotificationDetails');
+    requestUserPermission();
+    NotificationListener();
     Promise.all([
       categoriesReq(dispatch),
       categoriesAllProductsReq(dispatch),
@@ -28,7 +33,9 @@ const Splash = ({navigation}) => {
 
   const checkUser = async () => {
     const timer = setTimeout(async () => {
-      navigation.replace('Splash2');
+      if (!openedFromNotification) {
+        navigation.replace('Splash2');
+      }
     }, 1000);
     return () => clearTimeout(timer);
   };
