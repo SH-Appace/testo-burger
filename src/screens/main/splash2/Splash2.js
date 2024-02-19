@@ -36,6 +36,7 @@ const Splash2 = ({navigation}) => {
   }, []);
 
   const checkUser = async () => {
+    let fcmtoken = await AsyncStorage.getItem('fcmtoken');
     const timer = setTimeout(async () => {
       await AsyncStorage.getItem('credentials').then(async res => {
         if (res) {
@@ -43,6 +44,7 @@ const Splash2 = ({navigation}) => {
             {
               phone: JSON.parse(res).phone,
               password: JSON.parse(res).password,
+              fcm_token: fcmtoken,
             },
             navigation,
             setLoading,

@@ -2,6 +2,7 @@ import axios from '../axios';
 import {showMessage, hideMessage} from 'react-native-flash-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
+import {Platform} from 'react-native';
 
 export async function signupReq(
   body,
@@ -26,6 +27,7 @@ export async function signupReq(
     // console.log('error', err.response.data.errors[0]);
   }
 }
+
 export async function verifyPhoneReq(
   body,
   setLoading,
@@ -176,5 +178,19 @@ export async function SplashReq(dispatch) {
       message: err.response.data.errors[0].message,
       type: 'danger',
     });
+  }
+}
+
+export async function StoreDeviceToken(token) {
+  try {
+    const {data} = await axios.post('add-device-token', {
+      device_token: token,
+      platform: Platform.OS,
+    });
+    if (data.status) {
+      console.log('Token Added Success');
+    }
+  } catch (err) {
+    console.log('error', err.response.data);
   }
 }

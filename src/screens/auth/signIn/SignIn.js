@@ -24,6 +24,7 @@ import {SkypeIndicator} from 'react-native-indicators';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {RedLogo, RedLogoAuth} from '../../../assets/svgs/LogoSvg';
 import Loader from '../../../components/Loader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignIn = ({navigation}) => {
   const [hidePass, setHidePass] = useState(true);
@@ -62,11 +63,14 @@ const SignIn = ({navigation}) => {
       return;
     }
 
+    let fcmtoken = await AsyncStorage.getItem('fcmtoken');
+
     signinReq(
       {
         phone: phone.code + phone.phone,
         password: password,
         ref_code: referCode !== '' ? referCode : null,
+        fcm_token: fcmtoken,
       },
       navigation,
       setLoading,
@@ -199,8 +203,7 @@ const SignIn = ({navigation}) => {
           }
         />
 
-          
-        <View style={{marginTop:10}}>
+        <View style={{marginTop: 10}}>
           <Button
             text={'Continue without login'}
             icon="mail"

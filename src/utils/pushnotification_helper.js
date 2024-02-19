@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import * as NavigationService from './NavigationService';
 import {Notification} from 'react-native-notifications';
+import {StoreDeviceToken} from '../apis/auth';
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -15,6 +16,7 @@ async function requestUserPermission() {
 }
 
 async function GetFCMToken() {
+  // await AsyncStorage.removeItem('fcmtoken');
   let fcmtoken = await AsyncStorage.getItem('fcmtoken');
   console.log('fcmtoken', fcmtoken);
   if (!fcmtoken) {
@@ -24,6 +26,7 @@ async function GetFCMToken() {
         .then(async () => {
           // Now you can safely call getToken
           let fcmtoken = await messaging().getToken();
+          StoreDeviceToken(fcmtoken);
           return fcmtoken;
         })
         .then(async token => {
@@ -62,6 +65,7 @@ function handleNotification(remoteMessage) {
     }
   }
 }
+
 const NotificationListener = () => {
   // Assume a message-notification contains a "type" property in the data payload of the screen to open
 
