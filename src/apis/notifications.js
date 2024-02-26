@@ -11,6 +11,7 @@ export async function getNotifications(token, setData, setLoading) {
       },
     });
     if (data) {
+      console.log('data', data);
       setData(data);
       setLoading(false);
     }

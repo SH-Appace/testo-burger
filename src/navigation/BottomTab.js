@@ -219,6 +219,7 @@ const hiddenTabrBarScreens = [
   'PrivacyPolicy',
   'TermsConditions',
   'About',
+  'Chat',
 ];
 const styles = StyleSheet.create({
   stack: {

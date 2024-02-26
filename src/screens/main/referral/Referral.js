@@ -10,7 +10,13 @@ import {
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AppBar from '../../../components/AppBar';
-import {BorderRadius, Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
+import {
+  BorderRadius,
+  Color,
+  Font,
+  GlobalStyle,
+  Window,
+} from '../../../globalStyle/Theme';
 import Button from '../../../components/Button';
 import {useSelector} from 'react-redux';
 import {ReferaFriendSvg} from '../../../assets/svgs/ReferralsSvgs';
@@ -18,7 +24,7 @@ import Icon from '../../../core/Icon';
 import Share from 'react-native-share';
 import {useBackButton} from '../../../hooks';
 import {StatusBar} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const Referral = ({route, navigation}) => {
   const {auth} = useSelector(state => ({
@@ -58,8 +64,7 @@ const Referral = ({route, navigation}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <View style={{flex: 1,}}>
-      
+    <View style={{flex: 1}}>
       <StatusBar
         animated={true}
         backgroundColor={'#961111'}
@@ -69,7 +74,7 @@ const Referral = ({route, navigation}) => {
       <ImageBackground
         source={require('../../../assets/images/pics/backgroundBurger.png')}
         resizeMode="cover"
-        style={{flex: 1,paddingTop: insets.top}}>
+        style={{flex: 1, paddingTop: insets.top}}>
         <View style={{paddingHorizontal: Window.fixPadding * 2}}>
           <AppBar
             left={

@@ -136,6 +136,17 @@ const ActiveRoute = ({setVisible, orders, setPopupData}) => {
                   Cancel Order
                 </Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Chat')}
+                style={{...styles.selectButtomStyle}}>
+                <Text
+                  style={{
+                    ...styles.buttonTextStlye,
+                    color: Color.secondary,
+                  }}>
+                  Chat Now
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         ))
@@ -499,12 +510,10 @@ const renderTabBar = props => (
 const Order = ({navigation, route}) => {
   const {auth} = useSelector(state => ({...state}));
 
-  if(!auth.user){
-    return(
-      <NotLogin/>
-    );
+  if (!auth.user) {
+    return <NotLogin />;
   }
-  
+
   const [loading, setLoading] = useState(false);
   const [popupData, setPopupData] = useState([]);
   const [visible, setVisible] = useState(false);
