@@ -146,6 +146,24 @@ const ActiveRoute = ({setVisible, orders, setPopupData}) => {
                   }}>
                   Chat Now
                 </Text>
+                {item.chat?.length > 0 && (
+                  <View
+                    style={{
+                      backgroundColor: Color.primary,
+                      width: 20,
+                      height: 20,
+                      borderRadius: 10,
+                      position: 'absolute',
+                      top: -5,
+                      right: -5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{color: Color.light, fontSize: 10}}>
+                      {item.chat?.length}
+                    </Text>
+                  </View>
+                )}
               </TouchableOpacity>
             </View>
           </View>

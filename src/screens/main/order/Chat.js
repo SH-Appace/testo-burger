@@ -3,7 +3,7 @@ import React, {useState, useCallback, useEffect} from 'react';
 import {Bubble, GiftedChat} from 'react-native-gifted-chat';
 import {Color, GlobalStyle, Window} from '../../../globalStyle/Theme';
 import AppBar from '../../../components/AppBar';
-import {chatHistory, sendMessage} from '../../../apis/chat';
+import {chatHistory, readMessage, sendMessage} from '../../../apis/chat';
 import {useSelector} from 'react-redux';
 import {
   Pusher,
@@ -139,6 +139,7 @@ const Chat = ({route}) => {
   useEffect(() => {
     iniPusher();
     chatHistory(orderId, setMessages, setLoading, auth.token);
+    readMessage(orderId, auth.token);
     // setMessages([
     //   {
     //     _id: 1,
