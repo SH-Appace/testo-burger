@@ -137,7 +137,7 @@ const ActiveRoute = ({setVisible, orders, setPopupData}) => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Chat')}
+                onPress={() => navigation.navigate('Chat', {orderId: item.id})}
                 style={{...styles.selectButtomStyle}}>
                 <Text
                   style={{
