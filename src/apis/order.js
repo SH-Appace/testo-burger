@@ -122,3 +122,17 @@ export async function cancelAOrder(
     console.log('error', err.response.data);
   }
 }
+
+export async function orderStatsReq(token, setOrderStats) {
+  try {
+    const {data} = await axios.get('customer/order/order-stats', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (data) {
+      setOrderStats(data);
+      return;
+    }
+  } catch (err) {}
+}

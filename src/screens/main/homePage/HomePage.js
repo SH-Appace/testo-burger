@@ -40,11 +40,17 @@ import HomeHeader from '../../../components/HomeHeader';
 import ReferCard from '../../../components/ReferCard';
 import LoyaltyCard from '../../../components/LoyaltyCard';
 import BookATableCard from '../../../components/BookATableCard';
+import ActiveOrderCard from '../../../components/ActiveOrderCard';
+import {orderStatsReq} from '../../../apis/order';
 
 const Home = ({navigation}) => {
   const [activeBg, setActiveBg] = useState(1);
   const [catState, setCatState] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
+  const [orderStats, setOrderStats] = useState({
+    order_count: 0,
+    chat_count: 0,
+  });
   let hasNotch = DeviceInfo.hasNotch();
 
   const {categories, products, banners, auth, wishlist, cart} = useSelector(
@@ -115,6 +121,7 @@ const Home = ({navigation}) => {
   //Push notifications
   useEffect(async () => {
     let fcmtoken = await AsyncStorage.getItem('fcmtoken');
+    orderStatsReq(auth.token, setOrderStats);
     updateFCMToken(
       {
         cm_firebase_token: fcmtoken,
@@ -156,6 +163,10 @@ const Home = ({navigation}) => {
           <HomeHeader />
           <SearchBar setOpenSearch={setOpenSearch} />
         </View>
+
+        {auth?.user && orderStats.order_count > 0 && (
+          <ActiveOrderCard data={orderStats} />
+        )}
         <HomeSectionRow
           title="Special Offers"
           altTitle="See All"
