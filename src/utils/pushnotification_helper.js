@@ -61,6 +61,20 @@ function handleNotification(remoteMessage) {
               },
             },
           })
+        : screen === 'Chat'
+        ? NavigationService.navigate('DrawerNavigator', {
+            screen: 'BottomTabScreen',
+            params: {
+              screen: 'OrderStack',
+              params: {
+                screen: 'Chat',
+                params: {
+                  orderId: remoteMessage.data.order_id,
+                  from_notification: true,
+                },
+              },
+            },
+          })
         : NavigationService.navigate(screen, remoteMessage);
     }
   }

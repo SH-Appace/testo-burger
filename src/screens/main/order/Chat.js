@@ -12,11 +12,14 @@ import {
   PusherEvent,
 } from '@pusher/pusher-websocket-react-native';
 
-const Chat = ({route}) => {
+const Chat = ({route, navigation}) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const auth = useSelector(state => state.auth);
   const orderId = route.params.orderId;
+  const fromNotification = route.params?.from_notification
+    ? route.params?.from_notification
+    : false;
   const renderBubble = props => {
     return (
       <Bubble
@@ -178,6 +181,19 @@ const Chat = ({route}) => {
     <View style={styles.container}>
       {/* <Text>Chat</Text> */}
       <AppBar
+        onPressBackBtn={() =>
+          fromNotification
+            ? navigation.navigate('DrawerNavigator', {
+                screen: 'BottomTabScreen',
+                params: {
+                  screen: 'OrderStack',
+                  params: {
+                    screen: 'Order',
+                  },
+                },
+              })
+            : navigation.goBack()
+        }
         center={
           <Text style={GlobalStyle.AppCenterTextStyle}>Order# {orderId}</Text>
         }

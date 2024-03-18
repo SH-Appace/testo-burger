@@ -18,7 +18,11 @@ const AppBar = props => {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onPress={() => navigation.goBack()}>
+          onPress={
+            props.onPressBackBtn
+              ? props.onPressBackBtn
+              : () => navigation.goBack()
+          }>
           <Octicons
             style={{
               color: props.iconColor ? props.iconColor : '#000',
