@@ -77,7 +77,7 @@ const Chat = ({route, navigation}) => {
     const pusher = Pusher.getInstance();
 
     await pusher.init({
-      apiKey: 'd980932ee394770d0950',
+      apiKey: '91dd4ef68c469622c350',
       cluster: 'ap2',
       // authEndpoint: `https://demo.tangyapps.com/api/v1/pusher/user-auth/${auth.user.id}`,
     });

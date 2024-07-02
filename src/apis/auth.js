@@ -76,55 +76,51 @@ export async function signinReq(
         type: 'LOGGED_IN_USER',
         payload: data,
       });
-      try {
-        const response = await axios.get('customer/wish-list', {
-          headers: {
-            Authorization: `Bearer ${data.token}`,
-          },
+      const response = await axios.get('customer/wish-list', {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      });
+      if (response?.data) {
+        dispatch({
+          type: 'ADD_TO_WISHLIST',
+          payload: response.data.food,
         });
-        if (response.data) {
-          dispatch({
-            type: 'ADD_TO_WISHLIST',
-            payload: response.data.food,
-          });
-          if (data.user.is_phone_verified === 1) {
-            if (data.user.is_first_login === 0) {
-              navigation.replace('DrawerNavigator');
-            } else {
-              navigation.replace('EditProfile', {
-                fromOTPcode: true,
-              });
-            }
+        if (data.user.is_phone_verified === 1) {
+          if (data.user.is_first_login === 0) {
+            navigation.replace('DrawerNavigator');
           } else {
-            const confirmation = await auth().signInWithPhoneNumber(body.phone);
-            if (confirmation) {
-              navigation.replace('OtpCode', {
-                isFirstLogin: data.user.is_first_login,
-                data: data,
-                confirm: confirmation,
-                credentials: body,
-              });
-            }
+            navigation.replace('EditProfile', {
+              fromOTPcode: true,
+            });
           }
-          setLoading(false);
+        } else {
+          const confirmation = await auth().signInWithPhoneNumber(body.phone);
+          console.log('🚀 ~ confirmation:', confirmation);
+          if (confirmation) {
+            navigation.replace('OtpCode', {
+              isFirstLogin: data.user.is_first_login,
+              data: data,
+              confirm: confirmation,
+              credentials: body,
+            });
+          }
         }
-      } catch (err) {
         setLoading(false);
-        console.log('error', err.response.data);
       }
     }
   } catch (err) {
+    console.log('🚀 ~ err:', err);
     setLoading(false);
 
     if (isSplashError) {
       navigation.replace('SignIn');
     } else {
       showMessage({
-        message: err.response.data.errors[0].message,
+        message: err?.response?.data?.errors[0]?.message ?? 'UNKNOWN ERROR!',
         type: 'danger',
       });
     }
-    console.log('error sign in', err.response.data);
   }
 }
 

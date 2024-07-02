@@ -34,7 +34,7 @@ const StackNavigator = () => {
       <Stack.Screen name="Splash2" component={Splash2} />
       <Stack.Screen name="OnBoarding" component={OnBoarding} />
       {/* <Stack.Screen name="GetStarted" component={GetStarted} /> */}
-      {/* <Stack.Screen name="SignUp" component={SignUp} /> */}
+      <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} />

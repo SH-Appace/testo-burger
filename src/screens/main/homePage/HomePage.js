@@ -119,15 +119,17 @@ const Home = ({navigation}) => {
   );
 
   //Push notifications
-  useEffect(async () => {
-    let fcmtoken = await AsyncStorage.getItem('fcmtoken');
-    orderStatsReq(auth.token, setOrderStats);
-    updateFCMToken(
-      {
-        cm_firebase_token: fcmtoken,
-      },
-      auth.token,
-    );
+  useEffect(() => {
+    (async () => {
+      let fcmtoken = await AsyncStorage.getItem('fcmtoken');
+      orderStatsReq(auth.token, setOrderStats);
+      updateFCMToken(
+        {
+          cm_firebase_token: fcmtoken,
+        },
+        auth.token,
+      );
+    })();
   }, []);
 
   // BackHandler

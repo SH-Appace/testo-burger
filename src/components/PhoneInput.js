@@ -30,7 +30,7 @@ const PhoneInputComponent = ({
   const [newNumber, setNewNumber] = useState('');
 
   const phoneInputRef = useRef(null);
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => (state.auth));
 
   const requestLocationPermission = async () => {
     try {

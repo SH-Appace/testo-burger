@@ -18,7 +18,7 @@ async function requestUserPermission() {
 async function GetFCMToken() {
   // await AsyncStorage.removeItem('fcmtoken');
   let fcmtoken = await AsyncStorage.getItem('fcmtoken');
-  console.log('fcmtoken', fcmtoken);
+
   if (!fcmtoken) {
     try {
       messaging()
@@ -26,18 +26,22 @@ async function GetFCMToken() {
         .then(async () => {
           // Now you can safely call getToken
           let fcmtoken = await messaging().getToken();
+
           StoreDeviceToken(fcmtoken);
           return fcmtoken;
         })
         .then(async token => {
           await AsyncStorage.setItem('fcmtoken', token);
-          // Do something with the token
+          console.log('fcmtoken', fcmtoken);
+          console.log('fcmtoken', fcmtoken);
+          console.log('fcmtoken', fcmtoken);
+          console.log('fcmtoken', fcmtoken);
         })
         .catch(error => {
-          console.error('Error registering device:', error);
+          console.error('Error registering device token:', error);
         });
     } catch (e) {
-      console.log('err', e);
+      console.log('err token', e);
     }
   }
 }

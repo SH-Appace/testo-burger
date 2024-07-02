@@ -178,14 +178,16 @@ const BottomTabScreen = ({navigation, style}) => {
 };
 export default BottomTabScreen;
 
-const tabBarLabelStyles = {marginBottom: hasNotch ? -10 : 5};
+const tabBarLabelStyles = {
+  // marginBottom: hasNotch ? -10 : 5
+};
 const tabBarItemStyles = {
-  paddingBottom: hasNotch ? 0 : 10,
-  marginTop: hasNotch ? 10 : 5,
+  // paddingBottom: hasNotch ? 0 : 10,
+  // marginTop: hasNotch ? 10 : 5,
 };
 const tabBarStyles = {
   display: 'flex',
-  height: hasNotch ? 80 : 75,
+  // height: hasNotch ? 80 : 75,
   backgroundColor: '#fff',
 };
 const tabBarHiddenStyles = {
