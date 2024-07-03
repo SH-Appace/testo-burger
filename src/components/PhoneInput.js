@@ -143,7 +143,7 @@ const PhoneInputComponent = ({
         <PhoneInput
           ref={phoneInputRef}
           defaultCode={countryCode}
-          // disabled
+          disabled
           disableArrowIcon
           containerStyle={{
             height: 56,
