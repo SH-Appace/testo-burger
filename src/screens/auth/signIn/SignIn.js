@@ -39,6 +39,7 @@ const SignIn = ({navigation}) => {
   const [refer, setRefer] = useState(false);
 
   const dispatch = useDispatch();
+
   const handleSubmit = async () => {
     Keyboard.dismiss();
     if (phone.phone.length < 1) {
@@ -64,7 +65,6 @@ const SignIn = ({navigation}) => {
     }
 
     let fcmtoken = await AsyncStorage.getItem('fcmtoken');
-
     signinReq(
       {
         phone: phone.code + phone.phone,
@@ -76,10 +76,6 @@ const SignIn = ({navigation}) => {
       setLoading,
       dispatch,
     );
-    setPhone({
-      code: '',
-      phone: '',
-    });
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
@@ -230,7 +226,7 @@ const SignIn = ({navigation}) => {
             Need help signing in?{' '}
             <Text
               style={{color: Color.primary, fontFamily: Font.Urbanist_Bold}}
-              onPress={() => navigation.navigate('ForgotPassword')}>
+              onPress={() => navigation.navigate('SignUp')}>
               Click here
             </Text>
           </Text>

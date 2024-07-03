@@ -2,6 +2,7 @@ import {
   FlatList,
   Keyboard,
   PermissionsAndroid,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -44,100 +45,125 @@ const SetLocation = ({route, navigation}) => {
     latitude: 0,
     longitude: 0,
   });
-
+  
   const ref = useRef();
   const dispatch = useDispatch();
   const mapViewRef = useRef(null);
   const {auth} = useSelector(state => ({...state}));
 
-  useEffect(() => {}, []);
+  const locationOpts = {
+    showLocationDialog: true,
+    enableHighAccuracy: true,
+    timeout: 20000,
+    maximumAge: 0,
+  };
+
+  const ToastShow = msg => {
+    showMessage({
+      message: msg,
+      type: 'danger',
+    });
+  };
+
+  const setLocationData = () => {
+    const item = route.params.item;
+    setAddress(item.address);
+    setLabel(item.address_type);
+    setRoad(item.road);
+    setFloor(item.floor);
+    setHouse(item.house);
+    const timer = setTimeout(async () => {
+      mapViewRef.current.animateCamera({
+        center: {
+          latitude: parseFloat(item.latitude),
+          longitude: parseFloat(item.longitude),
+        },
+      });
+      setInitialRegion({
+        latitude: parseFloat(item.latitude),
+        longitude: parseFloat(item.longitude),
+      });
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  };
+
+  const requestLocationAccess = async () => {
+    let result;
+    if (Platform.OS === 'android') {
+      result = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Geolocation Permission',
+          message: 'Can we access your location?',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+    } else {
+      result = await Geolocation.requestAuthorization('whenInUse');
+    }
+    return result;
+  };
+
+  const handlePosition = position => {
+    const lat = position.coords.latitude;
+    const long = position.coords.longitude;
+    mapViewRef.current.animateCamera({
+      center: {latitude: lat, longitude: long},
+    });
+    setInitialRegion({latitude: lat, longitude: long});
+    Geocoder.from({latitude: lat, longitude: long})
+      .then(json => {
+        setLocationPlace(json.results[0]);
+        setAddress(json.results[0].formatted_address);
+        setRoad(
+          json.results[0].address_components[0].long_name +
+            ' ' +
+            json.results[0].address_components[1].long_name,
+        );
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('🚀 ~ requestLocationPermission ~ error:', error);
+        console.warn(error);
+      });
+  };
+
+  handleError = error => {
+    console.log('🚀 ~ SetLocation ~ error:', error);
+    setLoading(false);
+    ToastShow(error?.message ?? 'Error occurred while requesting location');
+  };
+
   const requestLocationPermission = async () => {
     try {
       if (route.params.edit) {
-        const item = route.params.item;
-        setAddress(item.address);
-        setLabel(item.address_type);
-        setRoad(item.road);
-        setFloor(item.floor);
-        setHouse(item.house);
-        const timer = setTimeout(async () => {
-          mapViewRef.current.animateCamera({
-            center: {
-              latitude: parseFloat(item.latitude),
-              longitude: parseFloat(item.longitude),
-            },
-          });
-          setInitialRegion({
-            latitude: parseFloat(item.latitude),
-            longitude: parseFloat(item.longitude),
-          });
-          setLoading(false);
-        }, 1000);
-        return () => clearTimeout(timer);
+        setLocationData();
       } else {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Geolocation Permission',
-            message: 'Can we access your location?',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          },
-        );
+        const granted = await requestLocationAccess();
+        console.log('🚀 ~ requestLocationPermission ~ granted:', granted);
         if (granted === 'granted') {
           Geolocation.getCurrentPosition(
-            position => {
-              mapViewRef.current.animateCamera({
-                center: {
-                  latitude: position.coords.latitude,
-
-                  longitude: position.coords.longitude,
-                },
-              });
-              setInitialRegion({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-              });
-              Geocoder.from({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-              })
-                .then(json => {
-                  setLocationPlace(json.results[0]);
-                  setAddress(json.results[0].formatted_address);
-                  setRoad(
-                    json.results[0].address_components[0].long_name +
-                      ' ' +
-                      json.results[0].address_components[1].long_name,
-                  );
-                  setLoading(false);
-                })
-                .catch(error => console.warn(error));
-            },
-            error => {
-              console.log(error.message.toString());
-            },
-            {
-              showLocationDialog: true,
-              enableHighAccuracy: true,
-              timeout: 20000,
-              maximumAge: 0,
-            },
+            handlePosition,
+            handleError,
+            locationOpts,
           );
-          return true;
         } else {
-          console.log('You cannot use Geolocation');
-          return false;
+          ToastShow('Location permission denied');
+          setLoading(false);
         }
       }
     } catch (err) {
-      return false;
+      console.log('🚀 ~ requestLocationPermission ~ err:', err);
     }
   };
+
   useEffect(() => {
     requestLocationPermission();
   }, []);
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -255,10 +281,12 @@ const SetLocation = ({route, navigation}) => {
       );
     }
   };
+
   const onBackPress = () => {
     navigation.goBack();
     return true;
   };
+
   useBackButton(navigation, onBackPress);
   return (
     <SafeAreaView style={{flex: 1}}>
