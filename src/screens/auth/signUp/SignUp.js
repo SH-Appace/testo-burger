@@ -32,6 +32,7 @@ const SignUp = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  console.log("🚀 ~ SignUp ~ phone:", phone)
 
   const handleSubmit = () => {
     Keyboard.dismiss();
