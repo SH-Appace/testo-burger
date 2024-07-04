@@ -1,7 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '13'
+platform :ios, '13.4'
 prepare_react_native_project!
 use_modular_headers!
 permissions_path = '../node_modules/react-native-permissions/ios'
@@ -28,6 +28,8 @@ if linkage != nil
 end
 
 target 'testoburger' do
+  rn_maps_path = '../node_modules/react-native-maps'
+pod 'react-native-google-maps', :path => rn_maps_path
   config = use_native_modules!
 # use_frameworks! :linkage => :static
 # $RNFirebaseAsStaticFramework = true

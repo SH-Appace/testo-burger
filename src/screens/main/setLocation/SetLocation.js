@@ -45,11 +45,12 @@ const SetLocation = ({route, navigation}) => {
     latitude: 0,
     longitude: 0,
   });
-  
+  console.log('🚀 ~ SetLocation ~ initialRegion:', initialRegion);
+
   const ref = useRef();
   const dispatch = useDispatch();
   const mapViewRef = useRef(null);
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state?.auth);
 
   const locationOpts = {
     showLocationDialog: true,
@@ -107,14 +108,9 @@ const SetLocation = ({route, navigation}) => {
     return result;
   };
 
-  const handlePosition = position => {
-    const lat = position.coords.latitude;
-    const long = position.coords.longitude;
-    mapViewRef.current.animateCamera({
-      center: {latitude: lat, longitude: long},
-    });
-    setInitialRegion({latitude: lat, longitude: long});
-    Geocoder.from({latitude: lat, longitude: long})
+  const coordToDesc = (latitude, longitude) => {
+    setInitialRegion({latitude, longitude});
+    Geocoder.from({latitude, longitude})
       .then(json => {
         setLocationPlace(json.results[0]);
         setAddress(json.results[0].formatted_address);
@@ -123,7 +119,6 @@ const SetLocation = ({route, navigation}) => {
             ' ' +
             json.results[0].address_components[1].long_name,
         );
-        setLoading(false);
       })
       .catch(error => {
         console.log('🚀 ~ requestLocationPermission ~ error:', error);
@@ -131,9 +126,17 @@ const SetLocation = ({route, navigation}) => {
       });
   };
 
+  const handlePosition = position => {
+    const lat = position.coords.latitude;
+    const long = position.coords.longitude;
+    mapViewRef.current.animateCamera({
+      center: {latitude: lat, longitude: long},
+    });
+    coordToDesc(lat, long);
+  };
+
   handleError = error => {
     console.log('🚀 ~ SetLocation ~ error:', error);
-    setLoading(false);
     ToastShow(error?.message ?? 'Error occurred while requesting location');
   };
 
@@ -152,11 +155,12 @@ const SetLocation = ({route, navigation}) => {
           );
         } else {
           ToastShow('Location permission denied');
-          setLoading(false);
         }
       }
     } catch (err) {
       console.log('🚀 ~ requestLocationPermission ~ err:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -335,26 +339,10 @@ const SetLocation = ({route, navigation}) => {
         }}>
         <Marker
           draggable
-          onP
           onDragEnd={e => {
-            setInitialRegion({
-              latitude: e.nativeEvent.coordinate.latitude,
-              longitude: e.nativeEvent.coordinate.longitude,
-            });
-            Geocoder.from({
-              latitude: e.nativeEvent.coordinate.latitude,
-              longitude: e.nativeEvent.coordinate.longitude,
-            })
-              .then(json => {
-                setLocationPlace(json.results[0]);
-                setAddress(json.results[0].formatted_address);
-                setRoad(
-                  json.results[0].address_components[0].long_name +
-                    ' ' +
-                    json.results[0].address_components[1].long_name,
-                );
-              })
-              .catch(error => console.warn(error));
+            const lat = e.nativeEvent.coordinate.latitude;
+            const long = e.nativeEvent.coordinate.longitude;
+            coordToDesc(lat, long);
           }}
           coordinate={{
             latitude: initialRegion.latitude,
