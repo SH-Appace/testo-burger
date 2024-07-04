@@ -10,24 +10,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useMemo} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import AppBar from '../../../components/AppBar';
-import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import Button from '../../../components/Button';
 import Geolocation from 'react-native-geolocation-service';
-import GooglePlacesInput from '../../../components/GooglePlacesAutoComplete';
 import {useDispatch, useSelector} from 'react-redux';
-import BottomSheet from '@gorhom/bottom-sheet';
-import {useMemo} from 'react';
-import TextField from '../../../components/TextFeild';
-import {AddressSvg, PencilSvg} from '../../../assets/svgs/DrawerSvgs';
 import Geocoder from 'react-native-geocoding';
-import Icon from '../../../core/Icon';
-import {addNewAddress, editAddress} from '../../../apis/location';
 import {SkypeIndicator} from 'react-native-indicators';
 import {showMessage} from 'react-native-flash-message';
+import BottomSheet from '@gorhom/bottom-sheet';
+
+import AppBar from '../../../components/AppBar';
+import {Color, Font, GlobalStyle, Window} from '../../../globalStyle/Theme';
+import Button from '../../../components/Button';
+import GooglePlacesInput from '../../../components/GooglePlacesAutoComplete';
+import TextField from '../../../components/TextFeild';
+import {AddressSvg, PencilSvg} from '../../../assets/svgs/DrawerSvgs';
+import Icon from '../../../core/Icon';
+import {addNewAddress, editAddress} from '../../../apis/location';
 import {useBackButton} from '../../../hooks';
 
 const SetLocation = ({route, navigation}) => {
@@ -45,8 +45,7 @@ const SetLocation = ({route, navigation}) => {
     latitude: 0,
     longitude: 0,
   });
-  console.log('🚀 ~ SetLocation ~ initialRegion:', initialRegion);
-
+  
   const ref = useRef();
   const dispatch = useDispatch();
   const mapViewRef = useRef(null);
@@ -225,22 +224,16 @@ const SetLocation = ({route, navigation}) => {
 
   const submitHandler = () => {
     if (label === '') {
-      return showMessage({
-        message: 'Please enter a label!',
-        type: 'danger',
-      });
+      ToastShow('Please enter a label!');
+      return;
     }
     if (address === '') {
-      return showMessage({
-        message: 'Please enter an address!',
-        type: 'danger',
-      });
+      ToastShow('Please enter an address!');
+      return;
     }
     if (road === '') {
-      return showMessage({
-        message: 'Please enter a road!',
-        type: 'danger',
-      });
+      ToastShow('Please enter a road!');
+      return;
     }
     if (route.params.edit) {
       editAddress(
