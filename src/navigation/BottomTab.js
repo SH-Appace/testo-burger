@@ -23,12 +23,33 @@ import DrawerSceneWrapper from '../components/DrawerSceneWrapper';
 import {useDrawerStatus} from '@react-navigation/drawer';
 import {WarningSvg} from '../assets/svgs/ProfileSvgs';
 import {useSelector} from 'react-redux';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 let hasNotch = DeviceInfo.hasNotch();
 const BottomTabScreen = ({navigation, style}) => {
   const Tab = createBottomTabNavigator();
   const isDrawerOpen = useDrawerStatus();
   const auth = useSelector(state => state.auth);
+  const insets = useSafeAreaInsets();
+  const hasBottomSpace = insets.bottom > 0;
+
+  const tabBarLabelStyles = {
+    marginBottom: hasBottomSpace ? -10 : 5,
+  };
+  const tabBarItemStyles = {
+    paddingBottom: hasBottomSpace ? 0 : 10,
+    marginTop: hasBottomSpace ? 10 : 5,
+  };
+  const tabBarStyles = {
+    display: 'flex',
+    height: 80,
+    backgroundColor: '#fff',
+  };
+  const tabBarHiddenStyles = {
+    display: 'none',
+    bottom: -200,
+    height: 0,
+  };
   // console.log(auth.user);
   useEffect(() => {
     // getBanner();
@@ -177,24 +198,6 @@ const BottomTabScreen = ({navigation, style}) => {
   );
 };
 export default BottomTabScreen;
-
-const tabBarLabelStyles = {
-  // marginBottom: hasNotch ? -10 : 5
-};
-const tabBarItemStyles = {
-  // paddingBottom: hasNotch ? 0 : 10,
-  // marginTop: hasNotch ? 10 : 5,
-};
-const tabBarStyles = {
-  display: 'flex',
-  // height: hasNotch ? 80 : 75,
-  backgroundColor: '#fff',
-};
-const tabBarHiddenStyles = {
-  display: 'none',
-  bottom: -200,
-  height: 0,
-};
 
 const hiddenTabrBarScreens = [
   'CheckOut',
