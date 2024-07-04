@@ -9,7 +9,6 @@ import {
   BorderRadius,
 } from '../../../globalStyle/Theme';
 import styles from './CancelOrderStyle';
-import {RadioButton} from 'react-native-paper';
 import CancelOrderData from './CancelOrderDetails';
 import Button from '../../../components/Button';
 import {Modal} from 'react-native-paper';
