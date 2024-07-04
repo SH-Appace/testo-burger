@@ -34,7 +34,7 @@ import {WarningSvgBig} from '../../../assets/svgs/ProfileSvgs';
 import NotLogin from '../../../components/NotLogin';
 
 const EditProfile = ({navigation, route}) => {
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
   if (!auth.user) {
     return <NotLogin ShowBackButton={true} />;
   }

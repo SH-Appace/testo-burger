@@ -79,7 +79,7 @@ const SpecialOffer = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [visiblePlaced, setVisiblePlaced] = useState(false);
 
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
 
   useEffect(() => {
     couponGet(auth.token, setLoading, setCouponData);

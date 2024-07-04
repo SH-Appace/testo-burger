@@ -526,7 +526,7 @@ const renderTabBar = props => (
 );
 
 const Order = ({navigation, route}) => {
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
 
   if (!auth.user) {
     return <NotLogin />;

@@ -8,7 +8,7 @@ import Button from '../../../components/Button';
 import {Avatar} from 'react-native-paper';
 
 const ViewProfile = ({navigation}) => {
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
 
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');

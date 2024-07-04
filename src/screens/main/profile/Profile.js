@@ -27,7 +27,7 @@ import Button from '../../../components/Button';
 
 const ProfileData = ({item, logoutHandler}) => {
   let navigation = useNavigation();
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
 
   return (
     <TouchableOpacity
@@ -81,7 +81,7 @@ const ProfileData = ({item, logoutHandler}) => {
 };
 
 const Profile = ({navigation}) => {
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
 
   const dispatch = useDispatch();
 
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
 });
 
 const TopProfileView = ({navigation}) => {
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
 
   return (
     <View style={styles.row}>

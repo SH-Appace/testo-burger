@@ -23,7 +23,7 @@ import {PendingSvg} from '../../../assets/svgs/ReservationSvgs';
 const Reservation = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
 
   useEffect(() => {
     getBookings(setLoading, auth.token, setData);

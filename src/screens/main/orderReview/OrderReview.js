@@ -19,7 +19,7 @@ const OrderReview = ({route, navigation}) => {
   const [loading, setLoading] = useState(false);
 
   const {item} = route.params;
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
   const onBackPress = () => {
     navigation.goBack();
     return true;

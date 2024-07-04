@@ -190,7 +190,7 @@ const DeliverTo = ({
 };
 
 const Delivery = ({route, navigation}) => {
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
   if(!auth.user){
     return(
       <NotLogin ShowBackButton={true}/>

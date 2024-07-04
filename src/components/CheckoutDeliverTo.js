@@ -12,7 +12,7 @@ import {
 import Icon from '../core/Icon';
 
 const CheckoutDeliverTo = () => {
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
   const navigation = useNavigation();
   return (
     <View style={styles.container}>

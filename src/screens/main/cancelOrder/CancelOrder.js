@@ -64,7 +64,7 @@ const CancelOrder = ({route, navigation}) => {
   const [text, setText] = useState('');
   const [radioText, setRadioText] = useState('');
   const {orderId} = route.params;
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
   const showModal = () => {
     setVisible(true);
   };

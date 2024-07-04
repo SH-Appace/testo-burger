@@ -34,7 +34,7 @@ const QRCode = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [visibleNotLoginPopup, setVisibleNotLoginPopup] = useState(false);
 
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
 

@@ -28,7 +28,7 @@ let hasNotch = DeviceInfo.hasNotch();
 const BottomTabScreen = ({navigation, style}) => {
   const Tab = createBottomTabNavigator();
   const isDrawerOpen = useDrawerStatus();
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
   // console.log(auth.user);
   useEffect(() => {
     // getBanner();

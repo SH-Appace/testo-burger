@@ -29,7 +29,7 @@ const Settings = ({navigation}) => {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   const dispatch = useDispatch();
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
 
   const logoutHandler = async () => {
     await AsyncStorage.removeItem('credentials');
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
 
 const ProfileData = ({item, isSwitchOn, onToggleSwitch, setModalVisible}) => {
   let navigation = useNavigation();
-  const {auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
 
   return (
     <TouchableOpacity
