@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import {Color} from '../globalStyle/Theme';
 
 export default function CustomRadio({status = false, onPress}) {
