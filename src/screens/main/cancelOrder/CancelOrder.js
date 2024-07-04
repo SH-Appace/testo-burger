@@ -18,6 +18,7 @@ import {useSelector} from 'react-redux';
 import {showMessage} from 'react-native-flash-message';
 import {SkypeIndicator} from 'react-native-indicators';
 import {useBackButton} from '../../../hooks';
+import CustomRadio from '../../../components/CustomRadio';
 
 const CancelOptions = ({
   item,
@@ -32,12 +33,8 @@ const CancelOptions = ({
   return (
     <View
       style={{flexDirection: 'row', paddingBottom: 24, alignItems: 'center'}}>
-      <RadioButton
-        style={{width: 20, height: 20}}
-        uncheckedColor={Color.primary}
-        color={Color.primary}
-        value="first"
-        status={radioState == item.id ? 'checked' : 'unchecked'}
+      <CustomRadio
+        status={radioState == item.id}
         onPress={() => {
           setText('');
           setRadioText(item.options);

@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: Color.tertiary,
     fontFamily: Font.Urbanist_SemiBold,
+    marginLeft: 7,
   },
 });
 export default styles;
