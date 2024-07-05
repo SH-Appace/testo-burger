@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Platform, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useState, useCallback, useEffect} from 'react';
 import {Bubble, GiftedChat} from 'react-native-gifted-chat';
 import {Color, GlobalStyle, Window} from '../../../globalStyle/Theme';
@@ -11,6 +11,7 @@ import {
   PusherChannel,
   PusherEvent,
 } from '@pusher/pusher-websocket-react-native';
+import DeviceInfo from 'react-native-device-info';
 
 const Chat = ({route, navigation}) => {
   const [messages, setMessages] = useState([]);
@@ -42,6 +43,7 @@ const Chat = ({route, navigation}) => {
       />
     );
   };
+  let hasNotch = DeviceInfo.hasNotch();
 
   function generateUUID() {
     const chars = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('');
@@ -178,35 +180,44 @@ const Chat = ({route, navigation}) => {
     );
   }, []);
   return (
-    <View style={styles.container}>
-      {/* <Text>Chat</Text> */}
-      <AppBar
-        onPressBackBtn={() =>
-          fromNotification
-            ? navigation.navigate('DrawerNavigator', {
-                screen: 'BottomTabScreen',
-                params: {
-                  screen: 'OrderStack',
+    <SafeAreaView
+      style={{backgroundColor: '#fff', flex: 1}}
+      edges={{
+        top: 'maximum',
+        right: 'maximum',
+        left: 'maximum',
+        bottom: hasNotch && Platform.OS === 'ios' ? '' : 'maximum',
+      }}>
+      <View style={styles.container}>
+        {/* <Text>Chat</Text> */}
+        <AppBar
+          onPressBackBtn={() =>
+            fromNotification
+              ? navigation.navigate('DrawerNavigator', {
+                  screen: 'BottomTabScreen',
                   params: {
-                    screen: 'Order',
+                    screen: 'OrderStack',
+                    params: {
+                      screen: 'Order',
+                    },
                   },
-                },
-              })
-            : navigation.goBack()
-        }
-        center={
-          <Text style={GlobalStyle.AppCenterTextStyle}>Order# {orderId}</Text>
-        }
-      />
-      <GiftedChat
-        renderBubble={renderBubble}
-        messages={messages}
-        onSend={messages => onSend(messages)}
-        user={{
-          _id: auth.user.id,
-        }}
-      />
-    </View>
+                })
+              : navigation.goBack()
+          }
+          center={
+            <Text style={GlobalStyle.AppCenterTextStyle}>Order# {orderId}</Text>
+          }
+        />
+        <GiftedChat
+          renderBubble={renderBubble}
+          messages={messages}
+          onSend={messages => onSend(messages)}
+          user={{
+            _id: auth.user.id,
+          }}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 

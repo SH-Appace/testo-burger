@@ -88,7 +88,14 @@ const Menu = ({navigation, route}) => {
   };
   useBackButton(navigation, onBackPress);
   return (
-    <SafeAreaView style={{backgroundColor: '#F9F9F9', flex: 1}} edges={{ top: 'maximum',right: 'maximum', left: 'maximum', bottom: hasNotch && Platform.OS === 'ios' ? "": "maximum"}}>
+    <SafeAreaView
+      style={{backgroundColor: '#F9F9F9', flex: 1}}
+      edges={{
+        top: 'maximum',
+        right: 'maximum',
+        left: 'maximum',
+        bottom: hasNotch && Platform.OS === 'ios' ? '' : 'maximum',
+      }}>
       <View style={{marginHorizontal: Window.fixPadding * 2}}>
         <AppBar
           left={
@@ -171,33 +178,11 @@ const Cart = ({item}) => {
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'BottomTabScreen',
-              state: {
-                routes: [
-                  {
-                    name: 'HomeStack',
-                    state: {
-                      routes: [
-                        {
-                          name: 'Custom',
-                          params: {
-                            edit: false,
-                            productId: item.id,
-                            product: item,
-                            fromMenu: true,
-                          },
-                        },
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-          ],
+        navigation.navigate('Custom', {
+          edit: false,
+          productId: item.id,
+          product: item,
+          fromMenu: true,
         })
       }
       style={{

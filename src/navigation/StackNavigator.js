@@ -17,6 +17,7 @@ import DrawerNavigator from './DrawerNavigator';
 import ForgotPassword from '../screens/auth/forgotPassword/ForgotPassword';
 import ResetPassword from '../screens/auth/resetPassword/ResetPassword';
 import NotificationDetails from '../screens/main/notifications/NotificationDetails';
+import Custom from '../screens/main/custom/Custom';
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -47,6 +48,7 @@ const StackNavigator = () => {
         component={NotificationDetails}
       />
       <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
+      <Stack.Screen name="Custom" component={Custom} />
     </Stack.Navigator>
   );
 };

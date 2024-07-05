@@ -505,26 +505,7 @@ const Custom = ({route, navigation}) => {
       <SafeAreaView style={GlobalStyle.Container}>
         <AppBar
           left={
-            <TouchableOpacity
-              onPress={() =>
-                route.params.fromMenu
-                  ? navigation.reset({
-                      index: 0,
-                      routes: [
-                        {
-                          name: 'BottomTabScreen',
-                          state: {
-                            routes: [
-                              {
-                                name: 'Menu',
-                              },
-                            ],
-                          },
-                        },
-                      ],
-                    })
-                  : navigation.goBack()
-              }>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <Icon
                 iconFamily={'AntDesign'}
                 name="close"
@@ -753,7 +734,7 @@ const Custom = ({route, navigation}) => {
                   });
                 }
               }
-              navigation.replace('CheckOut');
+              navigation.navigate('CheckOut');
             }}
           />
         </View>

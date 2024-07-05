@@ -2,7 +2,6 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from '../screens/main/homePage/HomePage';
 import SpecialOffer from '../screens/main/specialOffer/SpecialOffer';
-import Custom from '../screens/main/custom/Custom';
 import CheckOut from '../screens/main/checkOut/CheckOut';
 import Delivery from '../screens/main/delivery/Delivery';
 import Payment from '../screens/main/payment/Payment';
@@ -34,7 +33,6 @@ const HomeStack = ({style}) => {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="QRCode" component={QRCode} />
       <Stack.Screen name="SpecialOffer" component={SpecialOffer} />
-      <Stack.Screen name="Custom" component={Custom} />
       <Stack.Screen name="CheckOut" component={CheckOut} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
       <Stack.Screen name="RecommendedFoods" component={RecommendedFoods} />
