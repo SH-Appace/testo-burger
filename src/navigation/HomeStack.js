@@ -33,7 +33,6 @@ const HomeStack = ({style}) => {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="QRCode" component={QRCode} />
       <Stack.Screen name="SpecialOffer" component={SpecialOffer} />
-      <Stack.Screen name="CheckOut" component={CheckOut} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
       <Stack.Screen name="RecommendedFoods" component={RecommendedFoods} />
       <Stack.Screen name="Delivery" component={Delivery} />

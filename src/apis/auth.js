@@ -160,10 +160,10 @@ export async function SplashReq(dispatch) {
         type: 'PRODUCTS',
         payload: [data.popular_products],
       });
-      dispatch({
-        type: 'BANNERS',
-        payload: [data.campaigns],
-      });
+      // dispatch({
+      //   type: 'BANNERS',
+      //   payload: [data.campaigns],
+      // });
       dispatch({
         type: 'BRANCH',
         payload: [data.branches],

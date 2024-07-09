@@ -23,6 +23,7 @@ import {
   NotificationListener,
   requestUserPermission,
 } from '../../../utils/pushnotification_helper';
+import { getBanner } from '../../../apis/banner';
 
 const Splash2 = ({navigation}) => {
   const [loading, setLoading] = useState(false);
@@ -31,7 +32,7 @@ const Splash2 = ({navigation}) => {
   useEffect(() => {
     requestUserPermission();
     NotificationListener();
-    Promise.all([SplashReq(dispatch), checkUser()]);
+    Promise.all([SplashReq(dispatch), getBanner(dispatch),checkUser()])
     return () => setLoading(false);
   }, []);
 
