@@ -18,6 +18,7 @@ import ForgotPassword from '../screens/auth/forgotPassword/ForgotPassword';
 import ResetPassword from '../screens/auth/resetPassword/ResetPassword';
 import NotificationDetails from '../screens/main/notifications/NotificationDetails';
 import Custom from '../screens/main/custom/Custom';
+import CheckOut from '../screens/main/checkOut/CheckOut';
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -49,6 +50,7 @@ const StackNavigator = () => {
       />
       <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
       <Stack.Screen name="Custom" component={Custom} />
+      <Stack.Screen name="CheckOut" component={CheckOut} />
     </Stack.Navigator>
   );
 };
