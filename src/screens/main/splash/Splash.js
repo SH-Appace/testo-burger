@@ -25,7 +25,7 @@ const Splash = ({navigation}) => {
       SplashReq(dispatch),
       // categoriesReq(dispatch),
       // categoriesAllProductsReq(dispatch),
-      getBanner(dispatch),
+      // getBanner(dispatch),
       // getBranches(dispatch),
       checkUser(),
     ]);
