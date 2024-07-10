@@ -1,59 +1,21 @@
-import {StyleSheet, Dimensions, Platform} from 'react-native';
-import {
-  GlobalStyle,
-  Window,
-  Font,
-  Color,
-  BorderRadius,
-} from '../../../globalStyle/Theme';
+import {StyleSheet} from 'react-native';
+import {Font, Color} from '../../../globalStyle/Theme';
 
 const styles = StyleSheet.create({
-  ImgStyle: {
-    width: Window.height / 8,
-    height: Window.height / 8,
-    backgroundColor: 'black',
-    borderRadius: BorderRadius,
+  barRightBtn: {
+    height: 40,
+    width: 40,
+    borderRadius: 40,
+    backgroundColor: Color.light,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 0.5,
+    marginTop: 15,
   },
   CartRightContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  TopTextStyle: {
-    color: Color.headingSm,
-    fontSize: 16,
-    fontFamily: Font.Urbanist_Black,
-  },
-  MiddleTextStyle: {
-    color: Color.greyscale,
-    fontSize: 14,
-    fontWeight: '500',
-    lineHeight: 18.96,
-    fontFamily: Font.Urbanist_Regular,
-    paddingHorizontal: 2,
-  },
-  MinusStyle: {
-    color: Color.headingSm,
-    fontSize: 20,
-    fontFamily: Font.Urbanist_Black,
-  },
-  NumStyle: {
-    color: Color.headingSm,
-    fontSize: 16,
-    fontFamily: Font.Urbanist_Black,
-    marginHorizontal: 10,
-    width: 20,
-    textAlign: 'center',
-  },
-  AddStyle: {
-    color: 'white',
-    fontSize: 20,
-    fontFamily: Font.Urbanist_Black,
-  },
-  LastTextStyle: {
-    color: Color.primary,
-    fontSize: 14,
-    fontFamily: Font.Urbanist_Black,
   },
 
   TopIconStyle: {
@@ -72,22 +34,18 @@ const styles = StyleSheet.create({
     color: Color.primary,
     borderRadius: 50,
   },
-  ///cart
-  cartContainer: {
-    height: Window.height / 6.5,
-    flexDirection: 'row',
-    overflow: 'hidden',
-    width: '100%',
-    alignItems: 'center',
+  textStyle: {
+    color: '#2A3B56',
+    fontSize: 14,
+    fontFamily: Font.Urbanist_Black,
   },
-  incrementDecrementBtn: {
-    width: 35,
-    height: 35,
-    borderRadius: BorderRadius,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Color.primary,
+  textArea: {
+    backgroundColor: Color.light,
+    height: 90,
+    borderRadius: 16,
+    paddingHorizontal: 10,
+    color: Color.secondary,
+    fontFamily: Font.Urbanist_Light,
   },
 });
 
