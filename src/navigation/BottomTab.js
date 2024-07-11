@@ -64,12 +64,7 @@ const BottomTabScreen = ({navigation, style}) => {
         <>
           {focused ? options.active : options.inActive}
           {options.label == 'Profile' && auth.user?.name === null && (
-            <View
-              style={{
-                position: 'absolute',
-                right: Window.width / 15,
-                top: 5,
-              }}>
+            <View style={styles.iconCont}>
               <WarningSvg />
             </View>
           )}
@@ -133,5 +128,10 @@ const styles = StyleSheet.create({
     display: 'none',
     bottom: -200,
     height: 0,
+  },
+  iconCont: {
+    position: 'absolute',
+    right: Window.width / 15,
+    top: 5,
   },
 });
