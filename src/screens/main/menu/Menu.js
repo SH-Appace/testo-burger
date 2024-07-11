@@ -20,7 +20,7 @@ import {useSelector} from 'react-redux';
 import {HorizontalFlatList} from '@idiosync/horizontal-flatlist';
 import {useState} from 'react';
 import Icon from '../../../core/Icon';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import styles from './MenuStyles';
 import {ManuIcon} from '../../../assets/svgs/SocialIconsSvgs';
 import {useBackButton} from '../../../hooks';
@@ -33,6 +33,7 @@ const Menu = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   let hasNotch = DeviceInfo.hasNotch();
+  const isFocused = useIsFocused();
 
   const {categories, products, auth} = useSelector(state => ({...state}));
   useEffect(() => {
@@ -43,7 +44,7 @@ const Menu = ({navigation, route}) => {
       setActive(categories[0][0].id);
       getSingleCategoryProducts(categories[0][0].id, setData, setLoading);
     }
-  }, []);
+  }, [isFocused]);
   // console.log(active);
   const RenderItemCategories = ({item, setState, state}) => (
     <TouchableOpacity
