@@ -66,23 +66,12 @@ const Home = ({navigation}) => {
   const renderItemCategories = ({item}) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.reset({
-          routes: [
-            {
-              name: 'BottomTabScreen',
-              state: {
-                routes: [
-                  {
-                    name: 'Menu',
-                    params: {
-                      activeId: item.id,
-                      activeCat: item.name,
-                    },
-                  },
-                ],
-              },
-            },
-          ],
+        navigation.navigate('MenuStack', {
+          screen: 'Menu',
+          params: {
+            activeId: item.id,
+            activeCat: item.name,
+          },
         })
       }
       style={[
@@ -181,7 +170,7 @@ const Home = ({navigation}) => {
         <HomeSectionRow
           title="Discount Guaranteed! 👌"
           altTitle="See All"
-          onPress={() => navigation.navigate('Menu')}
+          onPress={() => navigation.navigate('MenuStack')}
         />
 
         <ScrollView

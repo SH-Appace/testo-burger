@@ -67,48 +67,13 @@ const Cart = ({item}) => {
   const [reRenderHeart, setReRenderHeart] = useState(false);
   return (
     <TouchableOpacity
-      onPress={
-        () =>
-          navigation.navigate('BottomTabScreen', {
-            screen: 'HomeStack',
-            params: {
-              screen: 'Custom',
-              params: {
-                edit: false,
-                productId: item.id,
-                product: item,
-                fromMenu: true,
-              },
-            },
-          })
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [
-        //     {
-        //       name: 'BottomTabScreen',
-        //       state: {
-        //         routes: [
-        //           {
-        //             name: 'HomeStack',
-        //             state: {
-        //               routes: [
-        //                 {
-        //                   name: 'Custom',
-        //                   params: {
-        //                     edit: false,
-        //                     productId: item.id,
-        //                     product: item,
-        //                     fromMenu: true,
-        //                   },
-        //                 },
-        //               ],
-        //             },
-        //           },
-        //         ],
-        //       },
-        //     },
-        //   ],
-        // })
+      onPress={() =>
+        navigation.navigate('Custom', {
+          edit: false,
+          productId: item.id,
+          product: item,
+          fromMenu: true,
+        })
       }
       style={{
         backgroundColor: Color.light,

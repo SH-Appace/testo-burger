@@ -49,8 +49,6 @@ const StackNavigator = () => {
         component={NotificationDetails}
       />
       <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
-      <Stack.Screen name="Custom" component={Custom} />
-      <Stack.Screen name="CheckOut" component={CheckOut} />
     </Stack.Navigator>
   );
 };

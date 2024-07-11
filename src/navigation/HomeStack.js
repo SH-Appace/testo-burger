@@ -17,6 +17,7 @@ import RecommendedFoods from '../screens/main/recommendedFoods/RecommendedFoods'
 import PaymentScreen from '../screens/main/paymentScreen/PaymentScreen';
 import BookATable from '../screens/main/bookATable/BookATable';
 import Reservation from '../screens/main/reservation/Reservation';
+import Custom from '../screens/main/custom/Custom';
 
 const HomeStack = ({style}) => {
   const Stack = createNativeStackNavigator();
@@ -34,7 +35,6 @@ const HomeStack = ({style}) => {
       <Stack.Screen name="QRCode" component={QRCode} />
       <Stack.Screen name="SpecialOffer" component={SpecialOffer} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
-      <Stack.Screen name="RecommendedFoods" component={RecommendedFoods} />
       <Stack.Screen name="Delivery" component={Delivery} />
       <Stack.Screen name="SetLocation" component={SetLocation} />
       <Stack.Screen name="Payment" component={Payment} />
@@ -43,6 +43,9 @@ const HomeStack = ({style}) => {
       <Stack.Screen name="Wishlist" component={Wishlist} />
       <Stack.Screen name="BookATable" component={BookATable} />
       <Stack.Screen name="Reservation" component={Reservation} />
+      <Stack.Screen name="RecommendedFoods" component={RecommendedFoods} />
+      <Stack.Screen name="CheckOut" component={CheckOut} />
+      <Stack.Screen name="Custom" component={Custom} />
     </Stack.Navigator>
   );
 };

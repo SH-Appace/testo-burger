@@ -478,25 +478,7 @@ const Custom = ({route, navigation}) => {
   }, []);
 
   const onBackPress = () => {
-    if (route.params.fromMenu) {
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'BottomTabScreen',
-            state: {
-              routes: [
-                {
-                  name: 'Menu',
-                },
-              ],
-            },
-          },
-        ],
-      });
-    } else {
-      navigation.goBack();
-    }
+    navigation.goBack();
     return true;
   };
   useBackButton(navigation, onBackPress);
@@ -515,11 +497,7 @@ const Custom = ({route, navigation}) => {
             </TouchableOpacity>
           }
           center={
-            <Text
-              onPress={() => navigation.navigate('Cartt')}
-              style={GlobalStyle.AppCenterTextStyle}>
-              {product.name}
-            </Text>
+            <Text style={GlobalStyle.AppCenterTextStyle}>{product.name}</Text>
           }
           right={
             <TouchableOpacity

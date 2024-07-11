@@ -516,19 +516,7 @@ const CheckOut = ({route, item}) => {
                     openPaymentSheet();
                   }
                 }
-              : () =>
-                  navigation.reset({
-                    index: 0,
-
-                    routes: [
-                      {
-                        name: 'BottomTabScreen',
-                        state: {
-                          routes: [{name: 'Menu'}],
-                        },
-                      },
-                    ],
-                  })
+              : () => navigation.navigate('MenuStack')
           }
         />
       </View>
