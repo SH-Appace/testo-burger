@@ -65,6 +65,13 @@ const Splash2 = ({navigation}) => {
           }
         }
       });
+      const cartData = await AsyncStorage.getItem('cart');
+      if (cartData) {
+        dispatch({
+          type: 'SETCART',
+          payload: JSON.parse(cartData),
+        });
+      }
     }, 1000);
     return () => clearTimeout(timer);
   };

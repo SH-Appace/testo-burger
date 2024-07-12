@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import format from 'pretty-format';
 
 let initState;
 let userData;
@@ -7,7 +8,9 @@ const setUser = async () => (userData = await AsyncStorage.getItem('cart'));
 setUser();
 
 if (userData) {
-  const setData = async () => (initState = await AsyncStorage.getItem('cart'));
+  const setData = async () => {
+    initState = JSON.parse(userData);
+  };
   setData();
 } else {
   initState = {
@@ -18,23 +21,25 @@ if (userData) {
       discount: 0,
     },
     orderType: 'delivery',
-    loyaltyPoints: {
-      enable: false,
-      discount: 0,
-    },
   };
 }
 
 export const cartReducer = (state = initState, action) => {
+  let currentState = {};
   switch (action.type) {
+    case 'SETCART':
+      currentState = action.payload;
+      return currentState;
     case 'ADD_TO_CART':
-      return {
+      currentState = {
         ...state,
         addedItems: [...state.addedItems, action.payload],
         total: state.total + action.payload.totalPrice,
       };
+      AsyncStorage.setItem('cart', JSON.stringify(currentState));
+      return currentState;
     case 'UPDATE_CART':
-      return {
+      currentState = {
         ...state,
         addedItems: state.addedItems.map((x, i) => {
           if (i === action.payload.index) {
@@ -48,51 +53,50 @@ export const cartReducer = (state = initState, action) => {
             ? state.total + action.payload.priceDifference
             : state.total - action.payload.priceDifference,
       };
+      AsyncStorage.setItem('cart', JSON.stringify(currentState));
+      return currentState;
     case 'CLEAR_CART':
-      return {
+      currentState = {
         ...state,
         addedItems: action.payload,
         total: 0,
       };
+      AsyncStorage.setItem('cart', JSON.stringify(currentState));
+      return currentState;
     case 'REMOVE_ITEM':
-      return {
+      currentState = {
         ...state,
         addedItems: state.addedItems.filter(
           (item, i) => i !== action.payload.index,
         ),
         total: state.total - action.payload.amount,
       };
+      AsyncStorage.setItem('cart', JSON.stringify(currentState));
+      return currentState;
     case 'ADD_COUPON':
-      return {
+      currentState = {
         ...state,
         coupon: action.payload,
       };
+      AsyncStorage.setItem('cart', JSON.stringify(currentState));
+      return currentState;
     case 'REMOVE_COUPON':
-      return {
+      currentState = {
         ...state,
         coupon: {
           code: '',
           discount: 0,
         },
       };
-    case 'ADD_LOYALTY':
-      return {
-        ...state,
-        loyaltyPoints: action.payload,
-      };
-    case 'REMOVE_LOYALTY':
-      return {
-        ...state,
-        loyaltyPoints: {
-          enable: false,
-          discount: 0,
-        },
-      };
+      AsyncStorage.setItem('cart', JSON.stringify(currentState));
+      return currentState;
     case 'UPDATE_ORDER_TYPE':
-      return {
+      currentState = {
         ...state,
         orderType: action.payload,
       };
+      AsyncStorage.setItem('cart', JSON.stringify(currentState));
+      return currentState;
     default:
       return state;
   }

@@ -74,7 +74,8 @@ const CheckOut = ({route, item}) => {
   const [orderNote, setOrderNote] = useState('');
   const dispatch = useDispatch();
 
-  const {cart, auth} = useSelector(state => ({...state}));
+  const auth = useSelector(state => state.auth);
+  const cart = useSelector(state => state.cart);
   //STRIPE
   const {initPaymentSheet, presentPaymentSheet} = useStripe();
   useEffect(() => {
@@ -95,6 +96,7 @@ const CheckOut = ({route, item}) => {
     } else return;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart.coupon.discount, pointsDiscount]);
+
   const initializePaymentSheet = async () => {
     const {paymentIntent, ephemeralKey, customer, publishableKey} =
       await stripePost(
