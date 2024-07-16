@@ -5,12 +5,7 @@ import {Color, GlobalStyle, Window} from '../../../globalStyle/Theme';
 import AppBar from '../../../components/AppBar';
 import {chatHistory, readMessage, sendMessage} from '../../../apis/chat';
 import {useSelector} from 'react-redux';
-import {
-  Pusher,
-  PusherMember,
-  PusherChannel,
-  PusherEvent,
-} from '@pusher/pusher-websocket-react-native';
+import {Pusher} from '@pusher/pusher-websocket-react-native';
 import DeviceInfo from 'react-native-device-info';
 
 const Chat = ({route, navigation}) => {
@@ -62,7 +57,6 @@ const Chat = ({route, navigation}) => {
 
   const formatEventData = event => {
     const userId = event.userId ? event.userId : 1;
-    console.log(event.data.message);
     const formattedMessage = {
       _id: generateUUID(),
       createdAt: new Date().toISOString(),
@@ -79,22 +73,16 @@ const Chat = ({route, navigation}) => {
     const pusher = Pusher.getInstance();
 
     await pusher.init({
-      apiKey: '91dd4ef68c469622c350',
+      apiKey: 'd980932ee394770d0950',
       cluster: 'ap2',
-      // authEndpoint: `https://demo.tangyapps.com/api/v1/pusher/user-auth/${auth.user.id}`,
     });
 
     await pusher.connect();
-    // console.log(pusher);
     await pusher.subscribe({
-      // channelName: 'private-chat.' + auth.user.id,
       channelName: 'chat-channel.' + orderId,
       onEvent: event => {
         console.log(`Event received: ${event}`);
-
         event.data = JSON.parse(event.data);
-        console.log(event.data.receiverId);
-
         if (
           event.data.receiverId == auth.user.id &&
           event.data.orderId == orderId
@@ -123,20 +111,6 @@ const Chat = ({route, navigation}) => {
         console.log(
           `calling onAuthorizer. channelName=${channelName}, socketId=${socketId},`,
         );
-        // var obj = {
-        // socket_id: socketId,
-        // channel_name: channelName,
-        // };
-        // const response = await Api.post(urls.CHAT_AUTH, obj, (isChatify = true));
-        // console.log( onAuthorizerresponse:, response);
-        // if (!isAuthenticated) {
-        // // Your authentication logic here
-        // isAuthenticated = true;
-        // return {auth:response.auth,id:'3'};
-        // }
-        // If already authenticated, return null or undefined
-        // return null;
-        // return response;
       },
     });
   }
@@ -145,35 +119,9 @@ const Chat = ({route, navigation}) => {
     iniPusher();
     chatHistory(orderId, setMessages, setLoading, auth.token);
     readMessage(orderId, auth.token);
-    // setMessages([
-    //   {
-    //     _id: 1,
-    //     text: 'Hello customer! Good to see you hear 😁',
-    //     createdAt: new Date(),
-    //     user: {
-    //       _id: 2,
-    //       name: 'React Native',
-    //       avatar: 'https://demo.tangyapps.com/storage/profile/avatar.png',
-    //     },
-    //   },
-    //   {
-    //     _id: 2,
-    //     text: 'I have order double beef burger for December 23 at 10 AM 🔥🔥🔥',
-    //     createdAt: new Date(),
-    //     user: {
-    //       _id: 1,
-    //       name: 'React Native',
-    //       avatar: 'https://demo.tangyapps.com/storage/profile/avatar.png',
-    //     },
-    //   },
-    // ]);
-    // return async () => {
-    //   await pusher.reset();
-    // };
   }, []);
 
   const onSend = useCallback((messages = []) => {
-    // console.log(messages);
     sendMessage({order_id: orderId, message: messages[0].text}, auth.token);
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),

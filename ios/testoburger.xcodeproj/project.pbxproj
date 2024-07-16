@@ -27,10 +27,10 @@
 		187D56B02AAF7604000088C9 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF19F2A2A8506A900DD4023 /* Octicons.ttf */; };
 		187D56B12AAF7604000088C9 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF19F302A8506A900DD4023 /* SimpleLineIcons.ttf */; };
 		187D56B22AAF7604000088C9 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF19F2E2A8506A900DD4023 /* Zocial.ttf */; };
+		18882CB92C46A22A00F7D8F6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18882CB82C46A22900F7D8F6 /* GoogleService-Info.plist */; };
 		6C7516A51C54DB00DFBCB186 /* libPods-testoburger.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CAB59350673EE1AAF589531 /* libPods-testoburger.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A37C12ED130374FE6341CB7C /* libPods-testoburger-testoburgerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55592AD82A3595EDE3C7E497 /* libPods-testoburger-testoburgerTests.a */; };
-		FAF19EF82A84FC6100DD4023 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAF19EF72A84FC6100DD4023 /* GoogleService-Info.plist */; };
 		FAF19F1B2A84FEB300DD4023 /* Urbanist-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF19F152A84FEB300DD4023 /* Urbanist-Regular.ttf */; };
 		FAF19F1C2A84FEB300DD4023 /* Urbanist-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF19F162A84FEB300DD4023 /* Urbanist-Light.ttf */; };
 		FAF19F1D2A84FEB300DD4023 /* Urbanist-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF19F172A84FEB300DD4023 /* Urbanist-Black.ttf */; };
@@ -60,6 +60,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = testoburger/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = testoburger/main.m; sourceTree = "<group>"; };
 		14F2397A6055F49E63AB3B5B /* Pods-testoburger-testoburgerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testoburger-testoburgerTests.debug.xcconfig"; path = "Target Support Files/Pods-testoburger-testoburgerTests/Pods-testoburger-testoburgerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		18882CB82C46A22900F7D8F6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3CAB59350673EE1AAF589531 /* libPods-testoburger.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-testoburger.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4804E1D12883E1C5B825A088 /* Pods-testoburger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testoburger.debug.xcconfig"; path = "Target Support Files/Pods-testoburger/Pods-testoburger.debug.xcconfig"; sourceTree = "<group>"; };
 		52F112297D1FE0150019F196 /* Pods-testoburger-testoburgerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testoburger-testoburgerTests.release.xcconfig"; path = "Target Support Files/Pods-testoburger-testoburgerTests/Pods-testoburger-testoburgerTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -68,7 +69,6 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = testoburger/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC3FE092A8698FE000EFA66 /* testoburger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = testoburger.entitlements; path = testoburger/testoburger.entitlements; sourceTree = "<group>"; };
-		FAF19EF72A84FC6100DD4023 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAF19F152A84FEB300DD4023 /* Urbanist-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Urbanist-Regular.ttf"; path = "../../src/assets/fonts/Urbanist/static/Urbanist-Regular.ttf"; sourceTree = "<group>"; };
 		FAF19F162A84FEB300DD4023 /* Urbanist-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Urbanist-Light.ttf"; path = "../../src/assets/fonts/Urbanist/static/Urbanist-Light.ttf"; sourceTree = "<group>"; };
 		FAF19F172A84FEB300DD4023 /* Urbanist-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Urbanist-Black.ttf"; path = "../../src/assets/fonts/Urbanist/static/Urbanist-Black.ttf"; sourceTree = "<group>"; };
@@ -164,8 +164,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				18882CB82C46A22900F7D8F6 /* GoogleService-Info.plist */,
 				FAF19F142A84FE3700DD4023 /* fonts */,
-				FAF19EF72A84FC6100DD4023 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* testoburger */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* testoburgerTests */,
@@ -324,6 +324,7 @@
 			files = (
 				187D56A32AAF7604000088C9 /* AntDesign.ttf in Resources */,
 				187D56A42AAF7604000088C9 /* Entypo.ttf in Resources */,
+				18882CB92C46A22A00F7D8F6 /* GoogleService-Info.plist in Resources */,
 				187D56A52AAF7604000088C9 /* EvilIcons.ttf in Resources */,
 				187D56A62AAF7604000088C9 /* Feather.ttf in Resources */,
 				187D56A72AAF7604000088C9 /* FontAwesome.ttf in Resources */,
@@ -341,7 +342,6 @@
 				FAF19F1D2A84FEB300DD4023 /* Urbanist-Black.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				FAF19F1E2A84FEB300DD4023 /* Urbanist-Medium.ttf in Resources */,
-				FAF19EF82A84FC6100DD4023 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				FAF19F1F2A84FEB300DD4023 /* Urbanist-SemiBold.ttf in Resources */,
 				FAF19F202A84FEB300DD4023 /* Urbanist-Bold.ttf in Resources */,

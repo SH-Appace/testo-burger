@@ -6,6 +6,7 @@ import {StoreDeviceToken} from '../apis/auth';
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
+  console.log("🚀 ~ requestUserPermission ~ authStatus:", authStatus)
   const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
@@ -18,7 +19,7 @@ async function requestUserPermission() {
 async function GetFCMToken() {
   // await AsyncStorage.removeItem('fcmtoken');
   let fcmtoken = await AsyncStorage.getItem('fcmtoken');
-
+  console.log("🚀 ~ GetFCMToken ~ fcmtoken:", fcmtoken)
   if (!fcmtoken) {
     try {
       messaging()
@@ -35,7 +36,7 @@ async function GetFCMToken() {
           console.log('fcmtoken', fcmtoken);
           console.log('fcmtoken', fcmtoken);
           console.log('fcmtoken', fcmtoken);
-          console.log('fcmtoken', fcmtoken);
+          console.log('fcmtoken', token);
         })
         .catch(error => {
           console.error('Error registering device token:', error);
@@ -50,7 +51,6 @@ function handleNotification(remoteMessage) {
   if (remoteMessage) {
     const {screen} = remoteMessage.data; // Assuming 'screen' is part of your data payload
     if (screen) {
-      console.log('screen', screen);
       NavigationService.openedFromNotification = true;
       screen === 'Custom'
         ? NavigationService.navigate('DrawerNavigator', {

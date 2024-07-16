@@ -1,4 +1,11 @@
-import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+  PermissionsAndroid,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Color, Font, Window} from '../../../globalStyle/Theme';
 
@@ -29,6 +36,10 @@ const Splash2 = ({navigation}) => {
   const dispatch = useDispatch();
   var navigateTo = 'BottomTabScreen';
   useEffect(() => {
+    if (Platform.OS === 'android')
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
     requestUserPermission();
     NotificationListener();
     Promise.all([SplashReq(dispatch), checkUser()]);

@@ -51,7 +51,8 @@ export async function readMessage(orderId, token) {
       },
     });
     if (data) {
-      console.log('data', data);
+      console.log("🚀 ~ readMessage ~ data:", data)
+      
       //  setData(data);
       //  setLoading(false);
     }
