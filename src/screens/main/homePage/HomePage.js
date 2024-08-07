@@ -53,11 +53,9 @@ const Home = ({navigation}) => {
   });
   let hasNotch = DeviceInfo.hasNotch();
 
-  const {categories, products, banners, auth, wishlist, cart} = useSelector(
-    state => ({
-      ...state,
-    }),
-  );
+  const {categories, products, banners, auth} = useSelector(state => ({
+    ...state,
+  }));
   /// Animated
   const [reanimatedStyle, reanimatedStyle2, reanimatedStyle3] = useAnimated(
     catState,
